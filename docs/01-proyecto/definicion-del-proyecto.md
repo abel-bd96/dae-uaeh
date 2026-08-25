@@ -2,25 +2,27 @@
 
 ## 1. Información general
 
-Sistema web para la Dirección de Administración Escolar (DAE) de la Universidad Autónoma del Estado de Hidalgo (UAEH), cuyo propósito es centralizar, estandarizar y modernizar progresivamente los procesos administrativos de la Dirección. El desarrollo iniciará con el módulo de emisión de constancias de estudio y será un proyecto integral entre las distintas áreas de la Dirección, el área de informática será la encargada de desarrollar dicho sistema utilizando el stack tecnológico dispuesto por la Dirección de Información y Sistemas (DIyS), siendo este: HTML, CSS, JavaScript, PHP en su versión 7.2.9 y Bootstrap opcionalmente.
+Sistema web para la Dirección de Administración Escolar (DAE) de la Universidad Autónoma del Estado de Hidalgo (UAEH), cuyo propósito es centralizar, estandarizar y modernizar progresivamente los procesos administrativos de la Dirección. El desarrollo iniciará con el módulo de emisión de constancias de estudio y será un proyecto integral entre las distintas áreas de la Dirección, así como de algunas otras Direcciones y Dependendencias de la UAEH; el área de informática será la encargada de desarrollar dicho sistema, en colaboración con dichas áreas, Direcciónes y Dependencias utilizando el stack tecnológico dispuesto por la Dirección de Información y Sistemas (DIyS), siendo este: HTML, CSS, JavaScript, PHP en su versión 7.2.9, Bootstrap opcionalmente, Git para control de versiones, y Microsfot SQL Server para la base de datos.
 
 ## 2. Problema identificado
 
 ### 2.1 Problema general de la DAE
 
-La DAE no cuenta con un sistema centralizado para realizar sus actividades en sus diferentes áreas. Actualmente existen aplicaciones desarrolladas en Delphi, pero esto genera fragmentación pues en ocasiones hay que utilizar varias de estas aplicaciones para realizar una actividad.
+La DAE no cuenta con un sistema centralizado para realizar sus actividades en sus diferentes áreas. Actualmente existen aplicaciones cliente-servidor desarrolladas en Delphi, pero esto genera fragmentación en los distintos procesos que realiza el personal de la DAE, pues en ocasiones hay que utilizar varias de estas aplicaciones para realizar uno solo de ellos.
 
-Otra de las problemáticas es la alta dependencia a la DIyS para la generación de proyectos, ya que la base de datos institucional está bajo su responsabilidad y por la alta demanda de trabajo que presentan hay ocasiones en las que no se puede dar seguimiento adecuado a las necesidades de la DAE.
+Otra de las problemáticas es la alta dependencia a la DIyS tanto para la generación de proyectos nuevos, como para la actualización y mantenimiento de proyectos existentes; ya que la base de datos institucional está bajo su responsabilidad y por la alta demanda de trabajo que presentan hay ocasiones en las que no se puede dar seguimiento adecuado a las necesidades de la DAE.
 
-También se ha notado que hay procesos que no están estandarizados dentro de la dirección, adenás de que algunos todavía se realizan de manera manual o sin las herramientas adecaudas.
+También se ha notado que hay procesos que no están estandarizados dentro de la DAE, además de que algunos todavía se realizan de manera manual o sin las herramientas adecaudas.
 
-Tampoco se cuenta con una base de datos propia para almacenar la información que solo es competencia de la Dirección; al depender de la DIyS la generación de estructuras nuevas en la base de datos para almacenar información es bastante lenta.
+Tampoco se cuenta con una base de datos propia para almacenar la información que solo es competencia de la DAE; al depender de la DIyS la generación de estructuras nuevas en la base de datos para almacenar información es bastante lenta. <!-- chat, aquí pon también que a veces nuestras solicitudes no son atendidas, usa un estilo formal parecido al resto del documento. -->
 
-### 2.2 Problema específico del módulo de emisión de constancias de estudio
+### 2.2 Problema específico del módulo de emisión de constancias de estudio <!-- Nombre provisional -->
 
-Actualmente el proceso de solicitud de constancias académicas presenta diversas limitaciones operativas y administrativas debido a que gran parte del flujo se realiza de manera manual.
+Actualmente el proceso de solicitud de constancias de estudio presenta diversas limitaciones operativas y administrativas debido a que gran parte del proceso se realiza de manera manual.
 
-El procedimiento vigente requiere que el alumno primero realice el pago correspondiente de la constancia llenando un formulario de pago de manera manual y, posteriormente complete la solicitud en un formulario de Google Forms donde debe registrar sus datos y adjuntar el comprobante de pago. En caso de que el alumno no complete correctamente dicho formulario, la solicitud no puede ser procesada, aún cuando el pago ya haya sido realizado, esto debido a que requiere de correcciones manuales y normalmente implica comunicación directa con el área de Constancias y Certificados la cual tiende a ser lenta debido a que se realiza vía correo electrónico.
+El procedimiento vigente requiere que el alumno primero realice el pago correspondiente de la constancia llenando un formulario de pago en un sistema externo (Sistema de cobros en línea de la Coordinación de Administración y Finanzas)de manera manual, lo cual puede causar confusión ya que no se especifica bien cómo debe llenarse dicho formulario para generar la orden de pago y a en ocasiones los alumnos terminan realizando los pagos por ub concepto erróneo;posteriormente el alumno debe completar la solicitud en un formulario de Google Forms donde debe registrar sus datos y adjuntar el comprobante de pago. En caso de que el alumno no llene correctamente dicho formulario, la solicitud no puede ser procesada, aún cuando el pago ya haya sido realizado, esto debido a que requiere de correcciones manuales y normalmente implica comunicación directa con el área de Constancias y Certificados la cual tiende a ser lenta debido a que se realiza vía correo electrónico.
+
+Aunado a esto, actualmente existen tres tipos de constancias, las cuales contienen entre sí distintos datos académicos de los alumnos, y esto causa confusión entre los solicitantes, o que en ocasiones hayan solicitado el tipo de constancia que no cumpla con los datos que el alumno necesitaba.
 
 Este proceso genera problemáticas como:
 
@@ -33,64 +35,74 @@ Este proceso genera problemáticas como:
 - Comunicación limitada entre el alumno y el área responsable.
 - Retraso en emisión de constancias durante el periodo vacacional debido a la necesidad de revisión humana de las solicitudes.
 - Fragmentación del proceso, ya que este se realiza en 3 sitios diferentes, lo que puede ocasionar confusión.
-- Los organismos que solicitan constancias a los alumnos necesitan llamar para validar la autenticidad del documento.
+- No exite vinculación entre la solicitud de constancia de estudios y el pago realizado, lo cual impide la correcta verificación de si un pago corresponde a la solicitud realizada por el alumno.
 
-Además, el proceso actual no ofrece automatización para la emisión de constancias digitales ni una trazabilidad clara del trámite desde su inicio hasta su finalización.
+Además, el proceso actual no ofrece automatización para la emisión de constancias digitales, ni una trazabilidad clara del trámite desde su inicio hasta su finalización.
 
 ## 3. Justificación
 
-El desarrollar una aplicación web para las actividades realizadas por la DAE podría agilizar diversos procesos que actualmente requieren de mucha intervención humana y por ende es propensa a cometer errores, además de que se emplea tiempo y recursos que podrían utilizarse de manera más optima. Un sistema modernizado con procesos estandarizados permitiría agilizar y aligerar la carga de trabajo de la Dirección, facilitando el grueso de porcesos que podrían realizarse de manera automática y dejando tiempo para revisar aquellas excepciones o casos especiales que si requieran de atención del personal de la Dirección. Al contar con una cierta libertad, se podrían aminorar la dependencia que se tiene con la DIyS para ciertos cambios y lograr agilizarlos.
+El desarrollar una aplicación web para las actividades realizadas por la DAE, podría agilizar diversos procesos que actualmente requieren de mucha intervención humana, y por ende, son propensas a contener errores, además de que se emplea tiempo y recursos que podrían utilizarse de manera optima. Un sistema modernizado con procesos estandarizados permitiría agilizar y aligerar la carga de trabajo del personal de la Dirección, facilitando la mayoría de porcesos que podrían realizarse de manera sistematizada, y dejando tiempo para revisar aquellas excepciones o casos especiales que si requieran de atención del personal de la Dirección. Al contar con una cierta libertad operativa, se podría aminorar la dependencia que se tiene con la DIyS para ciertos cambios y poder agilizarlos.
 
 ## 4. Objetivo general
 
-Desarrollar e implementar un sistema web para la DAE que permita la centralización, agilización y estandarización de los procesos llevados por la Dirección. Dicho sistema debe ser funcional tanto para alumnos como para el personal de la Dirección.
+Desarrollar e implementar un sistema web para la DAE que permita la definición, estandarización, centralización y agilización de los procesos llevados por la DAE. Dicho sistema debe ser funcional tanto para alumnos como para el personal de la DAE.
 
 ## 5. Objetivos específicos
 
-### 5.1 Objetivo del módulo de emisión de constancias
+### 5.1 Objetivo del módulo de emisión de constancias de estudio
 
-Desarrollar e implementar un módulo web para el departamento de Constancias y Certificados; integrado con el sistema de "Servicios en Línea" pertenecientes a la DIyS que permita al alumnado perteneciente a las distintas escuelas dependientes de la UAEH realizar solicitudes de constancias académicas de manera digital, consultar el estado de sus trámites y obtener constancias académicas de manera digital, consultar el estado de sus trámites y obtener constancias electrónicas de forma más rápida, organizada y segura. Esto también incluirá el desarrollo de un modo administrativo para el departamento de Constancias y Certificados que permita la gestión efectiva de sus procesos y solicitudes.
+Desarrollar e implementar un módulo web para el área de Constancias y Certificados; integrado con el sistema de "Servicios en Línea" perteneciente a la DIyS, que permita a todo el alumnado, tanto activo como inactivo, de todos los niveles académicos de la Universidad Autónona del Estado de Hidalgo (UAEH) y sus Escuelas incorporadas, realizar solicitudes de constancias académicas de manera digital, consultar el estado de sus trámites de forma más rápida, organizada y segura. El módulo también incluirá un apartado para el área de Constancias y Certificados que permitiria la gestión efectiva de sus procesos y solicitudes.
 
-El módulo tiene como propósito automatizar y centralizar el proceso de solicitud de constancias académicas para alumnos con estatus activo o inscrito, integrandose con el sistema institucional existente denominado "Servicios en Línea". A través de esta integración, el alumnado podrá realizar el trámite en línea, constular el estado de sus solicitudes y obtener sus constancias de forma más rápida y organizada.
+La solución contempla la generación de constancias con firma digital y autógrafa, permitiendo gestionar cada flujo de acuerdo con las necesidades operativas del área administrativa.
 
-La solución contempla la generación de constancias con irma digital y autógrafa, permitiendo gestionar cada flujo de acuerdo con las necesidades operativas del área administrativa.
+Entiendase como constancia de estudio al documento administrativo que detalla datos clave del alumno como el estado de inscripción, el semestre cursado, los créditos acumulados, el promedio general, y que sirve como prueba fehaciente de dichos hechos, hasta el momento, ante terceros.
 
-## 6. Alcance inicial
+Usos Principales de una constancia de estudios:
 
-### 6.1 Alcance del módulo de emisión de constancias de estudio
+- **Trámites de becas**: Demostrar ante instituciones gubernamentales o privadas que el alumno cuenta con un promedio determinado y mantiene un registro activo.
+- **Seguridad social**: Facilitar el alta o la vigencia de derechos en servicios médicos como el IMSS.
+- **Empleo y prácticas**: Comprobar estatus de estudiante para la realización de servicio social, prácticas profesionales o para postularse a ofertas laborales.
+- **Descuentos y movilidad**: Tramitar tarifas preferenciales en transporte público, visas de estudiante u otros beneficios institucionales y legales.
 
+## 6. Alcance
+
+### 6.1 Alcance inicial del módulo de emisión de constancias de estudio (primer incremento)
+
+- Solicitud en línea de constancias de estudio para alumnos actualmente inscritos y con estatus activo de las escuelas dependientes de la UAEH, que cuenten con su expediente validado y no estén imposibilitados de solicitar dicho documento según el registro que exista en la lista que administre el área de Constanicias y Certificados.
 - Acceso e inicio de sesión para el alumnado desde el sistema institucional “Servicios en Línea” de la DIyS, con identificación automática del alumno y programa educativo.
-- Visualización de datos académicos y selección del programa educativo correspondiente.
+- Selección del programa educativo correspondiente.
 - Registro de nuevas solicitudes y selección del tipo de firma (autógrafa o digital).
 - Conexión con el sistema de finanzas para la generación automática de formatos/referencias de pago y validación de los mismos.
-- Generación automática de constancias digitales en formato PDF para su descarga una vez validado el pago, enviando una notificación al alumno.
-- Seguimiento de constancias con firma autógrafa, permitiendo registrar a una persona autorizada para su recolección y notificando al alumno cuando esté lista para entrega.
-- Consulta del historial y estado de los trámites (Solicitado, Pagado, Elaborado, Emitido, Finalizado y Cancelado).
-- Cancelación de solicitudes por parte del alumno (solo en estado “Solicitud”) o por la DAE (en estados específicos).
+- Generación automática de constancias digitales en formato PDF para su descarga una vez validado el pago.
+- Seguimiento de constancias con firma autógrafa, permitiendo registrar a una persona autorizada para su recolección.
+- Seguimiento por parte del área de Constancias y Certificados de la solicitud y estado de los trámites: Solicitada, Pagada, En Elaboración, Emitida, Finalizada y Cancelada.
+- Seguimiento por parte del alumno de la constancia y estado de la constancia: Elaborada, Enviada a Firma, Emitida, Entregada y Cancelada.
+- Cancelación de solicitudes por parte del alumno o por la DAE.
 - Acceso, inicio de sesión y registro de usuarios administrativos desde una pantalla de login usando correo electrónico institucional y contraseña con opción de recuperación de contraseña.
-- Generación de solicitudes por parte del departamento de Constancias y Certificados teniendo la opción de generar los certificados de manera manual y opción de omitir pagos requeridos en casos especiales.
-- Seguimiento de constancias con monitoreo de estados del proceso y gestión de los mismos por parte del departamento de Constancias y Certificados.
-- Planeación de fechas de realización de trámites por periodo escolar y tomando en cuenta los periodos vacacionales.
-- Planeación específica por programa educativo de fechas de realización de trámites por periodo escolar y tomando en cuenta los periodos vacacionales.
+- Planeación de fechas por periodo escolar y tomando en cuenta los periodos vacacionales.
 - Administración de usuarios con asignación de roles y permisos y posibilidad de agregar usuarios nuevos y eliminar usuarios existentes.
-- Lista negra de alumnos sin derecho a solicitar trámites. (No en la UI, sólo en la base de datos por el momento).
-- Configuración de perfil de usuario, sólo para actualización de contraseña.
+- Consulta de la lista negra de alumnos sin derecho a solicitar trámites. La lista será administrada por el personal del área de Constancias y Certificados.
+- Validador en sistema de las constancias emitidas, a través de un código QR incluído en la constancia.<!-- (¿El historial de constancias emitidas tendrá vigencia dentro de la BD, o es perpetuo?) -->
+- Configuración usuario para actualización de contraseña.
 
 ## 7. Fuera de alcance
 
-### 7.1 Fuera de alcance del módulo de emisión de constancias de estudio
+### 7.1 Fuera de alcance del módulo de emisión de constancias de estudio (primer incremento)
 
-- Trámites para alumnos egresados o dados de baja (quienes usarán temporalmente el procedimiento tradicional mediante formulario externo).
-- Solicitudes de constancias con información personalizada o fuera del formato estándar.
-- Procesos administrativos internos del área de certificación posteriores a la recepción de solicitudes.
-- Generación de otros documentos escolares distintos a constancias.
-- Generación de reportes para el departamento de Constancias y Certificados.
+- Emisión de constancias para alumnos egresados, con baja y activos que no cuenten con su expediente de documentos de manera digital(quienes usarán temporalmente el procedimiento tradicional mediante formulario externo).
+- Emisión de constancias para alumnos de escuelas incorporadas.
+- Emisión de constancias que no se ajusten al formato estándar definido por el área de Constancias y Certificados.
+- Generación de otros documentos escolares distintos a constancias de estudio.
+- Generación de reportes para el departamento de Constancias y Certificados, (se requiere que el área de Constancias y Certificados defina sus indicadores).
+- Registro de usuarios en la base de datos de alumnos, que por antigüedad actualmente no se encuetren en la base de datos del SIAE(Sistema Integral de Administración Escolar), existiendo únicamente en el archivo físico de la DAE.
 
-## 8. Usuarios y actores iniciales
+## 8. Usuarios y actores
+
+### 8.1 Usuarios y actores del módulo de emisión de constancias de estudio
 
 El sistema contemplará inicialmente diferentes tipos de usuarios y sistemas externos que participarán en el proceso de emisión de constancias.
 
-### 8.1 Alumnado
+#### 8.1.1 Alumnado
 
 Usuarios que realizarán solicitudes de constancias académicas mediante la integración con el sistema institucional “Servicios en Línea”.
 
@@ -98,48 +110,43 @@ Sus principales acciones serán:
 
 - Acceder al módulo mediante su sesión institucional a través de "Servicios en Línea".
 - Seleccionar el programa educativo correspondiente.
-- Solicitar constancias disponibles.
+- Solicitar constancias de estudio digitales o con firma autógrafa.
 - Consultar referencias y estatus de pago.
 - Consultar el estado de sus solicitudes.
-- Cancelar solicitudes cuando el estado del trámite lo permita.
+- Cancelar solicitudes.
 - Descargar constancias digitales cuando hayan sido emitidas.
 - Registrar, cuando corresponda, a una persona autorizada para recoger una constancia con firma autógrafa.
 - Consultar el historial de solicitudes realizadas.
 
-### 8.2 Personal del departamento de Constancias y Certificados
+#### 8.1.2 Personal del departamento de Constancias y Certificados
 
 Usuarios responsables de la gestión operativa de las solicitudes.
 
 Sus principales acciones serán:
 
 - Consultar y administrar las solicitudes recibidas.
-- Validar información y documentación relacionada con los trámites.
 - Gestionar el estado de las solicitudes.
-- Generar constancias de manera automática o manual, según corresponda.
+- Generar solicitudes de constancias, según corresponda.
 - Registrar y administrar constancias con firma autógrafa.
 - Consultar información necesaria para la atención de solicitudes.
-- Gestionar periodos de atención de acuerdo con el calendario establecido.
 - Programar restricciones o condiciones especiales para determinados periodos o programas educativos.
-- Alta y baja de usuarios por parte de la persona responsable del área.
-- Asignación y modificación de roles y permisos por parte de la persona responsable del área.
 
-### 8.3 Usuarios administrativos del sistema
+#### 8.1.3 Usuarios administrativos del sistema
 
 Usuarios pertenecientes a la DAE que requieran acceder al sistema para realizar funciones administrativas de acuerdo con los permisos asignados.
 
 Sus capacidades estarán determinadas mediante un esquema de roles y permisos, evitando que todos los usuarios tengan acceso a las mismas funciones.
 
-### 8.4 Administrador del sistema
+#### 8.1.4 Administrador del módulo (responsable del área de támites y certificados)
 
 Usuario con permisos para realizar tareas de administración general, entre ellas:
 
 - Alta y baja de usuarios administrativos.
 - Asignación y modificación de roles y permisos.
-- Configuración de parámetros del sistema.
 - Gestión de restricciones de acceso a determinados trámites.
 - Actualización de su propia contraseña.
 
-### 8.5 Sistemas externos
+#### 8.1.5 Sistemas externos
 
 El proyecto dependerá inicialmente de sistemas institucionales externos para determinadas operaciones:
 
@@ -149,7 +156,7 @@ El proyecto dependerá inicialmente de sistemas institucionales externos para de
 
 Estos sistemas no forman parte del desarrollo directo del módulo, por lo que su disponibilidad, interfaces y modificaciones estarán sujetas a sus respectivas áreas responsables.
 
-### 8.6 Módulo inicial
+#### 8.1.6 Módulo inicial
 
 El primer módulo contemplado dentro del proyecto será:
 
@@ -188,25 +195,26 @@ El desarrollo inicial del proyecto estará condicionado por restricciones instit
 ### 10.1 Restricciones tecnológicas
 
 - El desarrollo deberá utilizar el stack tecnológico definido por la Dirección de Información y Sistemas.
-- Para la primera etapa se utilizarán HTML, CSS, JavaScript y PHP 7.2.9.
+- Para la primera etapa se utilizarán HTML, CSS, JavaScript y PHP 7.2.9, Git y Microsfot SQL Server.
 - Bootstrap podrá utilizarse como herramienta complementaria para la construcción de la interfaz.
 - No se contempla inicialmente la adopción de tecnologías o frameworks que no hayan sido autorizados por la DIyS.
-- La infraestructura de servidores, bases de datos y servicios institucionales deberá ajustarse a las capacidades disponibles dentro de la Universidad.
+- La infraestructura de servidores, bases de datos y servicios institucionales deberá ajustarse a las capacidades disponibles en el momento dentro de la Universidad.
 
-### 10.2 Restricciones de integración
+### 10.2 Restricciones de integración <!--con las áreas involucradas (pendiente de definir el título)-->
 
 - El módulo dependerá de la disponibilidad e infraestructura de datos proporcionadas por los sistemas institucionales de la DIyS.
 - La autenticación del alumnado se realizará mediante la integración con “Servicios en Línea”, por lo que el sistema no administrará directamente las credenciales de los alumnos.
-- La información académica utilizada por el sistema dependerá de los datos proporcionados por los sistemas institucionales.
-- La generación y validación de pagos dependerá de la infraestructura y servicios proporcionados por el sistema de Finanzas.
+- La información académica utilizada por el sistema dependerá de los datos existentes y que serán proporcionados por los sistemas institucionales.
+- La generación y validación de pagos dependerá de la infraestructura y servicios proporcionados por Coordinación de Administración y Finanzas.
 - Los cambios en sistemas externos podrán requerir modificaciones en el módulo y deberán coordinarse con las áreas responsables.
 
 ### 10.3 Restricciones institucionales
 
 <!-- - El sistema deberá cumplir con las políticas, lineamientos y mecanismos de seguridad establecidos por la UAEH. -->
-- Los accesos administrativos estarán restringidos al personal autorizado.
-<!-- - La información académica y administrativa deberá manejarse de acuerdo con las disposiciones institucionales aplicables.  -->
-- Las modificaciones que involucren sistemas administrados por otras áreas estarán sujetas a autorización y coordinación con dichas áreas.
+
+- Los accesos a los sistemas estarán restringidos al personal de la UAEH autorizado.
+- La información académica y administrativa deberá manejarse de acuerdo con las disposiciones institucionales aplicables.
+- Las modificaciones que involucren sistemas administrados por otras áreas, estarán sujetas a autorización y coordinación con dichas áreas.
 
 ### 10.4 Restricciones de alcance
 
@@ -219,7 +227,7 @@ El desarrollo inicial del proyecto estará condicionado por restricciones instit
 ### 10.5 Restricciones operativas
 
 - La automatización estará limitada por las reglas y excepciones definidas por el área responsable.
-- Los procesos que requieran firma autógrafa continuarán dependiendo de actividades presenciales o de intervención del personal.
+- Los procesos que requieran firma autógrafa o que requieran de una atención especial continuarán dependiendo de actividades presenciales o de intervención del personal.
 - Durante la etapa inicial podrán coexistir procedimientos digitales y procedimientos tradicionales mientras se completa la transición.
 
 ---
@@ -266,7 +274,7 @@ El proyecto se considerará exitoso en su primera etapa cuando el módulo de emi
 
 ### 11.6 Adopción
 
-- El personal responsable deberá poder realizar las actividades necesarias sin depender constantemente del área de informática.
+- El personal responsable deberá poder realizar las actividades necesarias sin depender constantemente del área de Informática.
 - El alumnado deberá poder completar una solicitud sin requerir asistencia del personal en los casos considerados como flujo normal.
 - La puesta en operación deberá acompañarse de instrucciones o material de apoyo cuando sea necesario.
 
