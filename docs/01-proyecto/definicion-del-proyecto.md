@@ -51,7 +51,7 @@ Desarrollar e implementar un sistema web para la DAE que permita la definición,
 
 ### 5.1 Objetivo del módulo de emisión de constancias de estudio
 
-Desarrollar e implementar un módulo web para el área de Constancias y Certificados, integrado con el sistema de “Servicios en Línea” perteneciente a la DIyS, que permita a todo el alumnado, tanto activo como inactivo, de todos los niveles académicos de la Universidad Autónoma del Estado de Hidalgo (UAEH) y sus Escuelas incorporadas, realizar solicitudes de constancias académicas de manera digital y consultar el estado de sus trámites de forma más rápida, organizada y segura. El módulo también incluirá un apartado para el área de Constancias y Certificados que permita la gestión efectiva de sus procesos y solicitudes.
+Desarrollar e implementar un módulo web para el área de Constancias y Certificados, integrado con el sistema de “Servicios en Línea” perteneciente a la DIyS, que permita a todo el alumnado de todos los niveles académicos de la Universidad Autónoma del Estado de Hidalgo (UAEH) y sus Escuelas incorporadas, que cumpla con los requisitos establecidos para la emisión de constancias dentro del alcance del primer incremento. realizar solicitudes de constancias académicas de manera digital y consultar el estado de sus trámites de forma más rápida, organizada y segura. El módulo también incluirá un apartado para el área de Constancias y Certificados que permita la gestión efectiva de sus procesos y solicitudes.
 
 La solución contempla la generación de constancias con firma digital y autógrafa, permitiendo gestionar cada flujo de acuerdo con las necesidades operativas del área administrativa.
 
@@ -81,7 +81,7 @@ Usos principales de una constancia de estudio:
 - Acceso, inicio de sesión y registro de usuarios administrativos desde una pantalla de inicio de sesión utilizando correo electrónico institucional y contraseña, con opción de recuperación de contraseña.
 - Planeación de fechas por periodo escolar, tomando en cuenta los periodos vacacionales.
 - Administración de usuarios con asignación de roles y permisos, así como la posibilidad de agregar usuarios nuevos y eliminar usuarios existentes.
-- Consulta de la lista de alumnos sin derecho a solicitar trámites. La lista será administrada por el personal del área de Constancias y Certificados.
+- Consulta de la lista de alumnos sin derecho a solicitar trámites. La lista será administrada por el personal del área de Constancias y Certificados. <!-- TODO: Pendiente definir quien agrega los registros, quien puede eliminarlos, que motivo se registra, si se audtia. Esto para la fase de análisis. -->
 - Validador en el sistema de las constancias emitidas, a través de un código QR incluido en la constancia.<!-- (¿El historial de constancias emitidas tendrá vigencia dentro de la BD, o es perpetuo?) -->
 - Configuración del usuario para la actualización de contraseña.
 
@@ -245,7 +245,7 @@ El proyecto se considerará exitoso en su primer incremento cuando el módulo de
 
 ### 11.2 Reducción de trabajo manual
 
-- Se reducirá la captura repetitiva de información por parte del alumno y del personal administrativo.
+- Se reducirá la captura repetitiva de información. El alumno no deberá capturar manualmente nombre, matrícula o programa educativo.
 - Se disminuirá la necesidad de revisar manualmente información que pueda validarse mediante los sistemas institucionales.
 - Se reducirá el intercambio de información mediante correo electrónico para consultar o corregir el estado de los trámites.
 - Se automatizarán, en la medida permitida por las integraciones disponibles, las actividades relacionadas con pago, generación y notificación de constancias.
