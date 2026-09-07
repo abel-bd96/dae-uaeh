@@ -1,3 +1,4 @@
+<!-- TODO: Establecer quien puede tomar decisiones -->
 # Organización del equipo
 
 ## 1. Estructura del equipo
