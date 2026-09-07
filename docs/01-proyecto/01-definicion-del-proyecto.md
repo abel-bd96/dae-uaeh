@@ -1,3 +1,12 @@
+<!-- 
+* Nombre provisional: Sistema para la Dirección de Administración Escolar de la UAEH 
+* Primer módulo: Emisión de constancias de estudio
+* Visión: Desarrollar progesivamente un sistema integral para la Dirección de Administración Escolar, comenzando por el módulo de constancias y dejando una arquitectura preparada para incorporar futuros módulos.
+TODO: Definir el objetivo (¿por qué existe?).
+TODO: Definir el alcance (¿qué vamos a construir?)
+TODO: Definir lo que queda fuera de alcance (lo que no se construye inicialmente)
+
+-->
 # Definición del proyecto
 
 ## 1. Información general
