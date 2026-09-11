@@ -1,0 +1,13 @@
+[
+    {
+        "fechaPeriodoEstudiosInicio": "2026-01-19",
+        "fechaPeriodoEstudiosTermino": "2026-05-27",
+        "fechaPeriodoVacacionalInicio": "2026-07-12",
+        "fechaPeriodoVacacionalTermino": "2026-07-26",
+        "fechaSolicitudConstanciaInicio": "2026-01-19",
+        "fechaSolicitudConstanciaTermino": "2026-08-02",
+        "estado": "ACTIVO",
+        "idCiclo": 1,
+        "nombre": "ENERO-JUNIO 2026"
+    }
+]
