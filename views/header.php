@@ -25,7 +25,7 @@
                 <a href="https://uaeh.edu.mx/" target="_blank" rel="noopener noreferrer">
                     <img src="../../assets/img/logo_uaeh.png" alt="Logo de la Universidad Autónoma del Estado de Hidalgo y el Patronato Universitario">
                 </a>
-                <h1>Dirección de Administración Escolar</h1>
+                <h1 class="fs-1">Dirección de Administración Escolar</h1>
             </div>
 
             <div class="header__spacer" aria-hidden="true"></div>

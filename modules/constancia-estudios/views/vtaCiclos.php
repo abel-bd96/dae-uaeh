@@ -1,10 +1,10 @@
-<main class="container py-4" id="constanciaCiclos">
+<main class="container p-4 shadow bg-white rounded my-5" id="constanciaCiclos">
     <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
         <div>
-            <p class="text-uppercase text-muted small mb-1">Emisión de constancias</p>
-            <h1 class="h3 mb-0">Registro y configuración de ciclos</h1>
+            <p class="text-uppercase text-muted small mb-4 fs-2 fw-bold">Emisión de constancias</p>
+            <h1 class="h3 mb-0 fs-2">Registro y configuración de ciclos</h1>
         </div>
-        <button type="button" class="btn btn-primary" id="btnNuevoCiclo">
+        <button type="button" class="btn btn-primary btn-lg" id="btnNuevoCiclo">
             <i class="bi bi-plus-lg"></i> Nuevo ciclo
         </button>
     </div>
@@ -13,7 +13,7 @@
     <div class="card shadow-sm border-0">
         <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0" id="tablaCiclos">
+                <table class="table table-hover align-middle mb-0 fs-5" id="tablaCiclos">
                     <thead class="table-light">
                         <tr>
                             <th>Ciclo</th>
@@ -35,9 +35,9 @@
     </div>
 </main>
 
-<div class="modal fade" id="modalCiclo" tabindex="-1" aria-labelledby="tituloModalCiclo" aria-hidden="true">
+<div class="modal fade fs-4" id="modalCiclo" tabindex="-1" aria-labelledby="tituloModalCiclo" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
-        <div class="modal-content">
+        <div class="modal-content p-3">
             <div class="modal-header">
                 <div>
                     <h2 class="modal-title h5" id="tituloModalCiclo">Nuevo ciclo</h2>
@@ -54,16 +54,16 @@
                     </div>
 
                     <section class="paso-ciclo" data-paso="1">
-                        <h3 class="h6">Seleccionar ciclo de SIAE</h3>
+                        <h3 class="h5">Seleccionar ciclo de SIAE</h3>
                         <label for="buscarCiclo" class="form-label">Buscar por nombre</label>
-                        <input type="search" class="form-control mb-3" id="buscarCiclo" placeholder="Ej. 2026">
+                        <input type="search" class="form-control form-control-lg mb-3" id="buscarCiclo" placeholder="Ej. 2026">
                         <div id="resultadosCiclos" class="list-group"></div>
                         <input type="hidden" name="nombre" id="cicloNombre">
                         <div class="invalid-feedback d-block" id="errorCiclo"></div>
                     </section>
 
                     <section class="paso-ciclo d-none" data-paso="2">
-                        <h3 class="h6 mb-3">Configurar fechas</h3>
+                        <h3 class="h5 mb-3">Configurar fechas</h3>
                         <div class="row g-3">
                             <div class="col-md-6"><label class="form-label" for="fechaPeriodoEstudiosInicio">Inicio periodo de estudios</label><input type="date" class="form-control fecha-ciclo" name="fechaPeriodoEstudiosInicio" id="fechaPeriodoEstudiosInicio"></div>
                             <div class="col-md-6"><label class="form-label" for="fechaPeriodoEstudiosTermino">Fin periodo de estudios</label><input type="date" class="form-control fecha-ciclo" name="fechaPeriodoEstudiosTermino" id="fechaPeriodoEstudiosTermino"></div>
@@ -76,7 +76,7 @@
                     </section>
 
                     <section class="paso-ciclo d-none" data-paso="3">
-                        <h3 class="h6">Programas educativos</h3>
+                        <h3 class="h5">Programas educativos</h3>
                         <p class="small text-muted" id="ayudaPlanes">La primera configuración del ciclo es GENERAL y no requiere programas.</p>
                         <div id="selectorPlanes" class="d-none">
                             <label for="buscarPlan" class="form-label">Buscar por nombre</label>
