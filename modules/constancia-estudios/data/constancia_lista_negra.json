@@ -1,0 +1,86 @@
+[
+    {
+        "NumeroCuenta": "12345678",
+        "Estatus": "N"
+    },
+    {
+        "NumeroCuenta": "12345678",
+        "Estatus": "S"
+    },
+    {
+        "NumeroCuenta": "236974",
+        "Estatus": "N"
+    },
+    {
+        "NumeroCuenta": "264788",
+        "Estatus": "S"
+    },
+    {
+        "NumeroCuenta": "250122",
+        "Estatus": "N"
+    },
+    {
+        "NumeroCuenta": "Petronilo",
+        "Estatus": "S"
+    },
+    {
+        "NumeroCuenta": "120",
+        "Estatus": "N"
+    },
+    {
+        "NumeroCuenta": "369852",
+        "Estatus": "N"
+    },
+    {
+        "NumeroCuenta": "256794",
+        "Estatus": "N"
+    },
+    {
+        "NumeroCuenta": "968754",
+        "Estatus": "S"
+    },
+    {
+        "NumeroCuenta": "2589795",
+        "Estatus": "S"
+    },
+    {
+        "NumeroCuenta": "2457896",
+        "Estatus": "S"
+    },
+    {
+        "NumeroCuenta": "2501229",
+        "Estatus": "N"
+    },
+    {
+        "NumeroCuenta": "25628855",
+        "Estatus": "S"
+    },
+    {
+        "NumeroCuenta": "369785",
+        "Estatus": "S"
+    },
+    {
+        "NumeroCuenta": "122789",
+        "Estatus": "N"
+    },
+    {
+        "NumeroCuenta": "123456",
+        "Estatus": "S"
+    },
+    {
+        "NumeroCuenta": "121",
+        "Estatus": "S"
+    },
+    {
+        "NumeroCuenta": "405995",
+        "Estatus": "S"
+    },
+    {
+        "NumeroCuenta": "52468",
+        "Estatus": "S"
+    },
+    {
+        "NumeroCuenta": "40595",
+        "Estatus": "S"
+    }
+]
