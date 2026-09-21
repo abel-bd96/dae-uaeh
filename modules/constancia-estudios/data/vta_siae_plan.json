@@ -1,5 +1,12 @@
 [
     {"id_plan":1,"nombre":"Licenciatura en Derecho"},
     {"id_plan":2,"nombre":"Licenciatura en Medicina"},
-    {"id_plan":3,"nombre":"Licenciatura en Enfermeria"}
+    {"id_plan":3,"nombre":"Licenciatura en Enfermería"},
+    {"id_plan":4,"nombre":"Licenciatura en Psicología"},
+    {"id_plan":5,"nombre":"Licenciatura en Ingeniería Civil"},
+    {"id_plan":6,"nombre":"Licenciatura en Arquitectura"},
+    {"id_plan":7,"nombre":"Licenciatura en Administración de Empresas"},
+    {"id_plan":8,"nombre":"Licenciatura en Contaduría Pública"},
+    {"id_plan":9,"nombre":"Licenciatura en Ciencias de la Comunicación"},
+    {"id_plan":10,"nombre":"Licenciatura en Educación"}
 ]

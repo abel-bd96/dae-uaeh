@@ -16,12 +16,28 @@
                 <table class="table table-hover align-middle mb-0 fs-5" id="tablaCiclos">
                     <thead class="table-light">
                         <tr>
-                            <th>Ciclo</th>
-                            <th>Tipo</th>
-                            <th>Programas educativos</th>
-                            <th>Periodo vacacional</th>
-                            <th>Estado</th>
-                            <th class="text-end">Acciones</th>
+                            <th scope="col"><button type="button" class="btn btn-link p-0 text-reset text-decoration-none btn-ordenar" data-ordenar="nombre" aria-label="Ordenar por ciclo">Ciclo <span class="indicador-orden" aria-hidden="true"></span></button></th>
+                            <th scope="col"><button type="button" class="btn btn-link p-0 text-reset text-decoration-none btn-ordenar" data-ordenar="tipo" aria-label="Ordenar por tipo">Tipo <span class="indicador-orden" aria-hidden="true"></span></button></th>
+                            <th scope="col">Programas educativos</th>
+                            <th scope="col">Periodo de solicitud</th>
+                            <th scope="col"><button type="button" class="btn btn-link p-0 text-reset text-decoration-none btn-ordenar" data-ordenar="estado" aria-label="Ordenar por estado">Estado <span class="indicador-orden" aria-hidden="true"></span></button></th>
+                            <th scope="col" class="text-end">Acciones</th>
+                        </tr>
+                        <tr class="table-secondary">
+                            <th scope="col"><label class="visually-hidden" for="filtroCiclo">Filtrar ciclo</label><input type="search" class="form-control form-control-sm" id="filtroCiclo" placeholder="Buscar ciclo..." autocomplete="off"></th>
+                            <th scope="col"><label class="visually-hidden" for="filtroTipo">Filtrar tipo</label><select class="form-select form-select-sm" id="filtroTipo">
+                                    <option value="">Todos</option>
+                                    <option value="GENERAL">GENERAL</option>
+                                    <option value="ESPECIFICO">ESPECIFICO</option>
+                                </select></th>
+                            <th scope="col"></th>
+                            <th scope="col"></th>
+                            <th scope="col"><label class="visually-hidden" for="filtroEstado">Filtrar estado</label><select class="form-select form-select-sm" id="filtroEstado">
+                                    <option value="">Todos</option>
+                                    <option value="ACTIVO">ACTIVO</option>
+                                    <option value="INACTIVO">INACTIVO</option>
+                                </select></th>
+                            <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>

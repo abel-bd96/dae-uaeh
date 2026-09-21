@@ -6,6 +6,8 @@
     var modoEdicion = false;
     var modal;
     var planesSeleccionados = [];
+    var configuraciones = [];
+    var orden = { campo: '', direccion: 1 };
     var camposFecha = ['fechaPeriodoEstudiosInicio', 'fechaPeriodoEstudiosTermino', 'fechaPeriodoVacacionalInicio', 'fechaPeriodoVacacionalTermino', 'fechaSolicitudConstanciaInicio', 'fechaSolicitudConstanciaTermino'];
 
     function solicitar(datos) {
@@ -43,25 +45,62 @@
         return div.innerHTML;
     }
 
-    function cargarConfiguraciones() {
-        consultar('listar').then(function (configuraciones) {
-            var cuerpo = document.querySelector('#tablaCiclos tbody');
-            if (!configuraciones.length) {
-                cuerpo.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">No hay configuraciones registradas.</td></tr>';
-                return;
-            }
-            cuerpo.innerHTML = configuraciones.map(function (configuracion) {
+    function renderizarConfiguraciones() {
+        var cuerpo = document.querySelector('#tablaCiclos tbody');
+        var ciclo = document.getElementById('filtroCiclo').value.trim().toLocaleUpperCase();
+        var tipo = document.getElementById('filtroTipo').value;
+        var estado = document.getElementById('filtroEstado').value;
+        var filtradas = configuraciones.filter(function (configuracion) {
+            return (!ciclo || String(configuracion.nombre || '').toLocaleUpperCase().indexOf(ciclo) !== -1) && (!tipo || configuracion.tipo === tipo) && (!estado || configuracion.estado === estado);
+        }).sort(function (primero, segundo) {
+            if (!orden.campo) { return 0; }
+            var valorPrimero = String(primero[orden.campo] || '').toLocaleUpperCase();
+            var valorSegundo = String(segundo[orden.campo] || '').toLocaleUpperCase();
+            return valorPrimero.localeCompare(valorSegundo, 'es') * orden.direccion;
+        });
+
+        if (!filtradas.length) {
+            cuerpo.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">No se encontraron configuraciones con esos filtros.</td></tr>';
+            return;
+        }
+        cuerpo.innerHTML = filtradas.map(function (configuracion) {
                 var planes = configuracion.planes && configuracion.planes.length ? configuracion.planes.slice(0, 3).map(escapeHtml).join(', ') : 'Todos los programas';
                 var mas = configuracion.planes && configuracion.planes.length > 3 ? ' +' + (configuracion.planes.length - 3) : '';
                 var estadoClase = configuracion.estado === 'ACTIVO' ? 'success' : 'secondary';
                 return '<tr><td><strong>' + escapeHtml(configuracion.nombre || '') + '</strong></td>' +
                     '<td><span class="badge text-bg-' + (configuracion.tipo === 'GENERAL' ? 'primary' : 'info') + '">' + configuracion.tipo + '</span></td>' +
                     '<td>' + planes + escapeHtml(mas) + '</td>' +
-                    '<td>' + escapeHtml(configuracion.fechaPeriodoVacacionalInicio) + ' a ' + escapeHtml(configuracion.fechaPeriodoVacacionalTermino) + '</td>' +
+                    '<td>' + escapeHtml(configuracion.fechaSolicitudConstanciaInicio) + ' a ' + escapeHtml(configuracion.fechaSolicitudConstanciaTermino) + '</td>' +
                     '<td><button type="button" class="btn btn-sm btn-' + estadoClase + ' btn-estado" data-tipo="' + configuracion.tipo + '" data-id="' + (configuracion.tipo === 'GENERAL' ? configuracion.idCiclo : configuracion.idCicloFechaPlan) + '" data-estado="' + configuracion.estado + '">' + configuracion.estado + '</button></td>' +
                     '<td class="text-end"><button type="button" class="btn btn-sm btn-outline-primary btn-editar" data-tipo="' + configuracion.tipo + '" data-id="' + (configuracion.tipo === 'GENERAL' ? configuracion.idCiclo : configuracion.idCicloFechaPlan) + '"><i class="bi bi-pencil"></i> Editar</button></td></tr>';
             }).join('');
+    }
+
+    function cargarConfiguraciones() {
+        consultar('listar').then(function (datos) {
+            configuraciones = datos;
+            renderizarConfiguraciones();
         }).catch(function (error) { mostrarMensaje(error.message, 'danger'); });
+    }
+
+    function actualizarIndicadoresOrden() {
+        document.querySelectorAll('.btn-ordenar').forEach(function (boton) {
+            var indicador = boton.querySelector('.indicador-orden');
+            var activo = boton.dataset.ordenar === orden.campo;
+            indicador.textContent = activo ? (orden.direccion === 1 ? ' ↑' : ' ↓') : '';
+            boton.setAttribute('aria-label', 'Ordenar por ' + boton.textContent.trim());
+        });
+    }
+
+    function ordenarPor(campo) {
+        if (orden.campo === campo) {
+            orden.direccion *= -1;
+        } else {
+            orden.campo = campo;
+            orden.direccion = 1;
+        }
+        actualizarIndicadoresOrden();
+        renderizarConfiguraciones();
     }
 
     function pintarCiclos(texto) {
@@ -155,6 +194,10 @@
 
     document.addEventListener('DOMContentLoaded', function () {
         modal = new bootstrap.Modal(document.getElementById('modalCiclo')); cargarConfiguraciones(); document.getElementById('btnNuevoCiclo').addEventListener('click', abrirNuevo); document.getElementById('buscarCiclo').addEventListener('input', function () { pintarCiclos(this.value); }); document.getElementById('buscarPlan').addEventListener('input', function () { pintarPlanes(this.value); });
+        document.getElementById('filtroCiclo').addEventListener('input', renderizarConfiguraciones);
+        document.getElementById('filtroTipo').addEventListener('change', renderizarConfiguraciones);
+        document.getElementById('filtroEstado').addEventListener('change', renderizarConfiguraciones);
+        document.querySelectorAll('.btn-ordenar').forEach(function (boton) { boton.addEventListener('click', function () { ordenarPor(this.dataset.ordenar); }); });
         document.getElementById('resultadosCiclos').addEventListener('click', function (evento) { if (evento.target.dataset.nombre) { document.getElementById('cicloNombre').value = evento.target.dataset.nombre; document.getElementById('errorCiclo').textContent = ''; actualizarTipoDelCiclo(evento.target.dataset.nombre); pintarCiclos(document.getElementById('buscarCiclo').value); } });
         document.getElementById('resultadosPlanes').addEventListener('change', function (evento) { if (evento.target.classList.contains('plan-ciclo')) { var id = evento.target.value; if (evento.target.checked && planesSeleccionados.indexOf(id) === -1) { planesSeleccionados.push(id); } if (!evento.target.checked) { planesSeleccionados = planesSeleccionados.filter(function (plan) { return plan !== id; }); } } });
         document.getElementById('btnSiguiente').addEventListener('click', function () { if (validarPaso()) { mostrarPaso(Math.min(4, paso + 1)); if (paso === 3 && !document.getElementById('selectorPlanes').classList.contains('d-none')) { pintarPlanes(''); } } }); document.getElementById('btnAnterior').addEventListener('click', function () { mostrarPaso(Math.max(1, paso - 1)); });
