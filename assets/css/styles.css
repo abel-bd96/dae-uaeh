@@ -117,6 +117,40 @@
     text-decoration: underline;
 }
 
+/* HOME */
+.home-page {
+    display: flex;
+    align-items: center;
+}
+.welcome-panel {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem;
+    background-color: var(--white-color);
+    border-top: 5px solid var(--primary-color);
+    border-radius: 0.5rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.08);
+}
+.welcome-panel__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 4rem;
+    height: 4rem;
+    margin-bottom: 1rem;
+    color: var(--white-color);
+    background-color: var(--primary-color);
+    border-radius: 50%;
+    font-size: 1.75rem;
+}
+.welcome-panel__eyebrow {
+    color: var(--primary-color);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
 /* SIDEBAR MENU */
 .menu-toggle {
     display: inline-flex;
