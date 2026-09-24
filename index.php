@@ -48,7 +48,7 @@
                             <p class="text-secondary mb-0">Ingresa tus credenciales para continuar</p>
                         </div>
 
-                        <form id="login-form" class="login-form" data-redirect-url="./modules/moduloCambioGrupo/vista/vtaPrincipal.php" novalidate>
+                        <form id="login-form" class="login-form" data-redirect-url="./home.php" novalidate>
                             <div class="mb-3">
                                 <label for="email" class="form-label">Correo electrónico</label>
                                 <div class="input-group">
