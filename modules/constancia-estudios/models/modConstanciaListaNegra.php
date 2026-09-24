@@ -4,9 +4,11 @@ header('Content-Type: application/json; charset=utf-8');
 require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'clsConstanciaListaNegra.php';
 
 $consulta = new clsConstanciaListaNegra();
-$accion = isset($_REQUEST['accion']) ? $_REQUEST['accion'] : 'listar';
+$accion = $_GET['accion'] ?? $_POST['accion'] ?? 'listar';
 
 try {
+    if (in_array($accion, ['guardar', 'actualizar', 'validarCuenta']) && $_SERVER['REQUEST_METHOD'] !== 'POST') {
+            throw new Exception('Esta acción requiere POST.');}
     switch ($accion) {
 
         case 'numeroCuenta':
@@ -17,7 +19,10 @@ try {
             break;
         case 'listar':
             $respuesta = $consulta->listar();
-            break;    
+            break;   
+        case 'validarCuenta':
+            $respuesta = $consulta->validarCuenta(isset($_REQUEST['NumeroCuenta']) ? $_REQUEST['NumeroCuenta']: '');
+            break;
         case 'guardar':
             $respuesta = $consulta->guardar($_POST);
             break;
