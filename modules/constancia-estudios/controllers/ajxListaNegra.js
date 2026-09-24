@@ -93,16 +93,8 @@
                 return (
                     "<tr>" +
                     "<td>" +
-                    escapeHtml(registro.NumeroCuenta) +
-                    "</td>" +
-                    "<td>" +
-                    '<button type="button" ' +
-                    'class="btn btn-sm btn-outline-primary btn-editar" ' +
-                    'data-id="' +
-                    escapeHtml(registro.NumeroCuenta) +
-                    '">' +
-                    escapeHtml(registro.Estatus) +
-                    "</button>" +
+                    escapeHtml(registro.NumeroCuenta) + "</td>" + "<td>" + '<button type="button" ' + 'class="btn btn-sm btn-outline-primary btn-editar" ' + 'data-id="' +
+                    escapeHtml(registro.NumeroCuenta) + '">' + escapeHtml(registro.Estatus) + "</button>" +
                     "</td>" +
                     "</tr>"
                 );
@@ -150,13 +142,8 @@
                                 var numero = String(item.NumeroCuenta);
 
                                 return (
-                                    '<button type="button" ' +
-                                    'class="list-group-item list-group-item-action" ' +
-                                    'data-nombre="' +
-                                    escapeHtml(numero) +
-                                    '">' +
-                                    escapeHtml(numero) +
-                                    "</button>"
+                                    '<button type="button" ' + 'class="list-group-item list-group-item-action" ' + 'data-nombre="' +
+                                    escapeHtml(numero) + '">' + escapeHtml(numero) + "</button>"
                                 );
                             })
                             .join("") ||
@@ -174,11 +161,8 @@
     // ABRIR MODAL
     function abrirModal(edicion, datos) {
         modoEdicion = !!edicion;
-
         document.getElementById("tituloModalListaNegra").textContent = edicion ? "Editar caso" : "Nuevo caso especial";
-
         document.getElementById("subtituloModalListaNegra").textContent = "Paso 1 de 1";
-
         document.getElementById("formListaNegra").reset();
 
         // Limpiar mensaje
@@ -200,8 +184,8 @@
         modal.show();
     }
 
-    // INICIALIZAR PÁGINA
-    document.addEventListener("DOMContentLoaded", function () {
+        // INICIALIZAR PÁGINA
+        document.addEventListener("DOMContentLoaded", function () {
         modal = new bootstrap.Modal(document.getElementById("modalListaNegra"));
 
         cargarRegistros();
@@ -252,9 +236,7 @@
                     // no está en nuestra lista
                     if (resultado.enSIAE) {
                         document.getElementById("NumeroCuenta").value = numeroCuenta;
-
                         document.getElementById("resultadosNumeroCuenta").innerHTML = "";
-
                         return;
                     }
 

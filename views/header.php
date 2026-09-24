@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="../../assets/css/styles.css">
 </head>
 
-<body class="d-flex flex-column min-vh-100 "> <!-- Clases necesarias para mandar el footer al final siembre al fondo. bg-secondary-claro-uaeh-->
+<body class="d-flex flex-column min-vh-100"> <!-- Clases necesarias para mandar el footer al final siempre al fondo. "bg-secondary-claro-uaeh"-->
     <header class="site-header bg-primary-uaeh">
         <div class="container-fluid site-header__inner">
             <button class="menu-toggle" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-label="Abrir menú">
