@@ -1,24 +1,24 @@
-<main class="container py-4 contenido-ListaNegra" id="constanciaListaNegra">
-
+<main class="container py-4" id="constanciaListaNegra">
     <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
         <div>
             <p class="text-uppercase text-muted small mb-1">Casos Extraordinarios</p>
             <h1 class="h3 mb-0">Registro y configuración de Casos extraordinarios</h1>
-        </div>
-        
-            
-       <div>
-            <search>
-                <form action="tu-pagina-de-destino.php" method="GET">
-                <input type="search" name="busqueda" placeholder="Buscar..." required>
-                </form>
-            </search>
-        <button type="button" class="btn btn-primary" id="btnNuevoListaNegra">
+            <button type="button" class="btn btn-primary" id="btnNuevoListaNegra">
             <i class="bi bi-plus-lg"></i> Nuevo caso extraordinario
-        </button>
-       </div>
+            </button>
+        </div>
+    </div>
 
-    <div class="card shadow-sm border-0">
+    <!--
+    <div class="input-group mb-3">
+        <input type="search" class="form-control" id="numCuentaBuscado" placeholder="Ingresa número de cuenta a buscar">
+        <button type="button" class="btn btn-primary" id="btnBuscarNumeroCuenta">Buscar</button>
+
+        <div class="col"></div>
+    </div>
+    -->
+
+    <div class="card border-0">
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0" id="tablaListaNegra">
@@ -39,7 +39,6 @@
             </div>
         </div>
     </div>
-
 </main>
 
 <!-- Modal -->
@@ -59,25 +58,26 @@
                     <input type="hidden" name="id" id="listaNegraId">
                     <input type="hidden" name="tipo" id="listaNegrTipo">
 
-                    <!-- No. de cuenta -->
                     <section>
-                        <h3 class="h6">Escribe el numero de cuenta</h3>
+                        <h3 class="h6">Escribe el número de cuenta</h3>
+                        <!--
                         <label for="NumeroCuenta" class="form-label">Buscar No. de cuenta</label>
+                        -->
                         <input type="search" class="form-control mb-3" id="NumeroCuenta" placeholder="Ej. 250122">
                         <div id="resultadosNumeroCuenta" class="list-group"></div>
                         <input type="hidden" name="nombre" id="ListaNegraNombre">
                         <div class="invalid-feedback d-block" id="errorListaNegra"></div>
 
-
-                    <!-- Estatus -->
-                    <h3 class="h6">Seleciona el estatus</h3>
+                    <h3 class="h6">Selecciona el estatus</h3>
                     <div class="mb-3">
+                        <!--
                         <label for="Estatus" class="form-label">Estatus</label>
+                        -->
                         <select id="Estatus" class="form-select" name ="Estatus">
-                            <option value="S">Bloqueado</option>    
-                            <option value="N">Desbloqueado</option>    
+                            <option value="S">Bloqueado</option>
+                            <option value="N">Desbloqueado</option>
                         </select>
-                        <div id="resultadosEstatus" class="list-group mt-1"></div>
+                    </div>
                     </section>
                 </div>
 
