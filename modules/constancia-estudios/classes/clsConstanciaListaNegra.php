@@ -1,13 +1,13 @@
 <?php
 
-class clsConstanciaListaNegra 
+class clsConstanciaListaNegra
 {
     private  $rutaNumeroCuenta;
     private  $rutaEstatus;
     private  $rutaConfiguraciones;
 
     // Constructor de la clase
-    public function __construct() 
+    public function __construct()
     {
         $directorioDatos = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR;
         $this->rutaNumeroCuenta     = $directorioDatos . 'vta_siae_numero_cuenta.json';
@@ -15,7 +15,7 @@ class clsConstanciaListaNegra
         $this->rutaConfiguraciones  = $directorioDatos . 'constancia_lista_negra.json';
     }
 
-    // Métodos Públicos 
+    // Métodos Públicos
 
 
     public function consultarNumeroCuenta($texto = '')    {
@@ -35,7 +35,7 @@ class clsConstanciaListaNegra
                 $resultado[] = $numeroCuenta;
             }
         }
-        
+
         return $resultado;
     }
     public function listar() {
