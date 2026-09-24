@@ -42,7 +42,7 @@
         </div>
         <div class="offcanvas-body">
             <nav aria-label="Navegación principal">
-                <a class="sidebar-menu__link" href="../../public/views/index.php">
+                <a class="sidebar-menu__link" href="./home.php">
                     <i class="bi bi-house sidebar-menu__icon" aria-hidden="true"></i>
                     Inicio
                 </a>

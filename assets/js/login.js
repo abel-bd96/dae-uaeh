@@ -6,7 +6,7 @@
     const passwordToggle = document.querySelector("[data-password-toggle]");
     const recoveryLink = document.querySelector("[data-recovery-link]");
 
-    if (!loginForm || typeof swal !== "function") {
+    if (!loginForm || !passwordInput || !passwordToggle || !recoveryLink || typeof Swal !== "function") {
         return;
     }
 
@@ -20,7 +20,12 @@
 
     recoveryLink.addEventListener("click", function (event) {
         event.preventDefault();
-        swal("Recuperar contraseña", "La recuperación de contraseña estará disponible próximamente.", "info");
+        Swal.fire({
+            title: "Recuperar contraseña",
+            text: "La recuperación de contraseña estará disponible próximamente.",
+            icon: "info",
+            confirmButtonText: "Aceptar"
+        });
     });
 
     loginForm.addEventListener("submit", function (event) {
@@ -30,22 +35,35 @@
         const password = passwordInput;
 
         if (!email.value.trim() || !password.value) {
-            swal("Campos incompletos", "Ingresa tu correo electrónico y contraseña para continuar.", "warning");
+            Swal.fire({
+                title: "Campos incompletos",
+                text: "Ingresa tu correo electrónico y contraseña para continuar.",
+                icon: "warning",
+                confirmButtonText: "Aceptar"
+            });
             return;
         }
 
         if (!email.checkValidity()) {
-            swal("Correo no válido", "Ingresa un correo electrónico con formato válido.", "error");
+            Swal.fire({
+                title: "Correo no válido",
+                text: "Ingresa un correo electrónico con formato válido.",
+                icon: "error",
+                confirmButtonText: "Aceptar"
+            });
             email.focus();
             return;
         }
 
-        swal({
+        Swal.fire({
             title: "Inicio de sesión",
             text: "Credenciales válidas. Redirigiendo...",
             icon: "success",
-            buttons: false,
+            showConfirmButton: false,
             timer: 1200,
+            timerProgressBar: true,
+            allowOutsideClick: false,
+            allowEscapeKey: false
         }).then(function () {
             window.location.href = loginForm.dataset.redirectUrl;
         });
