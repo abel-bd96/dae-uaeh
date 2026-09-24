@@ -7,14 +7,14 @@
     <title>Sistema Web de la Dirección de Administración Escolar - UAEH</title>
 
     <!-- Links -->
-    <!-- <link rel="shortcut icon" href="../../assets/img/favicon.ico" type="image/x-icon"> -->
+    <link rel="shortcut icon" href="../../assets/img/favicon.ico" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link rel="preload" href="../../assets/css/styles.css" as="style">
     <link rel="stylesheet" href="../../assets/css/styles.css">
 </head>
 
-<body class="d-flex flex-column min-vh-100 bg-secondary-claro-uaeh"> <!-- Clases necesarias para mandar el footer al final siembre al fondo. -->
+<body class="d-flex flex-column min-vh-100 "> <!-- Clases necesarias para mandar el footer al final siembre al fondo. bg-secondary-claro-uaeh-->
     <header class="site-header bg-primary-uaeh">
         <div class="container-fluid site-header__inner">
             <button class="menu-toggle" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-label="Abrir menú">

@@ -7,16 +7,16 @@
         </div>
         
             
-       <div>
-            <search>
-                <form action="tu-pagina-de-destino.php" method="GET">
-                <input type="search" name="busqueda" placeholder="Buscar..." required>
-                </form>
-            </search>
-        <button type="button" class="btn btn-primary" id="btnNuevoListaNegra">
-            <i class="bi bi-plus-lg"></i> Nuevo caso extraordinario
-        </button>
-       </div>
+        <div class="d-flex gap-2" >
+            <div>
+                <input type="search" class="form-control" id="input-search" placeholder="Buscar no. cuenta">
+            </div>    
+
+            <button type="button" class="btn btn-primary" id="btnNuevoListaNegra">
+                <i class="bi bi-plus-lg"></i> Nuevo caso extraordinario
+            </button>
+        </div>
+</div>
 
     <div class="card shadow-sm border-0">
         <div class="card-body p-0">
@@ -30,7 +30,7 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td colspan="4" class="text-center text-muted py-4">
+                            <td colspan="2" class="text-center text-muted py-4">
                                 Cargando configuraciones...
                             </td>
                         </tr>
@@ -57,7 +57,7 @@
                 <div class="modal-body">
                     <div id="mensajeListaNegra" class="alert d-none" role="alert"></div>
                     <input type="hidden" name="id" id="listaNegraId">
-                    <input type="hidden" name="tipo" id="listaNegrTipo">
+                    <input type="hidden" name="tipo" id="listaNegraTipo">
 
                     <!-- No. de cuenta -->
                     <section>
@@ -67,17 +67,19 @@
                         <div id="resultadosNumeroCuenta" class="list-group"></div>
                         <input type="hidden" name="nombre" id="ListaNegraNombre">
                         <div class="invalid-feedback d-block" id="errorListaNegra"></div>
-
+                    </section>
 
                     <!-- Estatus -->
-                    <h3 class="h6">Seleciona el estatus</h3>
-                    <div class="mb-3">
-                        <label for="Estatus" class="form-label">Estatus</label>
-                        <select id="Estatus" class="form-select" name ="Estatus">
-                            <option value="S">Bloqueado</option>    
-                            <option value="N">Desbloqueado</option>    
-                        </select>
-                        <div id="resultadosEstatus" class="list-group mt-1"></div>
+                    <section>
+                        <h3 class="h6">Seleciona el estatus</h3>
+                        <div class="mb-3">
+                            <label for="Estatus" class="form-label">Estatus</label>
+                            <select id="Estatus" class="form-select" name ="Estatus">
+                                <option value="S">Bloqueado</option>    
+                                <option value="N">Desbloqueado</option>    
+                            </select>
+                            <div id="resultadosEstatus" class="list-group mt-1"></div>
+                        </div>
                     </section>
                 </div>
 
