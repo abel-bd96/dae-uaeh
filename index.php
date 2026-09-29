@@ -21,6 +21,7 @@
 </head>
 
 <body class="d-flex flex-column min-vh-100 bg-secondary-uaeh"> <!-- Clases necesarias para mandar el footer al final siembre al fondo. -->
+
     <header class="bg-primary-uaeh text-white">
         <div class="container-fluid header__structure">
             <div class="header__spacer" aria-hidden="true"></div>
@@ -88,9 +89,11 @@
         <p class="mb-0">Copyright © <?php echo date('Y'); ?> UAEH. Todos los derechos reservados</p>
         <p class="mt-0">Dirección de Administración Escolar</p>
     </footer>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="./assets/js/login.js"></script>
+
 </body>
 
 </html>
