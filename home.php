@@ -44,7 +44,7 @@
             <nav aria-label="Navegación principal">
                 <ul class="list-unstyled mb-0" id="mainMenuAccordion">
 
-                <!-- Inicio -->
+                    <!-- Inicio -->
                     <li>
                         <a class="sidebar-menu__link" href="../../public/views/index.php">
                             <i class="bi bi-house sidebar-menu__icon" aria-hidden="true"></i>
