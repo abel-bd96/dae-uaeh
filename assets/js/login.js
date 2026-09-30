@@ -1,3 +1,9 @@
+/*  
+TODO: Implementar la lógica de validación de credenciales y redirección real al servidor.
+TODO: Mejorar la autenticación de la validación con Fetch API
+*/
+
+/* Utiliza IIFE para encapsular la lógica y evitar contaminación del espacio global */
 (function () {
     "use strict";
 
@@ -6,10 +12,12 @@
     const passwordToggle = document.querySelector("[data-password-toggle]");
     const recoveryLink = document.querySelector("[data-recovery-link]");
 
-    if (!loginForm || !passwordInput || !passwordToggle || !recoveryLink || typeof Swal !== "function") {
+    /* Verifica si los elementos existen antes de agregar los event listeners */
+    if (!loginForm || typeof swal !== "function") {
         return;
     }
 
+    /* Agrega event listener para alternar la visibilidad de la contraseña */
     passwordToggle.addEventListener("click", function () {
         const isPassword = passwordInput.type === "password";
         passwordInput.type = isPassword ? "text" : "password";
@@ -18,6 +26,7 @@
         passwordToggle.querySelector("i").className = isPassword ? "bi bi-eye-slash" : "bi bi-eye";
     });
 
+    /* Agrega event listener para el enlace de recuperación de contraseña */
     recoveryLink.addEventListener("click", function (event) {
         event.preventDefault();
         Swal.fire({
@@ -28,6 +37,7 @@
         });
     });
 
+    /* Agrega event listener para el envío del formulario de inicio de sesión */
     loginForm.addEventListener("submit", function (event) {
         event.preventDefault();
 
