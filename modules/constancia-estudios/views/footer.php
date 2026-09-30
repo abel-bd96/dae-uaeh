@@ -1,5 +1,5 @@
 <footer class="d-flex flex-column align-items-center mt-auto text-white py-3 bg-primary-uaeh">
-    <img src="../../assets/img/garza.svg" alt="Logotipo Garza UAEH" class="mb-2" style="width: 30px; height: auto;">
+    <img src="../../../assets/img/garza.svg" alt="Logotipo Garza UAEH" class="mb-2" style="width: 30px; height: auto;">
     <p class="mb-0">Copyright © <?php echo date('Y'); ?> UAEH. Todos los derechos reservados</p>
     <p class="mt-0">Dirección de Administración Escolar</p>
 </footer>
