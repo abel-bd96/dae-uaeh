@@ -70,13 +70,13 @@
                                     <div class="collapse sidebar-menu__nested" id="constanciasMenu">
                                         <ul class="list-unstyled mb-0">
                                             <li>
-                                                <a class="sidebar-menu__submenu-link sidebar-menu__submenu-link--nested" href="#administracion-constancias" data-bs-dismiss="offcanvas">
+                                                <a class="sidebar-menu__submenu-link sidebar-menu__submenu-link--nested" href="#administracion-constancias">
                                                     <i class="bi bi-file-earmark-check sidebar-menu__submenu-icon" aria-hidden="true"></i>
                                                     Administración de constancias
                                                 </a>
                                             </li>
                                             <li>
-                                                <a class="sidebar-menu__submenu-link sidebar-menu__submenu-link--nested" href="#constanciaCiclos" data-bs-dismiss="offcanvas">
+                                                <a class="sidebar-menu__submenu-link sidebar-menu__submenu-link--nested" href="./modules/constancia-estudios/views/vtaCiclos.php">
                                                     <i class="bi bi-calendar2-week sidebar-menu__submenu-icon" aria-hidden="true"></i>
                                                     Planeación de Ciclos
                                                 </a>
@@ -98,13 +98,13 @@
                         <div class="collapse sidebar-menu__submenu" id="configuracionMenu">
                             <ul class="list-unstyled mb-0">
                                 <li>
-                                    <a class="sidebar-menu__submenu-link" href="#roles-permisos" data-bs-dismiss="offcanvas">
+                                    <a class="sidebar-menu__submenu-link" href="#roles-permisos">
                                         <i class="bi bi-person-gear sidebar-menu__submenu-icon" aria-hidden="true"></i>
                                         Roles y Permisos
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="sidebar-menu__submenu-link" href="#casos-especiales" data-bs-dismiss="offcanvas">
+                                    <a class="sidebar-menu__submenu-link" href="#casos-especiales">
                                         <i class="bi bi-exclamation-diamond sidebar-menu__submenu-icon" aria-hidden="true"></i>
                                         Casos Especiales
                                     </a>
@@ -142,7 +142,7 @@
         <p class="mt-0">Dirección de Administración Escolar</p>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </body>
 
 </html>
