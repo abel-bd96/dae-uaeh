@@ -1,1 +1,26 @@
-
+[
+    {
+        "fechaPeriodoEstudiosInicio": "2026-10-01",
+        "fechaPeriodoEstudiosTermino": "2026-11-07",
+        "fechaPeriodoVacacionalInicio": "2026-11-08",
+        "fechaPeriodoVacacionalTermino": "2026-11-14",
+        "fechaSolicitudConstanciaInicio": "2026-10-01",
+        "fechaSolicitudConstanciaTermino": "2026-11-14",
+        "estado": "ACTIVO",
+        "idCicloFechaPlan": 1,
+        "idPlan": "1",
+        "idCiclo": "1"
+    },
+    {
+        "fechaPeriodoEstudiosInicio": "2026-10-01",
+        "fechaPeriodoEstudiosTermino": "2026-11-07",
+        "fechaPeriodoVacacionalInicio": "2026-11-08",
+        "fechaPeriodoVacacionalTermino": "2026-11-14",
+        "fechaSolicitudConstanciaInicio": "2026-10-01",
+        "fechaSolicitudConstanciaTermino": "2026-11-14",
+        "estado": "ACTIVO",
+        "idCicloFechaPlan": 2,
+        "idPlan": "3",
+        "idCiclo": "1"
+    }
+]
