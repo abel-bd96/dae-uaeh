@@ -336,7 +336,7 @@
 
 .ciclos-page .btn-success,
 .ciclos-page .btn-primary,
-.ciclos-modal .btn-primary {
+.ciclos-form-page .btn-primary-uaeh {
     color: var(--white-color);
     background-color: var(--primary-color);
     border-color: var(--primary-color);
@@ -344,7 +344,7 @@
 
 .ciclos-page .btn-success:hover,
 .ciclos-page .btn-primary:hover,
-.ciclos-modal .btn-primary:hover {
+.ciclos-form-page .btn-primary-uaeh:hover {
     background-color: var(--secondary-color);
     border-color: var(--secondary-color);
 }
@@ -361,27 +361,31 @@
 
 .ciclos-page .form-control:focus,
 .ciclos-page .form-select:focus,
-.ciclos-modal .form-control:focus,
-.ciclos-modal .form-select:focus {
+.ciclos-form-page .form-control:focus,
+.ciclos-form-page .form-select:focus {
     border-color: var(--primary-color);
     box-shadow: 0 0 0 0.2rem rgba(132, 24, 22, 0.15);
 }
 
-.ciclos-modal__content {
-    overflow: hidden;
-    padding: 1.5rem;
-    border: 0;
-    border-top: 5px solid var(--primary-color);
-    border-radius: 0.5rem;
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+.ciclos-form__panel {
+    padding: 0;
 }
 
-.ciclos-modal .progress-bar {
+.ciclos-form__progress {
+    height: 5px;
+}
+
+.ciclos-form__progress .progress-bar {
     background-color: var(--primary-color);
 }
 
-.ciclos-modal .list-group-item-action.active {
+.ciclos-form-page .list-group-item-action.active {
     color: var(--white-color);
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.ciclos-form-page .form-check-input:checked {
     background-color: var(--primary-color);
     border-color: var(--primary-color);
 }
@@ -427,7 +431,7 @@
         width: 100%;
     }
 
-    .ciclos-modal__content {
-        padding: 1rem;
+    .ciclos-form__actions > button {
+        flex: 1 1 auto;
     }
 }

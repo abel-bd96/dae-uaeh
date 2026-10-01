@@ -1,10 +1,9 @@
 (function () {
     'use strict';
 
-    var endpoint = '../../modules/constancia-estudios/models/modConstanciaCiclo.php';
+    var endpoint = '../models/modConstanciaCiclo.php';
     var paso = 1;
     var modoEdicion = false;
-    var modal;
     var planesSeleccionados = [];
     var configuraciones = [];
     var orden = { campo: '', direccion: 1 };
@@ -34,6 +33,7 @@
 
     function mostrarMensaje(texto, tipo) {
         var mensaje = document.getElementById('mensajeCiclos');
+        if (!mensaje) { return; }
         mensaje.textContent = texto;
         mensaje.className = 'alert alert-' + tipo;
         window.scrollTo(0, 0);
@@ -151,6 +151,7 @@
         document.querySelectorAll('.paso-ciclo').forEach(function (seccion) { seccion.classList.toggle('d-none', Number(seccion.dataset.paso) !== paso); });
         document.getElementById('subtituloModalCiclo').textContent = 'Paso ' + paso + ' de 4';
         document.getElementById('barraPaso').style.width = (paso * 25) + '%';
+        document.getElementById('barraPaso').setAttribute('aria-valuenow', String(paso * 25));
         document.getElementById('btnAnterior').classList.toggle('invisible', paso === 1);
         document.getElementById('btnSiguiente').classList.toggle('d-none', paso === 4);
         document.getElementById('btnGuardar').classList.toggle('d-none', paso !== 4);
@@ -175,15 +176,15 @@
     }
 
     function abrirNuevo() {
-        modoEdicion = false; planesSeleccionados = []; document.getElementById('formCiclo').reset(); document.getElementById('cicloId').value = ''; document.getElementById('cicloTipo').value = ''; document.getElementById('tituloModalCiclo').textContent = 'Nuevo ciclo'; document.getElementById('selectorPlanes').classList.add('d-none'); document.getElementById('ayudaPlanes').textContent = 'La primera configuración del ciclo es GENERAL y no requiere programas.'; document.getElementById('errorCiclo').textContent = ''; document.getElementById('errorFechas').textContent = ''; document.getElementById('errorPlanes').textContent = ''; pintarCiclos(''); mostrarPaso(1); modal.show();
+        modoEdicion = false; planesSeleccionados = []; document.getElementById('formCiclo').reset(); document.getElementById('cicloId').value = ''; document.getElementById('cicloTipo').value = ''; document.getElementById('tituloModalCiclo').textContent = 'Nuevo ciclo'; document.getElementById('selectorPlanes').classList.add('d-none'); document.getElementById('ayudaPlanes').textContent = 'La primera configuración del ciclo es GENERAL y no requiere programas.'; document.getElementById('errorCiclo').textContent = ''; document.getElementById('errorFechas').textContent = ''; document.getElementById('errorPlanes').textContent = ''; pintarCiclos(''); mostrarPaso(1);
     }
 
-    function abrirEdicion(tipo, id) {
+    function cargarEdicion(tipo, id) {
         fetch(endpoint + '?accion=obtener&tipo=' + encodeURIComponent(tipo) + '&id=' + encodeURIComponent(id)).then(function (respuesta) { return respuesta.json(); }).then(function (cuerpo) {
             if (!cuerpo.ok) { throw new Error(cuerpo.mensaje); }
             var configuracion = cuerpo.datos; modoEdicion = true; planesSeleccionados = tipo === 'ESPECIFICO' ? [String(configuracion.idPlan)] : [];
             document.getElementById('cicloId').value = id; document.getElementById('cicloTipo').value = tipo; document.getElementById('cicloNombre').value = configuracion.nombre; document.getElementById('tituloModalCiclo').textContent = 'Editar configuración ' + tipo; document.getElementById('selectorPlanes').classList.toggle('d-none', tipo === 'GENERAL'); document.getElementById('ayudaPlanes').textContent = tipo === 'GENERAL' ? 'La configuración general aplica a los programas sin configuración específica.' : 'Puede modificar los programas asociados a esta configuración.';
-            camposFecha.forEach(function (campo) { document.getElementById(campo).value = configuracion[campo]; }); document.querySelector('input[name="estado"][value="' + configuracion.estado + '"]').checked = true; pintarPlanes(''); mostrarPaso(2); modal.show();
+            camposFecha.forEach(function (campo) { document.getElementById(campo).value = configuracion[campo]; }); document.querySelector('input[name="estado"][value="' + configuracion.estado + '"]').checked = true; pintarPlanes(''); mostrarPaso(2);
         }).catch(function (error) { mostrarMensaje(error.message, 'danger'); });
     }
 
@@ -192,16 +193,88 @@
         camposFecha.forEach(function (campo) { datos[campo] = document.getElementById(campo).value; }); datos.planes = planesSeleccionados; return datos;
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
-        modal = new bootstrap.Modal(document.getElementById('modalCiclo')); cargarConfiguraciones(); document.getElementById('btnNuevoCiclo').addEventListener('click', abrirNuevo); document.getElementById('buscarCiclo').addEventListener('input', function () { pintarCiclos(this.value); }); document.getElementById('buscarPlan').addEventListener('input', function () { pintarPlanes(this.value); });
+    function inicializarListado() {
+        var tabla = document.getElementById('tablaCiclos');
+        if (!tabla) { return; }
+
+        cargarConfiguraciones();
         document.getElementById('filtroCiclo').addEventListener('input', renderizarConfiguraciones);
         document.getElementById('filtroTipo').addEventListener('change', renderizarConfiguraciones);
         document.getElementById('filtroEstado').addEventListener('change', renderizarConfiguraciones);
         document.querySelectorAll('.btn-ordenar').forEach(function (boton) { boton.addEventListener('click', function () { ordenarPor(this.dataset.ordenar); }); });
-        document.getElementById('resultadosCiclos').addEventListener('click', function (evento) { if (evento.target.dataset.nombre) { document.getElementById('cicloNombre').value = evento.target.dataset.nombre; document.getElementById('errorCiclo').textContent = ''; actualizarTipoDelCiclo(evento.target.dataset.nombre); pintarCiclos(document.getElementById('buscarCiclo').value); } });
-        document.getElementById('resultadosPlanes').addEventListener('change', function (evento) { if (evento.target.classList.contains('plan-ciclo')) { var id = evento.target.value; if (evento.target.checked && planesSeleccionados.indexOf(id) === -1) { planesSeleccionados.push(id); } if (!evento.target.checked) { planesSeleccionados = planesSeleccionados.filter(function (plan) { return plan !== id; }); } } });
-        document.getElementById('btnSiguiente').addEventListener('click', function () { if (validarPaso()) { mostrarPaso(Math.min(4, paso + 1)); if (paso === 3 && !document.getElementById('selectorPlanes').classList.contains('d-none')) { pintarPlanes(''); } } }); document.getElementById('btnAnterior').addEventListener('click', function () { mostrarPaso(Math.max(1, paso - 1)); });
-        document.getElementById('formCiclo').addEventListener('submit', function (evento) { evento.preventDefault(); if (!validarPaso()) { return; } solicitar(datosFormulario()).then(function () { modal.hide(); mostrarMensaje('La configuración se guardó correctamente.', 'success'); cargarConfiguraciones(); }).catch(function (error) { mostrarMensaje(error.message, 'danger'); }); });
-        document.getElementById('tablaCiclos').addEventListener('click', function (evento) { var editar = evento.target.closest('.btn-editar'); var estado = evento.target.closest('.btn-estado'); if (editar) { abrirEdicion(editar.dataset.tipo, editar.dataset.id); } if (estado && window.confirm('¿Desea cambiar el estado de esta configuración?')) { fetch(endpoint + '?accion=obtener&tipo=' + encodeURIComponent(estado.dataset.tipo) + '&id=' + encodeURIComponent(estado.dataset.id)).then(function (respuesta) { return respuesta.json(); }).then(function (cuerpo) { if (!cuerpo.ok) { throw new Error(cuerpo.mensaje); } var datos = cuerpo.datos; datos.accion = 'actualizar'; datos.id = estado.dataset.id; datos.tipo = estado.dataset.tipo; datos.estado = estado.dataset.estado === 'ACTIVO' ? 'INACTIVO' : 'ACTIVO'; datos.planes = estado.dataset.tipo === 'ESPECIFICO' ? [String(datos.idPlan)] : []; return solicitar(datos); }).then(function () { mostrarMensaje('El estado se actualizó correctamente.', 'success'); cargarConfiguraciones(); }).catch(function (error) { mostrarMensaje(error.message, 'danger'); }); } });
+        tabla.addEventListener('click', function (evento) {
+            var editar = evento.target.closest('.btn-editar');
+            var estado = evento.target.closest('.btn-estado');
+            if (editar) {
+                window.location.href = './vtaCiclosNuevo.php?tipo=' + encodeURIComponent(editar.dataset.tipo) + '&id=' + encodeURIComponent(editar.dataset.id);
+            }
+            if (estado && window.confirm('¿Desea cambiar el estado de esta configuración?')) {
+                fetch(endpoint + '?accion=obtener&tipo=' + encodeURIComponent(estado.dataset.tipo) + '&id=' + encodeURIComponent(estado.dataset.id)).then(function (respuesta) { return respuesta.json(); }).then(function (cuerpo) {
+                    if (!cuerpo.ok) { throw new Error(cuerpo.mensaje); }
+                    var datos = cuerpo.datos;
+                    datos.accion = 'actualizar'; datos.id = estado.dataset.id; datos.tipo = estado.dataset.tipo; datos.estado = estado.dataset.estado === 'ACTIVO' ? 'INACTIVO' : 'ACTIVO'; datos.planes = estado.dataset.tipo === 'ESPECIFICO' ? [String(datos.idPlan)] : [];
+                    return solicitar(datos);
+                }).then(function () { mostrarMensaje('El estado se actualizó correctamente.', 'success'); cargarConfiguraciones(); }).catch(function (error) { mostrarMensaje(error.message, 'danger'); });
+            }
+        });
+
+        if (new URLSearchParams(window.location.search).get('guardado') === '1') {
+            mostrarMensaje('La configuración se guardó correctamente.', 'success');
+        }
+    }
+
+    function inicializarFormulario() {
+        var formulario = document.getElementById('formCiclo');
+        if (!formulario) { return; }
+
+        document.getElementById('buscarCiclo').addEventListener('input', function () { pintarCiclos(this.value); });
+        document.getElementById('buscarPlan').addEventListener('input', function () { pintarPlanes(this.value); });
+        document.getElementById('resultadosCiclos').addEventListener('click', function (evento) {
+            var opcion = evento.target.closest('[data-nombre]');
+            if (!opcion) { return; }
+            document.getElementById('cicloNombre').value = opcion.dataset.nombre;
+            document.getElementById('errorCiclo').textContent = '';
+            actualizarTipoDelCiclo(opcion.dataset.nombre);
+            pintarCiclos(document.getElementById('buscarCiclo').value);
+        });
+        document.getElementById('resultadosPlanes').addEventListener('change', function (evento) {
+            if (!evento.target.classList.contains('plan-ciclo')) { return; }
+            var id = evento.target.value;
+            if (evento.target.checked && planesSeleccionados.indexOf(id) === -1) { planesSeleccionados.push(id); }
+            if (!evento.target.checked) { planesSeleccionados = planesSeleccionados.filter(function (plan) { return plan !== id; }); }
+        });
+        document.getElementById('btnSiguiente').addEventListener('click', function () {
+            if (!validarPaso()) { return; }
+            mostrarPaso(Math.min(4, paso + 1));
+            if (paso === 3 && !document.getElementById('selectorPlanes').classList.contains('d-none')) { pintarPlanes(''); }
+        });
+        document.getElementById('btnAnterior').addEventListener('click', function () { mostrarPaso(Math.max(1, paso - 1)); });
+        formulario.addEventListener('submit', function (evento) {
+            evento.preventDefault();
+            if (!validarPaso()) { return; }
+            var botonGuardar = document.getElementById('btnGuardar');
+            botonGuardar.disabled = true;
+            solicitar(datosFormulario()).then(function () {
+                window.location.href = './vtaCiclos.php?guardado=1';
+            }).catch(function (error) {
+                mostrarMensaje(error.message, 'danger');
+                botonGuardar.disabled = false;
+            });
+        });
+
+        var parametros = new URLSearchParams(window.location.search);
+        var id = parametros.get('id');
+        var tipo = parametros.get('tipo');
+        if (id && (tipo === 'GENERAL' || tipo === 'ESPECIFICO')) {
+            document.getElementById('cicloId').value = id;
+            cargarEdicion(tipo, id);
+        } else {
+            abrirNuevo();
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        inicializarListado();
+        inicializarFormulario();
     });
 }());
