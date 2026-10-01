@@ -284,6 +284,108 @@
     flex-shrink: 0;
 }
 
+/* PLANEACION DE CICLOS */
+.ciclos-page {
+    padding: 2rem;
+    background-color: var(--white-color);
+    border-top: 5px solid var(--primary-color);
+    border-radius: 0.5rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.08);
+}
+
+.ciclos-page__eyebrow {
+    color: var(--primary-color);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.ciclos-table-wrap {
+    border: 1px solid #e6e6e6;
+    border-radius: 0.35rem;
+}
+
+.ciclos-table {
+    min-width: 820px;
+    font-size: 0.95rem;
+}
+
+.ciclos-table thead tr:first-child {
+    color: #4d4d4d;
+    background-color: #f8f9fa;
+}
+
+.ciclos-table th,
+.ciclos-table td {
+    padding: 0.85rem 0.75rem;
+}
+
+.ciclos-table th {
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+.ciclos-table__filters th {
+    background-color: #f1f2f3;
+}
+
+.ciclos-table .btn-ordenar {
+    font-size: inherit;
+    font-weight: inherit;
+}
+
+.ciclos-page .btn-success,
+.ciclos-page .btn-primary,
+.ciclos-modal .btn-primary {
+    color: var(--white-color);
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.ciclos-page .btn-success:hover,
+.ciclos-page .btn-primary:hover,
+.ciclos-modal .btn-primary:hover {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+.ciclos-page .btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.ciclos-page .btn-outline-primary:hover {
+    color: var(--white-color);
+    background-color: var(--primary-color);
+}
+
+.ciclos-page .form-control:focus,
+.ciclos-page .form-select:focus,
+.ciclos-modal .form-control:focus,
+.ciclos-modal .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(132, 24, 22, 0.15);
+}
+
+.ciclos-modal__content {
+    overflow: hidden;
+    padding: 1.5rem;
+    border: 0;
+    border-top: 5px solid var(--primary-color);
+    border-radius: 0.5rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.ciclos-modal .progress-bar {
+    background-color: var(--primary-color);
+}
+
+.ciclos-modal .list-group-item-action.active {
+    color: var(--white-color);
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
 /* MEDIA QUERIES */
 @media (max-width: 576px) {
     .header__structure {
@@ -311,5 +413,21 @@
     .login-form {
         padding-right: 1.25rem;
         padding-left: 1.25rem;
+    }
+
+    .ciclos-page {
+        padding: 1.25rem 1rem;
+    }
+
+    .ciclos-page__header {
+        align-items: stretch !important;
+    }
+
+    .ciclos-page__header .btn {
+        width: 100%;
+    }
+
+    .ciclos-modal__content {
+        padding: 1rem;
     }
 }
