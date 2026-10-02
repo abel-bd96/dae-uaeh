@@ -121,7 +121,7 @@
         <section class="container py-4 py-md-5" aria-labelledby="welcome-title">
             <div class="welcome-panel text-center">
                 <div class="welcome-panel__icon" aria-hidden="true">
-                    <i class="bi bi-hand-wave"></i>
+                    <i class="bi bi-building-fill"></i>
                 </div>
                 <p class="welcome-panel__eyebrow mb-2">Dirección de Administración Escolar</p>
                 <h2 id="welcome-title" class="display-6 mb-3">¡Bienvenido al sistema DAE!</h2>
