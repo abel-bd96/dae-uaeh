@@ -181,6 +181,61 @@ class clsConstanciaCiclo
         return true;
     }
 
+    public function actualizarFechas($datos)
+    {
+        $this->validarFechas($datos);
+        if (!isset($datos['tipo'], $datos['id'])) {
+            throw new Exception('La configuración solicitada no existe.');
+        }
+
+        $tipo = strtoupper($datos['tipo']);
+        if (!in_array($tipo, array('GENERAL', 'ESPECIFICO'), true)) {
+            throw new Exception('El tipo de configuración no es válido.');
+        }
+
+        $archivo = $tipo === 'GENERAL' ? $this->rutaConfiguraciones : $this->rutaEspecificas;
+        $clave = $tipo === 'GENERAL' ? 'idCiclo' : 'idCicloFechaPlan';
+        $campos = array('fechaPeriodoEstudiosInicio', 'fechaPeriodoEstudiosTermino', 'fechaPeriodoVacacionalInicio', 'fechaPeriodoVacacionalTermino', 'fechaSolicitudConstanciaInicio', 'fechaSolicitudConstanciaTermino');
+        $registros = $this->leer($archivo);
+        if ($tipo === 'ESPECIFICO') {
+            $actual = null;
+            foreach ($registros as $registro) {
+                if ((string) $registro[$clave] === (string) $datos['id']) {
+                    $actual = $registro;
+                    break;
+                }
+            }
+            if ($actual === null) {
+                throw new Exception('La configuración solicitada no existe.');
+            }
+            foreach ($registros as $registro) {
+                if ((string) $registro[$clave] !== (string) $datos['id'] && (string) $registro['idCiclo'] === (string) $actual['idCiclo'] && (string) $registro['idPlan'] === (string) $actual['idPlan'] && $this->mismasFechas($registro, $datos)) {
+                    throw new Exception('El programa educativo ya tiene una configuración específica con esas fechas.');
+                }
+            }
+        }
+        $encontrado = false;
+
+        foreach ($registros as &$registro) {
+            if ((string) $registro[$clave] !== (string) $datos['id']) {
+                continue;
+            }
+            foreach ($campos as $campo) {
+                $registro[$campo] = $datos[$campo];
+            }
+            $encontrado = true;
+            break;
+        }
+        unset($registro);
+
+        if (!$encontrado) {
+            throw new Exception('La configuración solicitada no existe.');
+        }
+
+        $this->escribir($archivo, $registros);
+        return true;
+    }
+
     private function actualizarEspecifica($datos)
     {
         $planes = isset($datos['planes']) && is_array($datos['planes']) ? array_values(array_unique($datos['planes'])) : array();
@@ -239,6 +294,18 @@ class clsConstanciaCiclo
 
         if (!in_array(strtoupper($datos['estado']), array('ACTIVO', 'INACTIVO'), true)) {
             throw new Exception('El estado seleccionado no es válido.');
+        }
+
+        $this->validarFechas($datos);
+    }
+
+    private function validarFechas($datos)
+    {
+        $campos = array('fechaPeriodoEstudiosInicio', 'fechaPeriodoEstudiosTermino', 'fechaPeriodoVacacionalInicio', 'fechaPeriodoVacacionalTermino', 'fechaSolicitudConstanciaInicio', 'fechaSolicitudConstanciaTermino');
+        foreach ($campos as $campo) {
+            if (!isset($datos[$campo]) || trim($datos[$campo]) === '') {
+                throw new Exception('El campo ' . $campo . ' es obligatorio.');
+            }
         }
 
         $periodos = array(

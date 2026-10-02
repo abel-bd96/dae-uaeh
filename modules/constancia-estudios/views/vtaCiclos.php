@@ -49,6 +49,38 @@ include './sidebar_constancias.php';
             </tbody>
         </table>
     </div>
+    <div class="modal fade" id="modalEditarCiclo" tabindex="-1" aria-labelledby="tituloModalEditarCiclo" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <form id="formFechasCiclo" novalidate>
+                    <div class="modal-header">
+                        <div>
+                            <h2 class="modal-title h5 mb-1" id="tituloModalEditarCiclo">Editar fechas</h2>
+                            <p class="small text-muted mb-0" id="detalleModalEditarCiclo"></p>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="editarCicloId">
+                        <input type="hidden" id="editarCicloTipo">
+                        <div id="errorFechasEdicion" class="alert d-none" role="alert"></div>
+                        <div class="row g-3">
+                            <div class="col-md-6"><label class="form-label" for="editarFechaPeriodoEstudiosInicio">Inicio periodo de estudios</label><input type="date" class="form-control" name="fechaPeriodoEstudiosInicio" id="editarFechaPeriodoEstudiosInicio" required></div>
+                            <div class="col-md-6"><label class="form-label" for="editarFechaPeriodoEstudiosTermino">Fin periodo de estudios</label><input type="date" class="form-control" name="fechaPeriodoEstudiosTermino" id="editarFechaPeriodoEstudiosTermino" required></div>
+                            <div class="col-md-6"><label class="form-label" for="editarFechaPeriodoVacacionalInicio">Inicio periodo vacacional</label><input type="date" class="form-control" name="fechaPeriodoVacacionalInicio" id="editarFechaPeriodoVacacionalInicio" required></div>
+                            <div class="col-md-6"><label class="form-label" for="editarFechaPeriodoVacacionalTermino">Fin periodo vacacional</label><input type="date" class="form-control" name="fechaPeriodoVacacionalTermino" id="editarFechaPeriodoVacacionalTermino" required></div>
+                            <div class="col-md-6"><label class="form-label" for="editarFechaSolicitudConstanciaInicio">Inicio periodo de solicitud</label><input type="date" class="form-control" name="fechaSolicitudConstanciaInicio" id="editarFechaSolicitudConstanciaInicio" required></div>
+                            <div class="col-md-6"><label class="form-label" for="editarFechaSolicitudConstanciaTermino">Fin periodo de solicitud</label><input type="date" class="form-control" name="fechaSolicitudConstanciaTermino" id="editarFechaSolicitudConstanciaTermino" required></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary-uaeh" id="btnGuardarFechas">Guardar fechas</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </main>
 <script src="../controllers/ajxCiclos.js"></script>
 <?php include './footer_constancias.php'; ?>

@@ -66,13 +66,14 @@
         cuerpo.innerHTML = filtradas.map(function (configuracion) {
                 var planes = configuracion.planes && configuracion.planes.length ? configuracion.planes.slice(0, 3).map(escapeHtml).join(', ') : 'Todos los programas';
                 var mas = configuracion.planes && configuracion.planes.length > 3 ? ' +' + (configuracion.planes.length - 3) : '';
-                var estadoClase = configuracion.estado === 'ACTIVO' ? 'success' : 'secondary';
+                var activo = configuracion.estado === 'ACTIVO';
+                var idConfig = configuracion.tipo === 'GENERAL' ? configuracion.idCiclo : configuracion.idCicloFechaPlan;
                 return '<tr><td><strong>' + escapeHtml(configuracion.nombre || '') + '</strong></td>' +
                     '<td><span class="badge text-bg-' + (configuracion.tipo === 'GENERAL' ? 'primary' : 'info') + '">' + configuracion.tipo + '</span></td>' +
                     '<td>' + planes + escapeHtml(mas) + '</td>' +
                     '<td>' + escapeHtml(configuracion.fechaSolicitudConstanciaInicio) + ' a ' + escapeHtml(configuracion.fechaSolicitudConstanciaTermino) + '</td>' +
-                    '<td><button type="button" class="btn btn-sm btn-' + estadoClase + ' btn-estado" data-tipo="' + configuracion.tipo + '" data-id="' + (configuracion.tipo === 'GENERAL' ? configuracion.idCiclo : configuracion.idCicloFechaPlan) + '" data-estado="' + configuracion.estado + '">' + configuracion.estado + '</button></td>' +
-                    '<td class="text-end"><button type="button" class="btn btn-sm btn-outline-primary btn-editar" data-tipo="' + configuracion.tipo + '" data-id="' + (configuracion.tipo === 'GENERAL' ? configuracion.idCiclo : configuracion.idCicloFechaPlan) + '"><i class="bi bi-pencil"></i> Editar</button></td></tr>';
+                    '<td><button type="button" class="btn btn-estado estado-toggle ' + (activo ? 'is-active' : '') + '" data-tipo="' + configuracion.tipo + '" data-id="' + idConfig + '" data-estado="' + configuracion.estado + '" aria-label="Cambiar estado a ' + (activo ? 'INACTIVO' : 'ACTIVO') + '" role="switch" aria-checked="' + (activo ? 'true' : 'false') + '"><span class="estado-toggle__track"><span class="estado-toggle__thumb"></span></span><span class="estado-toggle__text">' + (activo ? 'Activo' : 'Inactivo') + '</span></button></td>' +
+                    '<td class="text-end"><button type="button" class="btn btn-sm btn-outline-primary btn-editar" data-tipo="' + configuracion.tipo + '" data-id="' + idConfig + '"><i class="bi bi-pencil"></i> Editar</button></td></tr>';
             }).join('');
     }
 
@@ -81,6 +82,73 @@
             configuraciones = datos;
             renderizarConfiguraciones();
         }).catch(function (error) { mostrarMensaje(error.message, 'danger'); });
+    }
+
+    function abrirEdicionFechas(tipo, id) {
+        var url = endpoint + '?accion=obtener&tipo=' + encodeURIComponent(tipo) + '&id=' + encodeURIComponent(id);
+        fetch(url).then(function (respuesta) {
+            return respuesta.json().then(function (cuerpo) {
+                if (!respuesta.ok || !cuerpo.ok) { throw new Error(cuerpo.mensaje || 'No fue posible cargar la configuración.'); }
+                return cuerpo.datos;
+            });
+        }).then(function (configuracion) {
+            var formulario = document.getElementById('formFechasCiclo');
+            document.getElementById('editarCicloId').value = id;
+            document.getElementById('editarCicloTipo').value = tipo;
+            document.getElementById('detalleModalEditarCiclo').textContent = configuracion.nombre + ' · ' + tipo;
+            document.getElementById('errorFechasEdicion').className = 'alert d-none';
+            camposFecha.forEach(function (campo) { formulario.elements[campo].value = configuracion[campo]; });
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('modalEditarCiclo')).show();
+        }).catch(function (error) { mostrarMensaje(error.message, 'danger'); });
+    }
+
+    function validarFechasEdicion(formulario) {
+        var periodos = [
+            ['fechaPeriodoEstudiosInicio', 'fechaPeriodoEstudiosTermino'],
+            ['fechaPeriodoVacacionalInicio', 'fechaPeriodoVacacionalTermino'],
+            ['fechaSolicitudConstanciaInicio', 'fechaSolicitudConstanciaTermino']
+        ];
+        for (var i = 0; i < camposFecha.length; i++) {
+            if (!formulario.elements[camposFecha[i]].value) { return 'Todas las fechas son obligatorias.'; }
+        }
+        for (var j = 0; j < periodos.length; j++) {
+            if (formulario.elements[periodos[j][0]].value > formulario.elements[periodos[j][1]].value) {
+                return 'Cada fecha de inicio debe ser menor o igual a su término.';
+            }
+        }
+        return '';
+    }
+
+    function inicializarEdicionFechas() {
+        var formulario = document.getElementById('formFechasCiclo');
+        if (!formulario) { return; }
+        formulario.addEventListener('submit', function (evento) {
+            evento.preventDefault();
+            var error = document.getElementById('errorFechasEdicion');
+            var mensaje = validarFechasEdicion(formulario);
+            if (mensaje) {
+                error.textContent = mensaje;
+                error.className = 'alert alert-warning';
+                return;
+            }
+
+            var datos = {
+                accion: 'actualizarFechas',
+                id: document.getElementById('editarCicloId').value,
+                tipo: document.getElementById('editarCicloTipo').value
+            };
+            camposFecha.forEach(function (campo) { datos[campo] = formulario.elements[campo].value; });
+            var boton = document.getElementById('btnGuardarFechas');
+            boton.disabled = true;
+            solicitar(datos).then(function () {
+                bootstrap.Modal.getOrCreateInstance(document.getElementById('modalEditarCiclo')).hide();
+                mostrarMensaje('Las fechas se actualizaron correctamente.', 'success');
+                cargarConfiguraciones();
+            }).catch(function (errorSolicitud) {
+                error.textContent = errorSolicitud.message;
+                error.className = 'alert alert-danger';
+            }).then(function () { boton.disabled = false; });
+        });
     }
 
     function actualizarIndicadoresOrden() {
@@ -206,7 +274,7 @@
             var editar = evento.target.closest('.btn-editar');
             var estado = evento.target.closest('.btn-estado');
             if (editar) {
-                window.location.href = './vtaCiclosNuevo.php?tipo=' + encodeURIComponent(editar.dataset.tipo) + '&id=' + encodeURIComponent(editar.dataset.id);
+                abrirEdicionFechas(editar.dataset.tipo, editar.dataset.id);
             }
             if (estado && window.confirm('¿Desea cambiar el estado de esta configuración?')) {
                 fetch(endpoint + '?accion=obtener&tipo=' + encodeURIComponent(estado.dataset.tipo) + '&id=' + encodeURIComponent(estado.dataset.id)).then(function (respuesta) { return respuesta.json(); }).then(function (cuerpo) {
@@ -275,6 +343,7 @@
 
     document.addEventListener('DOMContentLoaded', function () {
         inicializarListado();
+        inicializarEdicionFechas();
         inicializarFormulario();
     });
 }());

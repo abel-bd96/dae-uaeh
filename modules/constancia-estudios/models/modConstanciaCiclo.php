@@ -30,6 +30,9 @@ try {
         case 'actualizar':
             $respuesta = $consulta->actualizar($_POST);
             break;
+        case 'actualizarFechas':
+            $respuesta = $consulta->actualizarFechas($_POST);
+            break;
         default:
             throw new Exception('La acción solicitada no es válida.');
     }
