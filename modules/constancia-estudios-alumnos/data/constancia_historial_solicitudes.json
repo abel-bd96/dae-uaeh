@@ -1,0 +1,44 @@
+[
+    {
+        "Folio": "02/2026D",
+        "FechaRegistro": "26/08/2026",
+        "Descripción": "Julio-Diciembre 2026. Digital",
+        "Estado": "Pendiente de Pago"
+    },
+    {
+        "Folio": "01/2026D",
+        "FechaRegistro": "13/02/2026",
+        "Descripción": "Enero-Junio 2026. Autógrafa",
+        "Estado": "Trámite Concluido"
+    },
+    {
+        "Folio": "21/2025D",
+        "FechaRegistro": "11/11/2025",
+        "Descripción": "Julio-Diciembre 2025. Autógrafa",
+        "Estado": "Trámite Concluido"
+    },
+    {
+        "Folio": "07/2025D",
+        "FechaRegistro": "11/09/2025",
+        "Descripción": "Julio-Diciembre 2025. Autógrafa",
+        "Estado": "Trámite Concluido"
+    },
+    {
+        "Folio": "03/2025D",
+        "FechaRegistro": "12/03/2025",
+        "Descripción": "Enero-Junio 2025. Autógrafa",
+        "Estado": "Trámite Concluido"
+    },
+    {
+        "Folio": "10/2024D",
+        "FechaRegistro": "11/09/2024",
+        "Descripción": "Julio-Diciembre 2024. Autógrafa",
+        "Estado": "Trámite Concluido"
+    },
+    {
+        "Folio": "03/2024D",
+        "FechaRegistro": "20/02/2024",
+        "Descripción": "Enero-Junio 2024. Autógrafa",
+        "Estado": "Trámite Concluido"
+    }
+]

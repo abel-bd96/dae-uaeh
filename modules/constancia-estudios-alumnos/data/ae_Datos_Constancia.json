@@ -1,0 +1,415 @@
+[
+    {
+        "Folio": "02/2026D",
+        "FechaEmision": "En proceso...",
+        "Estado": "Pendiente de Pago",
+
+        "Nombre": "Sergio",
+        "ApellidoPaterno": "García",
+        "ApellidoMaterno": "León",
+        "CURP": "GASL031114HHGRNEF6",
+        "Cuenta": "401129",
+
+        "UnidadAcademica": "Instituto de Ciencias Básicas e Ingeniería",
+        "ProgramaEducativo": "Licenciatura en Ciencias Computacionales (2010)",
+        "CCTUA": "13MSU0017T",
+        "CCTUAEH": "13USU3018V",
+        "CondicionEscolar": "Cursando",
+        "Semestre": "9",
+        "DuracionPE": "9 semestres",
+        "TipoIngreso": "Examen",
+
+        "PeriodoEstudios": "03/08/2026 - 02/12/2026",
+        "PeriodoVacacional": "03/12/2026 - 17/01/2026",
+        "CalidadAlumno": "Regular",
+
+        "Promedio": "9.02",
+        "AvancePE": "97%",
+        "Calificaciones": [
+            {
+                "Ciclo": "Julio-Diciembre 2026",
+                "Materia": "LOGROS Y EXPERIENCIAS. LENGUA EXTRANJERA",
+                "Calificacion": "10",
+                "Creditos": "5"
+            },
+            {
+                "Ciclo": "Julio-Diciembre 2026",
+                "Materia": "ÁLGEBRA LINEAL",
+                "Calificacion": "8",
+                "Creditos": "5"
+            },
+            {
+                "Ciclo": "Julio-Diciembre 2026",
+                "Materia": "SEXUALIDAD RESPONSABLE",
+                "Calificacion": "10",
+                "Creditos": "5"
+            },
+            {
+                "Ciclo": "Julio-Diciembre 2026",
+                "Materia": "DISEÑO DE BASES DE DATOS",
+                "Calificacion": "8",
+                "Creditos": "5"
+            },
+            {
+                "Ciclo": "Julio-Diciembre 2026",
+                "Materia": "PROGRAMACIÓN ORIENTADA A OBJETOS",
+                "Calificacion": "9",
+                "Creditos": "5"
+            },
+            {
+                "Ciclo": "Julio-Diciembre 2026",
+                "Materia": "FUNDAMENTOS ELECTRÓNICOS PARA LA COMPUTACIÓN",
+                "Calificacion": "9",
+                "Creditos": "5"
+            },
+            {
+                "Ciclo": "Julio-Diciembre 2026",
+                "Materia": "INGENIERÍA DE SOFTWARE",
+                "Calificacion": "9",
+                "Creditos": "5"
+            },
+
+            {
+                "Ciclo": "Enero-Junio 2025",
+                "Materia": "GRAFICACIÓN",
+                "Calificacion": "9",
+                "Creditos": "5"
+            },
+            {
+                "Ciclo": "Enero-Junio 2025",
+                "Materia": "PROGRAMACIÓN DE MICROPROCESADORES",
+                "Calificacion": "9",
+                "Creditos": "5"
+            },
+            {
+                "Ciclo": "Enero-Junio 2025",
+                "Materia": "ADMINISTRACIÓN DE BASES DE DATOS",
+                "Calificacion": "9",
+                "Creditos": "5"
+            },
+            {
+                "Ciclo": "Enero-Junio 2025",
+                "Materia": "GESTIÓN DE PROYECTOS INFORMÁTICOS",
+                "Calificacion": "10",
+                "Creditos": "5"
+            },
+            {
+                "Ciclo": "Enero-Junio 2025",
+                "Materia": "ESTADÍSTICA Y PROBABILIDAD",
+                "Calificacion": "9",
+                "Creditos": "5"
+            },
+            {
+                "Ciclo": "Enero-Junio 2025",
+                "Materia": "SALUD FÍSICA Y EMOCIONAL",
+                "Calificacion": "10",
+                "Creditos": "5"
+            },
+            {
+                "Ciclo": "Enero-Junio 2025",
+                "Materia": "DECISIONES PERSONALES. LENGUA EXTRANJERA",
+                "Calificacion": "10",
+                "Creditos": "5"
+            },
+
+            {
+                "Ciclo": "Julio-Diciembre 2025",
+                "Materia": "CAUSA Y EFECTO. LENGUA EXTRANJERA",
+                "Calificacion": "9",
+                "Creditos": "5"
+            },
+            {
+                "Ciclo": "Julio-Diciembre 2025",
+                "Materia": "ARTES VISUALES",
+                "Calificacion": "9",
+                "Creditos": "5"
+            },
+            {
+                "Ciclo": "Julio-Diciembre 2025",
+                "Materia": "SISTEMAS MULTIMEDIA",
+                "Calificacion": "9",
+                "Creditos": "5"
+            },
+            {
+                "Ciclo": "Julio-Diciembre 2025",
+                "Materia": "INTELIGENCIA ARTIFICIAL",
+                "Calificacion": "9",
+                "Creditos": "5"
+            },
+            {
+                "Ciclo": "Julio-Diciembre 2025",
+                "Materia": "COMUNICACIÓN ORAL",
+                "Calificacion": "10",
+                "Creditos": "5" },
+            {
+                "Ciclo": "Julio-Diciembre 2025",
+                "Materia": "ORGANIZACIÓN DE COMPUTADORAS",
+                "Calificacion": "9",
+                "Creditos": "5"
+            },
+
+            {
+                "Ciclo": "Enero-Junio 2024",
+                "Materia": "BASES DE DATOS DISTRIBUIDAS",
+                "Calificacion": "9",
+                "Creditos": "5"
+            },
+            {
+                "Ciclo": "Enero-Junio 2024",
+                "Materia": "AUTÓMATAS Y COMPILADORES",
+                "Calificacion": "9",
+                "Creditos": "5"
+            },
+            {
+                "Ciclo": "Enero-Junio 2024",
+                "Materia": "SISTEMAS BASADOS EN CONOCIMIENTO",
+                "Calificacion": "9",
+                "Creditos": "5"
+            },
+            {
+                "Ciclo": "Enero-Junio 2024",
+                "Materia": "FUNDAMENTOS DE METODOLOGÍA DE LA INVESTIGACIÓN",
+                "Calificacion": "10",
+                "Creditos": "5"
+            },
+            {
+                "Ciclo": "Enero-Junio 2024",
+                "Materia": "MÚSICA",
+                "Calificacion": "9",
+                "Creditos": "5"
+            },
+            {
+                "Ciclo": "Enero-Junio 2024",
+                "Materia": "EN OTRAS PALABRAS... LENGUA EXTRANJERA",
+                "Calificacion": "9",
+                "Creditos": "5"
+            },
+
+            {
+                "Ciclo": "Julio-Diciembre 2026",
+                "Materia": "OPTATIVA I (APRENDIZAJE COLABORATIVO ASISTIDO POR COMPUTADORA)",
+                "Calificacion": "9",
+                "Creditos": "5"
+            },
+            {
+                "Ciclo": "Julio-Diciembre 2026",
+                "Materia": "ADMINISTRACIÓN DE LA FUNCIÓN INFORMÁTICA",
+                "Calificacion": "10",
+                "Creditos": "5"
+            },
+            {
+                "Ciclo": "Julio-Diciembre 2026",
+                "Materia": "SISTEMAS DE REALIDAD VIRTUAL",
+                "Calificacion": "10",
+                "Creditos": "5"
+            },
+            {
+                "Ciclo": "Julio-Diciembre 2026",
+                "Materia": "PROGRAMACIÓN WEB",
+                "Calificacion": "10",
+                "Creditos": "5"
+            }
+        ]
+    },
+    {
+        "Folio": "01/2024D",
+        "FechaEmision": "13 de febrero de 2024",
+        "Estado": "Trámite Concluido",
+
+        "Nombre": "Sergio",
+        "ApellidoPaterno": "García",
+        "ApellidoMaterno": "León",
+        "CURP": "GASL031114HHGRNEF6",
+        "Cuenta": "401129",
+
+        "UnidadAcademica": "Instituto de Ciencias Básicas e Ingeniería",
+        "ProgramaEducativo": "Licenciatura en Ciencias Computacionales (2010)",
+        "CCTUA": "13MSU0017T",
+        "CCTUAEH": "13USU3018V",
+        "CondicionEscolar": "Cursando",
+        "Semestre": "8",
+        "DuracionPE": "9 semestres",
+        "TipoIngreso": "Examen",
+
+        "PeriodoEstudios": "19/01/2024 - 22/05/2024",
+        "PeriodoVacacional": "23/05/2024 - 02/08/2024",
+        "CalidadAlumno": "Regular",
+
+        "Promedio": "9.02",
+        "AvancePE": "90%",
+        "Calificaciones": {}
+    },
+    {
+        "Folio": "21/2025D",
+        "FechaEmision": "18 de noviembre de 2025",
+        "Estado": "Trámite Concluido",
+
+        "Nombre": "Sergio",
+        "ApellidoPaterno": "García",
+        "ApellidoMaterno": "León",
+        "CURP": "GASL031114HHGRNEF6",
+        "Cuenta": "401129",
+
+        "UnidadAcademica": "Instituto de Ciencias Básicas e Ingeniería",
+        "ProgramaEducativo": "Licenciatura en Ciencias Computacionales (2010)",
+        "CCTUA": "13MSU0017T",
+        "CCTUAEH": "13USU3018V",
+        "CondicionEscolar": "Cursando",
+        "Semestre": "7",
+        "DuracionPE": "9 semestres",
+        "TipoIngreso": "Examen",
+
+        "PeriodoEstudios": "04/08/2025 - 25/11/2025",
+        "PeriodoVacacional": "26/11/2025 - 18/01/2025",
+        "CalidadAlumno": "Regular",
+
+        "Promedio": "9.04",
+        "AvancePE": "85%",
+        "Calificaciones": {}
+    },
+    {
+        "Folio": "07/2025D",
+        "FechaEmision": "11 de septiembre de 2025",
+        "Estado": "Trámite Concluido",
+
+        "Nombre": "Sergio",
+        "ApellidoPaterno": "García",
+        "ApellidoMaterno": "León",
+        "CURP": "GASL031114HHGRNEF6",
+        "Cuenta": "401129",
+
+        "UnidadAcademica": "Instituto de Ciencias Básicas e Ingeniería",
+        "ProgramaEducativo": "Licenciatura en Ciencias Computacionales (2010)",
+        "CCTUA": "13MSU0017T",
+        "CCTUAEH": "13USU3018V",
+        "CondicionEscolar": "Cursando",
+        "Semestre": "7",
+        "DuracionPE": "9 semestres",
+        "TipoIngreso": "Examen",
+
+        "PeriodoEstudios": "04/08/2025 - 25/11/2025",
+        "PeriodoVacacional": "26/11/2025 - 18/01/2025",
+        "CalidadAlumno": "Regular",
+
+        "Promedio": "9.04",
+        "AvancePE": "82%",
+        "Calificaciones": {}
+    },
+    {
+        "Folio": "21/2025D",
+        "FechaEmision": "18 de noviembre de 2025",
+        "Estado": "Trámite Concluido",
+
+        "Nombre": "Sergio",
+        "ApellidoPaterno": "García",
+        "ApellidoMaterno": "León",
+        "CURP": "GASL031114HHGRNEF6",
+        "Cuenta": "401129",
+
+        "UnidadAcademica": "Instituto de Ciencias Básicas e Ingeniería",
+        "ProgramaEducativo": "Licenciatura en Ciencias Computacionales (2010)",
+        "CCTUA": "13MSU0017T",
+        "CCTUAEH": "13USU3018V",
+        "CondicionEscolar": "Cursando",
+        "Semestre": "7",
+        "DuracionPE": "9 semestres",
+        "TipoIngreso": "Examen",
+
+        "PeriodoEstudios": "04/08/2025 - 25/11/2025",
+        "PeriodoVacacional": "26/11/2025 - 18/01/2025",
+        "CalidadAlumno": "Regular",
+
+        "Promedio": "9.04",
+        "AvancePE": "79%",
+        "Calificaciones": {}
+    },
+    {
+        "Folio": "03/2025D",
+        "FechaEmision": "15 de marzo de 2025",
+        "Estado": "Trámite Concluido",
+
+        "Nombre": "Sergio",
+        "ApellidoPaterno": "García",
+        "ApellidoMaterno": "León",
+        "CURP": "GASL031114HHGRNEF6",
+        "Cuenta": "401129",
+
+        "UnidadAcademica": "Instituto de Ciencias Básicas e Ingeniería",
+        "ProgramaEducativo": "Licenciatura en Ciencias Computacionales (2010)",
+        "CCTUA": "13MSU0017T",
+        "CCTUAEH": "13USU3018V",
+        "CondicionEscolar": "Cursando",
+        "Semestre": "6",
+        "DuracionPE": "9 semestres",
+        "TipoIngreso": "Examen",
+
+        "PeriodoEstudios": "20/01/2025 - 21/05/2025",
+        "PeriodoVacacional": "22/05/2025 - 03/08/2025",
+        "CalidadAlumno": "Regular",
+
+        "Promedio": "9.06",
+        "AvancePE": "62%",
+        "Calificaciones": {}
+    },
+    {
+        "Folio": "10/2024D",
+        "FechaEmision": "11 de septiembre de 2024",
+        "Estado": "Trámite Concluido",
+
+        "Nombre": "Sergio",
+        "ApellidoPaterno": "García",
+        "ApellidoMaterno": "León",
+        "CURP": "GASL031114HHGRNEF6",
+        "Cuenta": "401129",
+
+        "UnidadAcademica": "Instituto de Ciencias Básicas e Ingeniería",
+        "ProgramaEducativo": "Licenciatura en Ciencias Computacionales (2010)",
+        "CCTUA": "13MSU0017T",
+        "CCTUAEH": "13USU3018V",
+        "CondicionEscolar": "Cursando",
+        "Semestre": "5",
+        "DuracionPE": "9 semestres",
+        "TipoIngreso": "Examen",
+
+        "PeriodoEstudios": "05/08/2024 - 29/11/2024",
+        "PeriodoVacacional": "30/11/2024 - 19/01/2025",
+        "CalidadAlumno": "Regular",
+
+        "Promedio": "9.08",
+        "AvancePE": "50%",
+        "Calificaciones": {}
+    },
+    {
+        "Folio": "03/2024D",
+        "FechaEmision": "20 de febrero de 2024",
+        "Estado": "Trámite Concluido",
+
+        "Nombre": "Sergio",
+        "ApellidoPaterno": "García",
+        "ApellidoMaterno": "León",
+        "CURP": "GASL031114HHGRNEF6",
+        "Cuenta": "401129",
+
+        "UnidadAcademica": "Instituto de Ciencias Básicas e Ingeniería",
+        "ProgramaEducativo": "Licenciatura en Ciencias Computacionales (2010)",
+        "CCTUA": "13MSU0017T",
+        "CCTUAEH": "13USU3018V",
+        "CondicionEscolar": "Cursando",
+        "Semestre": "4",
+        "DuracionPE": "9 semestres",
+        "TipoIngreso": "Examen",
+
+        "PeriodoEstudios": "22/01/2024 - 24/05/2024",
+        "PeriodoVacacional": "25/05/2024 - 04/08/2024",
+        "CalidadAlumno": "Regular",
+
+        "Promedio": "9.08",
+        "AvancePE": "35%",
+        "Calificaciones": {
+            "Ciclo": "Enero-Junio 2024",
+            "Materia": "CONVERSACIONES INTRODUCTORIAS. LENGUA EXTRANJERA",
+            "Calificacion": "10",
+            "Creditos": "5"
+        }
+    }
+]
