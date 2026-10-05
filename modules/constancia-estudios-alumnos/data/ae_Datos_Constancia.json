@@ -1,5 +1,33 @@
 [
     {
+        "Folio": "09/2026D",
+        "FechaEmision": "En proceso...",
+        "Estado": "Pendiente de Pago",
+
+        "Nombre": "Sergio",
+        "ApellidoPaterno": "García",
+        "ApellidoMaterno": "León",
+        "CURP": "GASL031114HHGRNEF6",
+        "Cuenta": "401129",
+
+        "UnidadAcademica": "Instituto de Ciencias Básicas e Ingeniería",
+        "ProgramaEducativo": "Licenciatura en Ciencias Computacionales (2010)",
+        "CCTUA": "13MSU0017T",
+        "CCTUAEH": "13USU3018V",
+        "CondicionEscolar": "Cursando",
+        "Semestre": "8",
+        "DuracionPE": "9 semestres",
+        "TipoIngreso": "Examen",
+
+        "PeriodoEstudios": "03/08/2026 - 02/12/2026",
+        "PeriodoVacacional": "03/12/2026 - 17/01/2026",
+        "CalidadAlumno": "Regular",
+
+        "Promedio": "9.02",
+        "AvancePE": "97%",
+        "Calificaciones": {}
+    },
+    {
         "Folio": "02/2026D",
         "FechaEmision": "En proceso...",
         "Estado": "Pendiente de Pago",

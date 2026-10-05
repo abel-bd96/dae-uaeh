@@ -22,15 +22,15 @@
             </div>
 
             <div class="col-12 col-md-auto">
-                    <a id="btnSolicitarConstancia" class="btn btn-primary w-100" href="http://localhost:8080/dae-uaeh/public/views/index.php?vta=solicitudNueva" role="button">
-                        <i class="bi bi-plus-lg"></i> Trámite Nuevo
-                    </a>    
+                <a id="btnSolicitarConstancia" class="btn btn-primary w-100" href="http://localhost:8080/dae-uaeh/public/views/index.php?vta=solicitudNueva" role="button">
+                    <i class="bi bi-plus-lg"></i> Trámite Nuevo
+                </a>
             </div>
         </div>
     </div>
 
     <hr>
-    
+
     <div class="card border-0 mt-4">
         <div class="card-body p-0">
             <div class="table-responsive">
@@ -110,7 +110,7 @@
                                     <th scope="row" class="mark">Nombre</th>
                                     <td id="nombreAlumno"> </td>
                                 </tr>
-                                <tr>                                    
+                                <tr>
                                     <th scope="row" class="mark">Apellido Paterno</th>
                                     <td id="apellidoPaterno"> </td>
                                 </tr>

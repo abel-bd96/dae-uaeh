@@ -66,7 +66,7 @@
             title: "",
             text: texto || "",
             confirmButtonText: "Aceptar",
-            confirmButtonColor: "#28a745"
+            confirmButtonColor: "#28a745",
         };
 
         switch (tipo) {
@@ -129,21 +129,16 @@
                             escapeHtml(r.Estado) +
                             "</td>" +
                             '<td class="text-end text-nowrap">' +
-                            '<button name="SeguimientoCorroborar" title="Seguimiento y Corroborar Datos" type="button" class="btn btn-sm btn-outline-primary" data-id="' +
+                            '<button name="SeguimientoCorroborar" title="Detalles de la Solicitud" type="button" class="btn btn-sm btn-outline-primary" data-id="' +
                             escapeHtml(r.Folio) +
-                            '"><i class="bi bi-eye"></i></button> ' +
-                            '<button name="CancelarSolicitud" ' +
-                            'title="Cancelar Solicitud" ' +
-                            'type="button" ' +
-                            'class="btn btn-sm btn-outline-danger" ' +
-                            'data-id="' +
+                            '"><i class="bi bi-eye"></i> Detalles de la Solicitud</button> ' +
+                            '<button name="CancelarSolicitud" title="Cancelar Solicitud" type="button" class="btn btn-sm btn-outline-danger" data-id="' +
                             escapeHtml(r.Folio) +
                             '" ' +
                             'data-estado="' +
                             escapeHtml(r.Estado) +
                             '">' +
-                            '<i class="bi bi-x-circle-fill"></i>' +
-                            "</button>" +
+                            '<i class="bi bi-x-circle-fill"></i> Cancelar Solicitud</button>' +
                             "</td>" +
                             "</tr>"
                         );
@@ -153,9 +148,11 @@
             .catch(function (e) {
                 mostrarMensaje(e.message || "No fue posible cargar el historial.", error);
             });
+        limpiarModal();
+        //Cada vez que se actualizan los registros, muestra datos actualizados en el modal.
     }
 
-    //Previene que se "sobrepongan" datos al abrir y cerrar varios modal seguidos
+    //Previene que se "sobrepongan" datos al abrir y cerrar varios modal seguidos.
     function limpiarModal() {
         var formulario = document.getElementById("formSeguimientoConstancia");
 
@@ -228,26 +225,33 @@
                 if (btnFormatoPago) {
                     btnFormatoPago.classList.remove("d-none");
                 }
-
                 break;
 
             case "Pago Recibido":
                 porcentaje = 40;
-
                 break;
 
             case "En Elaboración":
                 porcentaje = 60;
-
                 break;
 
             case "Listo para Entrega":
                 porcentaje = 80;
+                barra.classList.remove("bg-primary");
+                barra.classList.add("bg-success");
                 //Ubicación Torre de Posgrado
                 break;
 
             case "Trámite Concluido":
                 porcentaje = 100;
+                barra.classList.remove("bg-primary");
+                barra.classList.add("bg-success");
+                break;
+
+            case "Solicitud Cancelada":
+                porcentaje = 100;
+                barra.classList.remove("bg-primary");
+                barra.classList.add("bg-danger");
                 break;
 
             default:
@@ -399,7 +403,7 @@
 
     document.addEventListener("DOMContentLoaded", function () {
         var vistaCorrecta = document.getElementById("solicitudesConstancia");
-        if(!vistaCorrecta){
+        if (!vistaCorrecta) {
             return;
         }
 

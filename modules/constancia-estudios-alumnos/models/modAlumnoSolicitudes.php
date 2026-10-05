@@ -20,7 +20,6 @@ try {
 
         case 'cancelar':
             $folio = isset($_POST['folio']) ? $_POST['folio'] : '';
-
             $respuesta = $consulta->cancelar($folio);
             break;
 
