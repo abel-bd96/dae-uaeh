@@ -1,0 +1,32 @@
+[
+    {
+        "NumeroCuenta": "12345678",
+        "Nombre": "Krista",
+        "ApellidoPaterno": "Osorio",
+        "ApellidoMaterno": "Monroy",
+        "Instituto": "Instituto de Ciencias Básicas e Ingeniería",
+        "Semestre": "8",
+        "ProgramaEducativo": "Ingeniería en Sistemas Computacionales",
+        "Periodo": "Julio-Diciembre 2026"
+    },
+    {
+        "NumeroCuenta": "87654321",
+        "Nombre": "María",
+        "ApellidoPaterno": "Hernández",
+        "ApellidoMaterno": "López",
+        "Instituto": "Instituto de Ciencias de la Salud",
+        "Semestre": "6",
+        "ProgramaEducativo": "Licenciatura en Enfermería",
+        "Periodo": "Julio-Diciembre 2026"
+    },
+    {
+        "NumeroCuenta": "11223344",
+        "Nombre": "Juan",
+        "ApellidoPaterno": "García",
+        "ApellidoMaterno": "Martínez",
+        "Instituto": "Instituto de Ciencias Agropecuarias",
+        "Semestre": "5",
+        "ProgramaEducativo": "Ingeniería Agroindustrial",
+        "Periodo": "Julio-Diciembre 2026"
+    }
+]

@@ -1,0 +1,22 @@
+[
+    {
+        "id": 1,
+        "Observacion": "Solicitud ordinaria"
+    },
+    {
+        "id": 2,
+        "Observacion": "Solicitud urgente"
+    },
+    {
+        "id": 3,
+        "Observacion": "Requiere revisión"
+    },
+    {
+        "id": 4,
+        "Observacion": "Caso especial"
+    },
+    {
+        "id": 5,
+        "Observacion": "Sin observaciones"
+    }
+]

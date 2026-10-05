@@ -1,0 +1,22 @@
+[
+    {
+        "id": 1,
+        "DatoAdicional": "Constancia con promedio"
+    },
+    {
+        "id": 2,
+        "DatoAdicional": "Constancia con periodo escolar"
+    },
+    {
+        "id": 3,
+        "DatoAdicional": "Constancia con materias cursadas"
+    },
+    {
+        "id": 4,
+        "DatoAdicional": "Constancia con créditos"
+    },
+    {
+        "id": 5,
+        "DatoAdicional": "Sin dato adicional"
+    }
+]
