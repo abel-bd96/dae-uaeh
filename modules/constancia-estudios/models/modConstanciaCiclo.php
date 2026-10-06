@@ -17,6 +17,7 @@ try {
         case 'listar':
             $respuesta = $consulta->listarConfiguraciones(array(
                 'ciclo' => isset($_REQUEST['ciclo']) ? $_REQUEST['ciclo'] : '',
+                'anio' => isset($_REQUEST['anio']) ? $_REQUEST['anio'] : '',
                 'tipo' => isset($_REQUEST['tipo']) ? $_REQUEST['tipo'] : '',
                 'estado' => isset($_REQUEST['estado']) ? $_REQUEST['estado'] : ''
             ));

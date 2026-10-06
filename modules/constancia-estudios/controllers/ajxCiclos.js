@@ -66,6 +66,41 @@
         });
     }
 
+    function validarFiltrosCiclos(anio, tipo, estado) {
+        if (anio && !/^[0-9]{4}$/.test(anio)) {
+            return "Escribe un año válido de cuatro dígitos.";
+        }
+        if (!anio && (estado === "INACTIVO" || (tipo && estado !== "ACTIVO"))) {
+            return "Para filtrar por tipo o por estado INACTIVO, escribe el año del ciclo.";
+        }
+        return "";
+    }
+
+    function buscarCiclos(evento) {
+        evento.preventDefault();
+
+        var anioInput = document.getElementById("filtroAnio");
+        var anio = anioInput.value.trim();
+        var tipo = document.getElementById("filtroTipo").value;
+        var estado = document.getElementById("filtroEstado").value;
+        var error = document.getElementById("errorFiltrosCiclos");
+        var mensaje = validarFiltrosCiclos(anio, tipo, estado);
+
+        error.textContent = mensaje;
+        error.classList.toggle("d-none", !mensaje);
+        anioInput.classList.toggle("is-invalid", Boolean(mensaje));
+        if (mensaje) {
+            anioInput.setAttribute("aria-invalid", "true");
+            anioInput.focus();
+            return;
+        }
+
+        anioInput.removeAttribute("aria-invalid");
+        document.getElementById("mensajeCiclos").className = "alert d-none";
+        filtrosAplicados = anio || tipo || estado ? { anio: anio, tipo: tipo, estado: estado } : null;
+        cargarConfiguraciones();
+    }
+
     function mostrarMensaje(texto, tipo) {
         var mensaje = document.getElementById("mensajeCiclos");
         if (!mensaje) {
@@ -473,18 +508,19 @@
             return;
         }
 
-        document.getElementById("btnBuscarCiclos").addEventListener("click", function () {
-            var ciclo = document.getElementById("filtroCiclo").value.trim();
-            var tipo = document.getElementById("filtroTipo").value;
-            var estado = document.getElementById("filtroEstado").value;
-            if (!ciclo && !tipo && !estado) {
-                filtrosAplicados = null;
-                cargarConfiguraciones();
-                mostrarMensaje("Selecciona al menos un filtro antes de buscar.", "warning");
-                return;
-            }
+        document.getElementById("formFiltrosCiclos").addEventListener("submit", buscarCiclos);
+        document.getElementById("btnLimpiarCiclos").addEventListener("click", function () {
+            document.getElementById("formFiltrosCiclos").reset();
+            var anioInput = document.getElementById("filtroAnio");
+            anioInput.classList.remove("is-invalid");
+            anioInput.removeAttribute("aria-invalid");
+            var error = document.getElementById("errorFiltrosCiclos");
+            error.textContent = "";
+            error.classList.add("d-none");
             document.getElementById("mensajeCiclos").className = "alert d-none";
-            filtrosAplicados = { ciclo: ciclo, tipo: tipo, estado: estado };
+            filtrosAplicados = null;
+            orden = { campo: "", direccion: 1 };
+            actualizarIndicadoresOrden();
             cargarConfiguraciones();
         });
         document.querySelectorAll(".btn-ordenar").forEach(function (boton) {

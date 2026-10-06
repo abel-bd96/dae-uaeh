@@ -303,6 +303,23 @@
     text-transform: uppercase;
 }
 
+.ciclos-filtros {
+    border-bottom: 1px solid #e6e6e6;
+}
+
+.ciclos-filtros .form-label {
+    margin-bottom: 0.35rem;
+    color: #4d4d4d;
+    font-size: 0.88rem;
+    font-weight: 700;
+}
+
+.ciclos-filtros__acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
 .ciclos-table-wrap {
     border: 1px solid #e6e6e6;
     border-radius: 0.35rem;
@@ -326,10 +343,6 @@
 .ciclos-table th {
     font-size: 0.82rem;
     font-weight: 700;
-}
-
-.ciclos-table__filters th {
-    background-color: #f1f2f3;
 }
 
 .ciclos-table .btn-ordenar {
@@ -491,6 +504,10 @@
 
     .ciclos-page__header .btn {
         width: 100%;
+    }
+
+    .ciclos-filtros__acciones .btn {
+        flex: 1 1 auto;
     }
 
     .ciclos-form__actions > button {

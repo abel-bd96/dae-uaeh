@@ -76,10 +76,25 @@ class clsConstanciaCiclo
         }
 
         $ciclo = isset($filtros['ciclo']) ? $this->normalizar($filtros['ciclo']) : '';
+        $anio = isset($filtros['anio']) ? trim($filtros['anio']) : '';
         $tipo = isset($filtros['tipo']) ? strtoupper(trim($filtros['tipo'])) : '';
         $estado = isset($filtros['estado']) ? strtoupper(trim($filtros['estado'])) : '';
-        $resultado = array_values(array_filter($resultado, function ($configuracion) use ($ciclo, $tipo, $estado) {
+        if ($anio !== '' && !preg_match('/^[0-9]{4}$/', $anio)) {
+            throw new Exception('El año debe contener cuatro dígitos.');
+        }
+        if ($tipo !== '' && !in_array($tipo, array('GENERAL', 'ESPECIFICO'), true)) {
+            throw new Exception('El tipo de ciclo no es válido.');
+        }
+        if ($estado !== '' && !in_array($estado, array('ACTIVO', 'INACTIVO'), true)) {
+            throw new Exception('El estado del ciclo no es válido.');
+        }
+        if ($estado === 'INACTIVO' && $anio === '' || $tipo !== '' && $estado !== 'ACTIVO' && $anio === '') {
+            throw new Exception('Para filtrar por tipo o por estado INACTIVO, primero escribe el año del ciclo.');
+        }
+
+        $resultado = array_values(array_filter($resultado, function ($configuracion) use ($ciclo, $anio, $tipo, $estado) {
             return ($ciclo === '' || strpos($this->normalizar($configuracion['nombre']), $ciclo) !== false)
+                && ($anio === '' || strpos($configuracion['nombre'], $anio) !== false)
                 && ($tipo === '' || $configuracion['tipo'] === $tipo)
                 && ($estado === '' || strtoupper($configuracion['estado']) === $estado);
         }));
@@ -94,7 +109,7 @@ class clsConstanciaCiclo
             return strcmp($primero['tipo'], $segundo['tipo']);
         });
 
-        if ($ciclo === '' && $tipo === '' && $estado === '') {
+        if ($ciclo === '' && $anio === '' && $tipo === '' && $estado === '') {
             $resultado = array_slice($resultado, 0, 30);
         }
 

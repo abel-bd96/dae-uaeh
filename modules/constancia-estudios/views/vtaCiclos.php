@@ -14,6 +14,37 @@ include './sidebar_constancias.php';
     </div>
 
     <div id="mensajeCiclos" class="alert d-none" role="alert"></div>
+    <form id="formFiltrosCiclos" class="ciclos-filtros mb-4 pb-3" novalidate>
+        <div class="row g-3 align-items-end">
+            <div class="col-12 col-md-4">
+                <label class="form-label" for="filtroAnio">Año del ciclo</label>
+                <input type="text" class="form-control" id="filtroAnio" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="Ej. 2026" autocomplete="off" aria-describedby="errorFiltrosCiclos">
+            </div>
+            <div class="col-12 col-md-3">
+                <label class="form-label" for="filtroTipo">Tipo</label>
+                <select class="form-select" id="filtroTipo">
+                    <option value="">Todos</option>
+                    <option value="GENERAL">GENERAL</option>
+                    <option value="ESPECIFICO">ESPECIFICO</option>
+                </select>
+            </div>
+            <div class="col-12 col-md-3">
+                <label class="form-label" for="filtroEstado">Estado</label>
+                <select class="form-select" id="filtroEstado">
+                    <option value="">Todos</option>
+                    <option value="ACTIVO">ACTIVO</option>
+                    <option value="INACTIVO">INACTIVO</option>
+                </select>
+            </div>
+            <div class="col-12 col-md-2 ciclos-filtros__acciones">
+                <button type="submit" class="btn btn-primary-uaeh fs-5" id="btnBuscarCiclos"><i class="bi bi-search"></i> Buscar</button>
+                <button type="reset" class="btn btn-outline-secondary fs-5" id="btnLimpiarCiclos"><i class="bi bi-eraser-fill"></i> Limpiar Búsqueda</button>
+            </div>
+            <div class="col-12">
+                <div id="errorFiltrosCiclos" class="small text-danger d-none" role="alert" aria-live="polite"></div>
+            </div>
+        </div>
+    </form>
     <div class="table-responsive ciclos-table-wrap">
         <table class="table table-hover align-middle mb-0 ciclos-table fs-5" id="tablaCiclos">
             <thead>
@@ -24,22 +55,6 @@ include './sidebar_constancias.php';
                     <th scope="col">Periodo de solicitud</th>
                     <th scope="col"><button type="button" class="btn btn-link p-0 text-reset text-decoration-none btn-ordenar" data-ordenar="estado" aria-label="Ordenar por estado">Estado <span class="indicador-orden" aria-hidden="true"></span></button></th>
                     <th scope="col" class="text-end">Acciones</th>
-                </tr>
-                <tr class="ciclos-table__filters">
-                    <th scope="col"><label class="visually-hidden" for="filtroCiclo">Filtrar ciclo</label><input type="search" class="form-control form-control-sm" id="filtroCiclo" placeholder="Buscar ciclo..." autocomplete="off"></th>
-                    <th scope="col"><label class="visually-hidden" for="filtroTipo">Filtrar tipo</label><select class="form-select form-select-sm" id="filtroTipo">
-                            <option value="">Todos</option>
-                            <option value="GENERAL">GENERAL</option>
-                            <option value="ESPECIFICO">ESPECIFICO</option>
-                        </select></th>
-                    <th scope="col"></th>
-                    <th scope="col"></th>
-                    <th scope="col"><label class="visually-hidden" for="filtroEstado">Filtrar estado</label><select class="form-select form-select-sm" id="filtroEstado">
-                            <option value="">Todos</option>
-                            <option value="ACTIVO">ACTIVO</option>
-                            <option value="INACTIVO">INACTIVO</option>
-                        </select></th>
-                    <th scope="col" class="text-end"><button type="button" class="btn btn-primary-uaeh btn-sm" id="btnBuscarCiclos"><i class="bi bi-search"></i> Buscar</button></th>
                 </tr>
             </thead>
             <tbody></tbody>
