@@ -49,7 +49,7 @@ class clsConstanciaCiclo
         return $resultado;
     }
 
-    public function listarConfiguraciones()
+    public function listarConfiguraciones($filtros = array())
     {
         $ciclos = $this->leer($this->rutaConfiguraciones);
         $especificas = $this->leer($this->rutaEspecificas);
@@ -73,6 +73,29 @@ class clsConstanciaCiclo
                 $configuracion['planes'][] = $planes[$idPlan]['nombre'];
             }
             $resultado[] = $configuracion;
+        }
+
+        $ciclo = isset($filtros['ciclo']) ? $this->normalizar($filtros['ciclo']) : '';
+        $tipo = isset($filtros['tipo']) ? strtoupper(trim($filtros['tipo'])) : '';
+        $estado = isset($filtros['estado']) ? strtoupper(trim($filtros['estado'])) : '';
+        $resultado = array_values(array_filter($resultado, function ($configuracion) use ($ciclo, $tipo, $estado) {
+            return ($ciclo === '' || strpos($this->normalizar($configuracion['nombre']), $ciclo) !== false)
+                && ($tipo === '' || $configuracion['tipo'] === $tipo)
+                && ($estado === '' || strtoupper($configuracion['estado']) === $estado);
+        }));
+
+        usort($resultado, function ($primero, $segundo) {
+            $idPrimero = $primero['tipo'] === 'GENERAL' ? $primero['idCiclo'] : $primero['idCicloFechaPlan'];
+            $idSegundo = $segundo['tipo'] === 'GENERAL' ? $segundo['idCiclo'] : $segundo['idCicloFechaPlan'];
+            $comparacion = (int) $idSegundo <=> (int) $idPrimero;
+            if ($comparacion !== 0) {
+                return $comparacion;
+            }
+            return strcmp($primero['tipo'], $segundo['tipo']);
+        });
+
+        if ($ciclo === '' && $tipo === '' && $estado === '') {
+            $resultado = array_slice($resultado, 0, 30);
         }
 
         return $resultado;

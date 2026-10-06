@@ -18,7 +18,7 @@
         "fechaPeriodoVacacionalTermino": "2026-11-21",
         "fechaSolicitudConstanciaInicio": "2026-10-01",
         "fechaSolicitudConstanciaTermino": "2026-11-21",
-        "estado": "ACTIVO",
+        "estado": "INACTIVO",
         "idCicloFechaPlan": 2,
         "idPlan": "3",
         "idCiclo": "1"

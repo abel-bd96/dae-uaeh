@@ -15,7 +15,11 @@ try {
             $respuesta = $consulta->consultarPlanes(isset($_REQUEST['texto']) ? $_REQUEST['texto'] : '');
             break;
         case 'listar':
-            $respuesta = $consulta->listarConfiguraciones();
+            $respuesta = $consulta->listarConfiguraciones(array(
+                'ciclo' => isset($_REQUEST['ciclo']) ? $_REQUEST['ciclo'] : '',
+                'tipo' => isset($_REQUEST['tipo']) ? $_REQUEST['tipo'] : '',
+                'estado' => isset($_REQUEST['estado']) ? $_REQUEST['estado'] : ''
+            ));
             break;
         case 'obtener':
             $configuracion = $consulta->obtenerConfiguracion($_REQUEST['tipo'], $_REQUEST['id']);

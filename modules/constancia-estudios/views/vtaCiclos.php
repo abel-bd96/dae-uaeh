@@ -39,14 +39,10 @@ include './sidebar_constancias.php';
                             <option value="ACTIVO">ACTIVO</option>
                             <option value="INACTIVO">INACTIVO</option>
                         </select></th>
-                    <th scope="col"></th>
+                    <th scope="col" class="text-end"><button type="button" class="btn btn-primary-uaeh btn-sm" id="btnBuscarCiclos"><i class="bi bi-search"></i> Buscar</button></th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td colspan="6" class="text-center text-muted py-4">Cargando configuraciones...</td>
-                </tr>
-            </tbody>
+            <tbody></tbody>
         </table>
     </div>
     <div class="modal fade" id="modalEditarCiclo" tabindex="-1" aria-labelledby="tituloModalEditarCiclo" aria-hidden="true">
