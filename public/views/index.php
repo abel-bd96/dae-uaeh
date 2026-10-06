@@ -4,6 +4,7 @@ include '../../views/sidebar.php';
 // include '../../modules/constancia-estudios/views/vtaCiclos.php'; 
 // include '../../modules/constancia-estudios/views/vtaListaNegra.php';
 include '../../modules/constancia-estudios/views/vtaGenerarSolicitud.php';
+// include '../../modules/constancia-estudios/views/vtaCrearSolicitud.php';
 
 include '../../views/footer.php';
 

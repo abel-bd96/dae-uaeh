@@ -4,7 +4,7 @@
     var endpoint = "../../modules/constancia-estudios/models/modConstanciaGenerarSolicitud.php";
     var paso = 1;
     var modoEdicion = false;
-    var modal;
+    var todosLosRegistros = [];
 
     // ENVIAR DATOS AL PHP
     function solicitar(datos) {
@@ -35,7 +35,6 @@
             });
         });
     }
-
     // CONSULTAR DATOS
     function consultar(accion, texto) {
         var url = endpoint + "?accion=" + encodeURIComponent(accion) + "&texto=" + encodeURIComponent(texto || "");
@@ -54,125 +53,243 @@
             });
     }
 
-    // MOSTRAR MENSAJE
-    function mostrarMensaje(texto, tipo) {
-        var mensaje = document.getElementById("mensajeSolicitud");
-        if (!mensaje) return;
-        mensaje.textContent = texto;
-        mensaje.className = "alert alert-" + tipo;
-    }
-    function limpiarMensaje() {
-        var mensaje = document.getElementById("mensajeSolicitud");
-
-        if (!mensaje) {
-            return;
-        }
-
-        mensaje.textContent = "";
-
-        mensaje.className = "alert d-none";
-    }
-
-    // PROTEGER TEXTO ANTES DE INSERTARLO EN HTML
+    // Escapar HTML
     function escapeHtml(texto) {
         var div = document.createElement("div");
         div.textContent = texto || "";
         return div.innerHTML;
     }
+    // MOSTRAR MENSAJE
+    function mostrarMensaje(texto, tipo, idContenedor) {
+        var contenedor = document.getElementById(idContenedor || "mensajeFormulario");
+        if (!contenedor) return;
+        contenedor.textContent = texto || "";
+        contenedor.className = "alert alert-" + (tipo || "info");
+        contenedor.classList.remove("d-none");
+    }
+    //Limpiar mensajes
+    function limpiarMensaje(idContenedor) {
+        var contenedor = document.getElementById(idContenedor || "mensajeFormulario");
+        if (!contenedor) return;
+        contenedor.className = "alert d-none";
+        contenedor.textContent = "";
+    }
+
     function mostrarError(id, texto) {
         var el = document.getElementById(id);
         if (!el) return;
         el.textContent = texto || "";
-        if (texto) {
-            el.classList.add("d-block");
-        } else {
-            el.classList.remove("d-block");
-        }
+        el.classList.toggle("d-block", !!texto);
+        el.classList.toggle("d-none", !texto);
     }
+    //en que pantalla estas
+    function esPantallaListado() {
+        return !!document.getElementById("tablaSolicitudes");
+    }
+    function esPantallaFormulario() {
+        return !!document.getElementById("formSolicitud");
+    }
+
+    //filtros
+    function leerFiltros() {
+        return {
+            numeroCuenta: (document.getElementById("filtroNumeroCuenta").value || "").toLowerCase().trim(),
+            nombre: (document.getElementById("filtroNombre").value || "").toLowerCase().trim(),
+            estatus: (document.getElementById("filtroEstatus").value || "").trim(),
+            ciclo: (document.getElementById("filtroCiclo").value || "").toLowerCase().trim(),
+        };
+    }
+
+    function aplicarFiltros() {
+        var f = leerFiltros();
+        return todosLosRegistros.filter(function (s) {
+            var ciclo = String(s.CicloEscolar || "").toLowerCase();
+            var nc = String(s.NumeroCuenta || "").toLowerCase();
+            var nom = String(s.NombreCompleto || "").toLowerCase();
+            var est = String(s.Estatus || s.EstatusSolicitud || "").toLowerCase();
+
+            if (f.ciclo && ciclo.indexOf(f.ciclo) === -1) return false;
+            if (f.numeroCuenta && nc.indexOf(f.numeroCuenta) === -1) return false;
+            if (f.nombre && nom.indexOf(f.nombre) === -1) return false;
+            if (f.estatus && est !== f.estatus) return false;
+            return true;
+        });
+    }
+    function pintarTabla(registros) {
+        var tbody = document.querySelector("#tablaSolicitudes tbody");
+        if (!tbody) return;
+
+        if (!registros.length) {
+            tbody.innerHTML =
+                '<tr><td colspan="8" class="text-center text-muted py-4">' +
+                "No se encontraron solicitudes con los filtros aplicados." +
+                "</td></tr>";
+            return;
+        }
+
+        tbody.innerHTML = registros
+            .map(function (s) {
+                var id = escapeHtml(s.id || s.idSolicitud || "");
+                var estatus = s.Estatus || s.EstatusSolicitud || "";
+                var cancelada = estatus === "Cancelado";
+                var botones = "";
+
+                if (cancelada) {
+                    botones =
+                        '<button type="button" class="btn btn-sm btn-outline-secondary" disabled>' +
+                        '<i class="bi bi-pencil"></i> Editar' +
+                        "</button> " +
+                        '<button type="button" class="btn btn-sm btn-outline-secondary" disabled>' +
+                        '<i class="bi bi-x-circle"></i> Cancelada' +
+                        "</button>";
+                } else {
+                    botones =
+                        '<button type="button" class="btn btn-sm btn-outline-primary btn-editar" data-id="' +
+                        id +
+                        '">' +
+                        '<i class="bi bi-pencil"></i> Editar' +
+                        "</button> " +
+                        '<button type="button" class="btn btn-sm btn-outline-danger btn-cancelar" data-id="' +
+                        id +
+                        '">' +
+                        '<i class="bi bi-x-circle"></i> Cancelar' +
+                        "</button>";
+                }
+
+                return (
+                    "<tr>" +
+                    "<td>" +
+                    escapeHtml(s.fechaRegistro || "") +
+                    "</td>" +
+                    "<td>" +
+                    escapeHtml(s.CicloEscolar || "") +
+                    "</td>" +
+                    "<td>" +
+                    escapeHtml(s.NumeroCuenta || "") +
+                    "</td>" +
+                    "<td>" +
+                    escapeHtml(s.DatoAdicional || "") +
+                    "</td>" +
+                    "<td>" +
+                    escapeHtml(s.Observacion || "") +
+                    "</td>" +
+                    "<td>" +
+                    escapeHtml(s.NombreCompleto || "") +
+                    "</td>" +
+                    "<td>" +
+                    escapeHtml(estatus) +
+                    "</td>" +
+                    '<td class="text-end">' +
+                    botones +
+                    "</td>" +
+                    "</tr>"
+                );
+            })
+            .join("");
+    }
+
     function cargarSolicitudes() {
         consultar("listar")
             .then(function (solicitudes) {
-                var tbody = document.querySelector("#tablaSolicitudes tbody");
-                if (!tbody) return;
-                if (!solicitudes.length) {
-                    tbody.innerHTML =
-                        '<tr><td colspan="9" class="text-center text-muted py-4">Sin solicitudes registradas.</td></tr>';
-                    return;
-                }
-                tbody.innerHTML = solicitudes
-                    .map(function (s) {
-                        var id = escapeHtml(s.id || s.idSolicitud || "");
-                        return (
-                            "<tr>" +
-                            "<td>" +
-                            escapeHtml(s.fechaRegistro || "") +
-                            "</td>" +
-                            "<td>" +
-                            escapeHtml(s.NumeroCuenta || "") +
-                            "</td>" +
-                            "<td>" +
-                            escapeHtml(s.DatoAdicional || "") +
-                            "</td>" +
-                            "<td>" +
-                            escapeHtml(s.Observacion || "") +
-                            "</td>" +
-                            "<td>" +
-                            escapeHtml(s.Nombre || "") +
-                            "</td>" +
-                            "<td>" +
-                            escapeHtml(s.ApellidoPaterno || "") +
-                            "</td>" +
-                            "<td>" +
-                            escapeHtml(s.ApellidoMaterno || "") +
-                            "</td>" +
-                            "<td>" +
-                            escapeHtml(s.Estatus || "") +
-                            "</td>" +
-                            '<td class="text-end">' +
-                            '<button type="button" class="btn btn-sm btn-outline-primary btn-editar" data-id="' +
-                            id +
-                            '">' +
-                            '<i class="bi bi-pencil"></i>' +
-                            "</button> " +
-                            '<button type="button" class="btn btn-sm btn-outline-danger btn-eliminar" data-id="' +
-                            id +
-                            '">' +
-                            '<i class="bi bi-trash"></i>' +
-                            "</button>" +
-                            "</td>" +
-                            "</tr>"
-                        );
-                    })
-                    .join("");
+                todosLosRegistros = solicitudes || [];
+                pintarTabla(aplicarFiltros());
             })
             .catch(function (error) {
-                mostrarMensaje(error.message, "danger");
+                mostrarMensaje(error.message, "danger", "mensajeSolicitud");
             });
     }
-    function eliminarSolicitud(id){
-        if(!id){
-            mostrarMensaje("No se encontró la solicitud", "danger");
-            return;
-        }
-        if(!confirm("¿Está seguro de eliminar esta solicitud")){
-            return;
-        }
-        solicitar({
-            accion: "eliminar", id: id
-        }).then(function(){
-            mostrarMensaje("La solicitud se elimino correctamente", "success");
-            cargarSolicitudes();
-        })
-        .catch(function(error){
-            mostrarMensaje(error.message, "danger");
-        });
+
+    function limpiarFiltros() {
+        document.getElementById("filtroNumeroCuenta").value = "";
+        document.getElementById("filtroNombre").value = "";
+        document.getElementById("filtroEstatus").value = "";
+        document.getElementById("filtroCiclo").value = "";
+
+        todosLosRegistros = [];
+        document.querySelector("#tablaSolicitudes tbody").innerHTML =
+            '<tr><td colspan="8" class="text-center text-muted py-4">' +
+            "Seleccione los filtros y presione <strong>Buscar</strong> para ver resultados." +
+            "</td></tr>";
     }
+
+    //  CANCELAR
+    function cancelarSolicitud(id) {
+        if (!confirm("¿Está seguro de cancelar esta solicitud? Esta acción no se puede deshacer.")) return;
+        solicitar({ accion: "cancelar", id: id })
+            .then(function () {
+                mostrarMensaje("La solicitud se canceló correctamente.", "success", "mensajeSolicitud");
+                cargarSolicitudes();
+            })
+            .catch(function (error) {
+                mostrarMensaje(error.message, "danger", "mensajeSolicitud");
+            });
+    }
+
+    function editarSolicitud(id) {
+        limpiarMensaje();
+        window.location.href = "vtaCrearSolicitud.php?id=" + encodeURIComponent(id);
+    }
+
+    // MOSTRAR navegacion por PASOs
+    function mostrarPaso(numero) {
+        paso = numero;
+        document.querySelectorAll(".paso-solicitud").forEach(function (seccion) {
+            seccion.classList.toggle("d-none", Number(seccion.dataset.paso) !== paso);
+        });
+
+        var subtitulo = document.getElementById("subtituloModalGenerarSolicitud");
+        if (subtitulo) subtitulo.textContent = "Paso " + paso + " de 3";
+
+        var barra = document.getElementById("barraPaso");
+        if (barra) barra.style.width = (paso / 3) * 100 + "%";
+
+        var btnAnterior = document.getElementById("btnAnterior");
+        var btnSiguiente = document.getElementById("btnSiguiente");
+        var btnGuardar = document.getElementById("btnGuardar");
+
+        if (btnAnterior) btnAnterior.classList.toggle("invisible", paso === 1);
+        if (btnSiguiente) btnSiguiente.classList.toggle("d-none", paso === 3);
+        if (btnGuardar) btnGuardar.classList.toggle("d-none", paso !== 3);
+
+        mostrarError("errorNumeroCuenta", "");
+        mostrarError("errorDatos", "");
+
+        if (paso === 3) {
+            actualizarResumen();
+        }
+    }
+    // VALIDAR PASO ACTUAL
+    function validarPaso() {
+        if (paso === 1) {
+            var numero = document.getElementById("NumeroCuenta").value.trim();
+            if (numero === "") {
+                mostrarError("errorNumeroCuenta", "Seleccione un alumno");
+                return false;
+            }
+        }
+        if (paso === 2) {
+            var da = document.querySelector('input[name="DatoAdicional"]:checked');
+            var tf = document.querySelector('input[name="TipoFirma"]:checked');
+            var cal = document.querySelector('input[name="Calificaciones"]:checked');
+            if (!da || !tf || !cal) {
+                mostrarError("errorDatos", "Complete todas las opciones");
+                return false;
+            }
+        }
+        return true;
+    }
+
     // BUSCAR NÚMERO DE CUENTA
     function pintarNumeroCuenta(texto) {
         consultar("numeroCuenta", texto)
             .then(function (alumnos) {
                 var resultados = document.getElementById("resultadosNumeroCuenta");
                 if (!resultados) return;
+
+                if (!alumnos.length) {
+                    resultados.innerHTML = '<div class="texto-muted small p-2">No se encontraron alumnos.</div>';
+                    return;
+                }
                 resultados.innerHTML =
                     alumnos
                         .map(function (alumno) {
@@ -184,11 +301,12 @@
                             ]
                                 .join(" ")
                                 .trim();
+
                             var detalle = [
                                 alumno.Instituto || "",
                                 alumno.Semestre || "",
                                 alumno.ProgramaEducativo || "",
-                                alumno.Periodo || "",
+                                alumno.CicloEscolar || "",
                             ]
                                 .join(" ")
                                 .trim();
@@ -199,14 +317,8 @@
                                 'data-numero="' +
                                 escapeHtml(numero) +
                                 '"' +
-                                'data-nombre="' +
-                                escapeHtml(alumno.Nombre || alumno.nombre || "") +
-                                '"' +
-                                'data-apellido-paterno="' +
-                                escapeHtml(alumno.ApellidoPaterno || "") +
-                                '"' +
-                                'data-apellido-materno="' +
-                                escapeHtml(alumno.ApellidoMaterno || "") +
+                                'data-nombrecompleto="' +
+                                escapeHtml(alumno.NombreCompleto || "") +
                                 '"' +
                                 'data-instituto="' +
                                 escapeHtml(alumno.Instituto || "") +
@@ -217,8 +329,8 @@
                                 'data-programa-educativo="' +
                                 escapeHtml(alumno.ProgramaEducativo || "") +
                                 '"' +
-                                'data-periodo="' +
-                                escapeHtml(alumno.Periodo || "") +
+                                'data-cicloescolar="' +
+                                escapeHtml(alumno.CicloEscolar || "") +
                                 '"' +
                                 ">" +
                                 "<strong>" +
@@ -238,136 +350,86 @@
 
     // SELECCIONAR ALUMNO
     function seleccionarAlumno(elemento) {
+        var cicloEscolar = elemento.dataset.cicloescolar || "";
         var numero = elemento.dataset.numero || "";
-        var nombre = elemento.dataset.nombre || "";
-        var apellidoPaterno = elemento.dataset.apellidoPaterno || "";
-        var apellidoMaterno = elemento.dataset.apellidoMaterno || "";
+        var nombreCompleto = elemento.dataset.nombreCompleto || "";
         var instituto = elemento.dataset.instituto || "";
         var semestre = elemento.dataset.semestre || "";
         var programaEducativo = elemento.dataset.programaEducativo || "";
-        var periodo = elemento.dataset.periodo || "";
 
+        //Guardar datos
+        document.getElementById("CicloEscolar").value = cicloEscolar;
         document.getElementById("NumeroCuenta").value = numero;
-        document.getElementById("Nombre").value = nombre;
-        document.getElementById("ApellidoPaterno").value = apellidoPaterno;
-        document.getElementById("ApellidoMaterno").value = apellidoMaterno;
+        document.getElementById("NombreCompleto").value = nombreCompleto;
         document.getElementById("Instituto").value = instituto;
         document.getElementById("Semestre").value = semestre;
         document.getElementById("ProgramaEducativo").value = programaEducativo;
-        document.getElementById("Periodo").value = periodo;
 
+        //Mostrar datos
+        document.getElementById("mostrarCicloEscolar").textContent = cicloEscolar;
         document.getElementById("mostrarNumeroCuenta").textContent = numero;
-        document.getElementById("mostrarNombre").textContent = nombre;
-        document.getElementById("mostrarApellidoPaterno").textContent = apellidoPaterno;
-        document.getElementById("mostrarApellidoMaterno").textContent = apellidoMaterno;
+        document.getElementById("mostrarNombreCompleto").textContent = nombreCompleto;
         document.getElementById("mostrarInstituto").textContent = instituto;
         document.getElementById("mostrarSemestre").textContent = semestre;
         document.getElementById("mostrarProgramaEducativo").textContent = programaEducativo;
-        document.getElementById("mostrarPeriodo").textContent = periodo;
 
+        //Mostrar por bloques
         var datosAlumno = document.getElementById("datosAlumno");
         var datosInstitucional = document.getElementById("datosInstitucional");
-        if (datosAlumno) datosAlumno.classList.remove("d-none");
-        if (datosInstitucional) datosInstitucional.classList.remove("d-none");
+
+        if (datosAlumno) {
+            datosAlumno.classList.remove("d-none");
+        }
+        if (datosInstitucional) {
+            datosInstitucional.classList.remove("d-none");
+        }
 
         document.getElementById("resultadosNumeroCuenta").innerHTML = "";
-        mostrarError ("errorNumeroCuenta", "");
-    }
-
-    // MOSTRAR PASO
-    function mostrarPaso(numero) {
-        paso = numero;
-        document.querySelectorAll(".paso-solicitud").forEach(function (seccion) {
-            seccion.classList.toggle("d-none", Number(seccion.dataset.paso) !== paso);
-        });
-
-        var subtitulo = document.getElementById("subtituloModalGenerarSolicitud");
-        if (subtitulo) subtitulo.textContent = "Paso " + paso + " de 3";
-
-        var barra = document.getElementById("barraPaso");
-        if (barra) barra.style.width = (paso / 3) * 100 + "%";
-
-        document.getElementById("btnAnterior").classList.toggle("invisible", paso === 1);
-        document.getElementById("btnSiguiente").classList.toggle("d-none", paso === 3);
-        document.getElementById("btnGuardar").classList.toggle("d-none", paso !== 3);
-
         mostrarError("errorNumeroCuenta", "");
-        mostrarError("errorDatos", "");
-
-
-        if (paso === 3) {
-            actualizarResumen();
-        }
     }
-
-    // VALIDAR PASO ACTUAL
-    function validarPaso() {
-        if (paso === 1) {
-            var numero = document.getElementById("NumeroCuenta").value.trim();
-            var errNum = document.getElementById("errorNumeroCuenta");
-            if (numero === "") {
-                mostrarError("errorNumeroCuenta", "Seleccione un alumno");
-                
-            return false;
-            }
-
-        }
-        if (paso === 2) {
-            var da = document.querySelector('input[name="DatoAdicional"]:checked');
-            var tf = document.querySelector('input[name="TipoFirma"]:checked');
-            var cal = document.querySelector('input[name="Calificaciones"]:checked');
-            var errDat = document.getElementById("errorDatos");
-            if (!da || !tf || !cal) {
-                mostrarError("errorDatos", "Complete todas las opciones");
-
-                return false;
-            }
-
-        }
-        return true;
-    }
-
     // OBTENER DATOS DEL FORMULARIO
     function datosFormulario() {
         var datoAdicional = document.querySelector('input[name="DatoAdicional"]:checked');
         var tipoFirma = document.querySelector('input[name="TipoFirma"]:checked');
         var calificaciones = document.querySelector('input[name="Calificaciones"]:checked');
-        var obsSelect = document.getElementById("Observacion");
         return {
             accion: modoEdicion ? "actualizar" : "guardar",
             id: document.getElementById("solicitudId").value,
+            CicloEscolar: document.getElementById("CicloEscolar").value,
             NumeroCuenta: document.getElementById("NumeroCuenta").value,
-            Nombre: document.getElementById("Nombre").value,
-            ApellidoPaterno: document.getElementById("ApellidoPaterno").value,
-            ApellidoMaterno: document.getElementById("ApellidoMaterno").value,
+            NombreCompleto: document.getElementById("NombreCompleto").value,
             Instituto: document.getElementById("Instituto").value,
             Semestre: document.getElementById("Semestre").value,
             ProgramaEducativo: document.getElementById("ProgramaEducativo").value,
-            Periodo: document.getElementById("Periodo").value,
             DatoAdicional: datoAdicional ? datoAdicional.value : "",
             TipoFirma: tipoFirma ? tipoFirma.value : "",
             Calificaciones: calificaciones ? calificaciones.value : "",
-            Observacion: obsSelect ? obsSelect.value : "",
+            Observacion: document.getElementById("Observacion")?.value || "",
         };
     }
+
 
     // ACTUALIZAR RESUMEN
     function actualizarResumen() {
         var datos = datosFormulario();
-        var nombreCompleto = [datos.Nombre, datos.ApellidoPaterno, datos.ApellidoMaterno].join(" ").trim();
-        var datosInstitucionales = [datos.Instituto, datos.Semestre, datos.ProgramaEducativo, datos.Periodo]
-            .join(" ")
-            .trim();
+
         var datoAdicional = datos.DatoAdicional === "S" ? "Sí" : "No";
         var firma = datos.TipoFirma === "S" ? "Digital (PDF)" : "Autógrafa";
         var calificaciones = datos.Calificaciones === "S" ? "Sí" : "No";
 
-        document.getElementById("resumenSolicitud").innerHTML =
+        var datosInstitucionales = [datos.Instituto, datos.Semestre, datos.ProgramaEducativo, datos.CicloEscolar]
+            .filter(Boolean)
+            .join(" ")
+            .trim();
+        var resumen = document.getElementById("resumenSolicitud");
+        if (!resumen) return;
+
+        resumen.innerHTML =
             "<p><strong>Número de Cuenta:</strong> " +
             escapeHtml(datos.NumeroCuenta) +
             "</p>" +
             "<p><strong>Alumno:</strong> " +
-            escapeHtml(nombreCompleto) +
+            escapeHtml(datos.NombreCompleto) +
             "</p>" +
             "<p><strong>Datos institucionales:</strong> " +
             escapeHtml(datosInstitucionales) +
@@ -386,6 +448,14 @@
             "</p>";
     }
 
+    //Seleccionar radio
+    function seleccionarRadio(nombre, valor) {
+        var radios = document.querySelectorAll('input[name="' + nombre + '"]');
+        radios.forEach(function (radio) {
+            radio.checked = String(radio.value) === String(valor);
+        });
+    }
+    //  OBSERVACIONES
     function cargarObservaciones() {
         consultar("observacion")
             .then(function (lista) {
@@ -403,162 +473,93 @@
                 console.warn("No se pudieron cargar las observaciones:", error.message);
             });
     }
+    function iniciarFormulario() {
+        // Leer ?id= de la URL
+        var params = new URLSearchParams(window.location.search);
+        var id = params.get("id");
 
-    // ABRIR NUEVA SOLICITUD
-    function abrirNuevo() {
-        modoEdicion = false;
-        paso = 1;
-        
+        cargarObservaciones();
+
+        // Eventos de pasos
+        var btnSig = document.getElementById("btnSiguiente");
+        if (btnSig)
+            btnSig.addEventListener("click", function () {
+                if (validarPaso()) mostrarPaso(Math.min(3, paso + 1));
+            });
+
+        var btnAnt = document.getElementById("btnAnterior");
+        if (btnAnt)
+            btnAnt.addEventListener("click", function () {
+                mostrarPaso(Math.max(1, paso - 1));
+            });
+
+        var btnGuardar = document.getElementById("btnGuardar");
+        if (btnGuardar) btnGuardar.addEventListener("click", guardarSolicitud);
+
         var form = document.getElementById("formSolicitud");
-        if (form) {
-            form.reset();
-            }
-            limpiarMensaje();
-            [
-                "NumeroCuenta",
-                "Nombre",
-                "ApellidoPaterno",
-                "ApellidoMaterno",
-                "Instituto",
-                "Semestre",
-                "ProgramaEducativo",
-                "Periodo"
-    ].forEach(function (id) {
+        if (form)
+            form.addEventListener("submit", function (e) {
+                e.preventDefault();
+                guardarSolicitud();
+            });
 
-        var campo = document.getElementById(id);
-
-        if (campo) {
-            campo.value = "";
-        }
-    });
-
-        var datosAlumno = document.getElementById("datosAlumno");
-        if (datosAlumno) {datosAlumno.classList.add("d-none");}
-
-        var datosInstitucional = document.getElementById("datosInstitucional");
-        if (datosInstitucional){ datosInstitucional.classList.add("d-none");
-
-        }
-
-        [
-            "mostrarNumeroCuenta",
-            "mostrarNombre",
-            "mostrarApellidoPaterno",
-            "mostrarApellidoMaterno",
-            "mostrarInstituto",
-            "mostrarSemestre",
-            "mostrarProgramaEducativo",
-            "mostrarPeriodo",
-        ].forEach(function (id) {
-            var el = document.getElementById(id);
-            if (el) el.textContent = "";
-        });
-
-        var buscar = document.getElementById("buscarNumeroCuenta");
-        if (buscar) {
-            buscar.value = "";}
+        var inputBuscar = document.getElementById("buscarNumeroCuenta");
+        if (inputBuscar)
+            inputBuscar.addEventListener("input", function () {
+                var texto = this.value.trim();
+                if (texto.length < 6) {
+                    document.getElementById("resultadosNumeroCuenta").innerHTML = "";
+                    return;
+                }
+                pintarNumeroCuenta(texto);
+            });
 
         var resultados = document.getElementById("resultadosNumeroCuenta");
-        if (resultados) {
-            resultados.innerHTML = "";
-        }
-            mostrarError("errorNumeroCuenta", "");
-            mostrarError("errorDatos", "");
+        if (resultados)
+            resultados.addEventListener("click", function (evento) {
+                var boton = evento.target.closest("button");
+                if (boton && boton.dataset.numero) seleccionarAlumno(boton);
+            });
 
-        var resumen = document.getElementById("resumenSolicitud");
-        if(resumen){
-            resumen.innerHTML= "";
-        }
-
-        var observacion = document.getElementById("Observacion");
-        if (observacion){
-            observacion.selectedIndex = 0;
-        }
-        var titulo = document.getElementById("tituloModalGenerarSolicitud");
-
-        if (titulo) {
-            titulo.textContent = "Nueva Solicitud";
-        }
-        mostrarPaso(1);
-
-        // Crear o obtener la instancia justo aquí
-        if (modal) {
-            modal.show();
+        // Si viene ?id=, precargar datos
+        if (id) {
+            precargarSolicitud(id);
         } else {
-            console.error("No se pudo abrir el modal.");
+            mostrarPaso(1);
         }
     }
 
-    function editarSolicitud(id) {
-        if (!id) {
-            console.error("No se recibió el ID de la solicitud.");
-            return;
-        }
-
+    function precargarSolicitud(id) {
         modoEdicion = true;
-        paso = 1;
 
-        solicitar({
-            accion: "listar",
-            id: id,
-        })
-            .then(function (respuesta) {
-                if (!respuesta.ok) {
-                    mostrarMensaje(respuesta.mensaje || "No se pudo consultar la solicitud.", "danger");
-                    return;
-                }
-
-                var solicitud = null;
-
-                /*Buscamos la solicitud por ID */
-                if (Array.isArray(respuesta.datos)) {
-                    solicitud = respuesta.datos.find(function (item) {
-                        return String(item.id) === String(id);
-                    });
-                } else if (respuesta.datos) {
-                    solicitud = respuesta.datos;
-                }
-
+        solicitar({ accion: "consultar", id: id })
+            .then(function (solicitud) {
                 if (!solicitud) {
-                    mostrarMensaje("No se encontró la solicitud seleccionada.", "danger");
+                    mostrarMensaje("No se encontró la solicitud seleccionada.", "danger", "mensajeFormulario");
                     return;
                 }
 
-                /* Limpiamos primero el formulario
-                 */
-                var form = document.getElementById("formSolicitud");
-
-                if (form) {
-                    form.reset();
+                if (solicitud.Estatus === "Cancelado") {
+                    mostrarMensaje("No se puede editar una solicitud cancelada.", "warning", "mensajeFormulario");
+                    return;
                 }
 
-                limpiarMensaje();
-
-                /*Guardamos el ID de la solicitud */
                 document.getElementById("solicitudId").value = solicitud.id || "";
 
-                //alumnos datos
+                document.getElementById("CicloEscolar").value = solicitud.CicloEscolar || "";
                 document.getElementById("NumeroCuenta").value = solicitud.NumeroCuenta || "";
-                document.getElementById("Nombre").value = solicitud.Nombre || "";
-                document.getElementById("ApellidoPaterno").value = solicitud.ApellidoPaterno || "";
-                document.getElementById("ApellidoMaterno").value = solicitud.ApellidoMaterno || "";
-                //datos institucionales
+                document.getElementById("NombreCompleto").value = solicitud.NombreCompleto || "";
                 document.getElementById("Instituto").value = solicitud.Instituto || "";
                 document.getElementById("Semestre").value = solicitud.Semestre || "";
                 document.getElementById("ProgramaEducativo").value = solicitud.ProgramaEducativo || "";
-                document.getElementById("Periodo").value = solicitud.Periodo || "";
 
-                //mostrar datos 
+                document.getElementById("mostrarCicloEscolar").textContent = solicitud.CicloEscolar || "";
                 document.getElementById("mostrarNumeroCuenta").textContent = solicitud.NumeroCuenta || "";
-                document.getElementById("mostrarNombre").textContent = solicitud.Nombre || "";
-                document.getElementById("mostrarApellidoPaterno").textContent = solicitud.ApellidoPaterno || "";
-                document.getElementById("mostrarApellidoMaterno").textContent = solicitud.ApellidoMaterno || "";
-
+                document.getElementById("mostrarNombreCompleto").textContent = solicitud.NombreCompleto || "";
                 document.getElementById("mostrarInstituto").textContent = solicitud.Instituto || "";
                 document.getElementById("mostrarSemestre").textContent = solicitud.Semestre || "";
                 document.getElementById("mostrarProgramaEducativo").textContent = solicitud.ProgramaEducativo || "";
 
-                document.getElementById("mostrarPeriodo").textContent = solicitud.Periodo || "";
                 document.getElementById("datosAlumno").classList.remove("d-none");
                 document.getElementById("datosInstitucional").classList.remove("d-none");
 
@@ -567,122 +568,77 @@
                 seleccionarRadio("Calificaciones", solicitud.Calificaciones);
 
                 var observacion = document.getElementById("Observacion");
+                if (observacion) observacion.value = solicitud.Observacion || "";
 
-                if (observacion) {
-                    observacion.value = solicitud.Observacion || "";
-                }
+                var titulo = document.getElementById("tituloFormularioSolicitud");
+                if (titulo) titulo.textContent = "Editar Solicitud de constancia";
 
-                var titulo = document.getElementById("tituloModalGenerarSolicitud");
-
-                if (titulo) {
-                    titulo.textContent = "Editar Solicitud";
-                }
-
+                actualizarResumen();
                 mostrarPaso(1);
-                if (modal) {
-                    modal.show();
-                }
             })
             .catch(function (error) {
-                console.error(error);
-
-                mostrarMensaje(error.message || "Ocurrió un error al consultar la solicitud.", "danger");
+                mostrarMensaje(
+                    error.message || "Ocurrió un error al consultar la solicitud.",
+                    "danger",
+                    "mensajeFormulario",
+                );
             });
     }
 
-    function seleccionarRadio(nombre, valor){
-        var radios = document.querySelectorAll(
-            'input[name"' + nombre +'"]'
-        );
-        radios.forEach(function(radio){
-            radio.checked= String(radio.value) === String(valor);
-        });
+    function guardarSolicitud() {
+        limpiarMensajes();
+        var datos = datosFormulario();
+
+        if (!datos.NumeroCuenta) {
+            mostrarMensaje("Debe seleccionar un alumno.", "warning", "mensajeFormulario");
+            mostrarPaso(1);
+            return;
+        }
+
+        solicitar(datos)
+            .then(function () {
+                mostrarMensaje(
+                    modoEdicion
+                        ? "Solicitud actualizada correctamente. Redirigiendo..."
+                        : "Solicitud registrada correctamente. Redirigiendo...",
+                    "success",
+                    "mensajeFormulario",
+                );
+
+                setTimeout(function () {
+                    window.location.href = "vtaGenerarSolicitud.php";
+                }, 1000);
+            })
+            .catch(function (error) {
+                mostrarMensaje(error.message, "danger", "mensajeFormulario");
+            });
     }
-    // INICIALIZAR
-    document.addEventListener("DOMContentLoaded", function () {
-        cargarSolicitudes();
-        cargarObservaciones();
 
-        // Inicializar modal UNA VEZ
-        var modalEl = document.getElementById("modalSolicitud");
-        if (modalEl){
-            if (typeof bootstrap !== "undefined" && bootstrap.Modal) {
-                modal = bootstrap.Modal.getOrCreateInstance(modalEl);
-            }else{ console.error("boos no esta cargando correctamente");
-        }}
-        
+    //  INICIALIZACIÓN LISTADO
+    function iniciarListado() {
+        document.getElementById("btnFiltrar")?.addEventListener("click", cargarSolicitudes);
+        document.getElementById("btnLimpiarFiltros")?.addEventListener("click", limpiarFiltros);
 
-        // BOTÓN NUEVA SOLICITUD
-        var btnNueva = document.getElementById("btnNuevaSolicitud");
-        if (btnNueva) btnNueva.addEventListener("click", abrirNuevo);
-
-        // BUSCAR NÚMERO DE CUENTA
-        var inputBuscar = document.getElementById("buscarNumeroCuenta");
-        if (inputBuscar) {
-            inputBuscar.addEventListener("input", function () {
-                var texto = this.value.trim();
-                if (texto.length >= 6) {
-                    pintarNumeroCuenta(texto);
-                } else {
-                    var res = document.getElementById("resultadosNumeroCuenta");
-                    if (res) res.innerHTML = "";
-                }
-            });
-        }
-        //Boton Borrar solicitud
-        var tabla = document.getElementById("tablaSolicitudes");
-        if(tabla){
-            tabla.addEventListener("click", function(evento){
-                var botonEliminar = evento.target.closest(".btn-eliminar");
-                if(botonEliminar){
-                    var id = botonEliminar.dataset.id;
-                    eliminarSolicitud(id);
-                }
-            });
-        }
-
-        // SELECCIONAR ALUMNO DE LOS RESULTADOS
-        var resultados = document.getElementById("resultadosNumeroCuenta");
-        if (resultados) {
-            resultados.addEventListener("click", function (evento) {
-                var boton = evento.target.closest("button");
-                if (boton && boton.dataset.numero) seleccionarAlumno(boton);
-            });
-        }
-
-        // BOTÓN SIGUIENTE
-        var btSig = document.getElementById("btnSiguiente");
-        if (btSig) {
-            btSig.addEventListener("click", function () {
-                if (validarPaso()) mostrarPaso(Math.min(3, paso + 1));
-            });
-        }
-
-        // BOTÓN ANTERIOR
-        var btnAnt = document.getElementById("btnAnterior");
-        if (btnAnt) {
-            btnAnt.addEventListener("click", function () {
-                mostrarPaso(Math.max(1, paso - 1));
-            });
-        }
-
-        // GUARDAR SOLICITUD
-        var form = document.getElementById("formSolicitud");
-        if (form) {
-            form.addEventListener("submit", function (evento) {
-                evento.preventDefault();
-                if (!validarPaso()) {
+        document.getElementById("tablaSolicitudes").addEventListener("click", function (evento) {
+                var btnEditar = evento.target.closest(".btn-editar");
+                if (btnEditar) {
+                    editarSolicitud(btnEditar.dataset.id);
                     return;
                 }
 
-                solicitar(datosFormulario())
-                    .then(function () {
-                            mostrarMensaje("La solicitud se guardó correctamente.", "success");
-                            cargarSolicitudes();
-                        })
-                    .catch(function (error) { mostrarMensaje( error.message, "danger");
-    });
-    });
-} mostrarPaso(1);
+                var btnCancelar = evento.target.closest(".btn-cancelar");
+                if (btnCancelar) cancelarSolicitud(btnCancelar.dataset.id);
+            });
+
+    }
+
+    //  ARRANQUE SEGÚN PANTALLA
+    document.addEventListener("DOMContentLoaded", function () {
+        if (esPantallaFormulario()) {
+            iniciarFormulario();
+        } else if (esPantallaListado()) {
+            iniciarListado();
+        }
     });
 })();
+

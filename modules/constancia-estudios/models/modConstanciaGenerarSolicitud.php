@@ -11,6 +11,7 @@ try {
         case 'listar':
             $respuesta = $consulta->listar();
             break;
+
         case 'consultar':
             $id = isset($_REQUEST['id']) ? $_REQUEST['id']: '';
             $respuesta = $consulta->consultar($id);
@@ -18,6 +19,7 @@ try {
                 throw new Exception('No se encontró la solicitud seleccionada.' );
                 }
             break;    
+
         case 'numeroCuenta':
             $respuesta = $consulta->consultarNumeroCuenta(isset($_REQUEST['texto']) ? $_REQUEST['texto'] : '');
             break;
@@ -33,24 +35,27 @@ try {
             }
             $respuesta = isset($resultado['datos']) ? $resultado['datos']: $resultado;
             break;
-        case 'eliminar':
-
+        case 'cancelar':
             $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
-            $resultado = $consulta->eliminar($id);
-            if (
-                isset($resultado['ok']) && $resultado['ok'] === false
-            ) {
-                throw new Exception(
+            $resultado = $consulta->cancelar($id);
+            if (isset($resultado['ok']) && $resultado['ok'] === false
+            ) { throw new Exception(
                     isset($resultado['mensaje'])
                         ? $resultado['mensaje']
-                        : 'No fue posible eliminar la solicitud.' );
+                        : 'No fue posible cancelar la solicitud.' );
             }
             $respuesta = isset($resultado['datos']) ? $resultado['datos'] : $resultado;
             break;
         case 'observacion':
             $respuesta = $consulta->consultarObservacion();
             break;
-                    default:
+        case 'estatus':
+            $respuesta =  $consulta->consultarEstatusSolicitud();
+            break;
+        case 'datoAdicional':
+            $respuesta = $consulta->consultarDatoAdicional();
+            break;
+        default:
             throw new Exception('La acción solicitada no es válida.');
     }
 

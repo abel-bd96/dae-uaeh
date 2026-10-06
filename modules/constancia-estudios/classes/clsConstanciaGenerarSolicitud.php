@@ -32,7 +32,7 @@ class clsConstanciaGenerarSolicitud
 
             $numeroCuenta = isset($cuenta['NumeroCuenta'])? $this->normalizar($cuenta['NumeroCuenta']) : '';
             
-            if ($texto === '' && strpos($numeroCuenta, $texto) === false) {
+            if ($texto !== '' && strpos($numeroCuenta, $texto) === false) {
                 continue;
             }
                 foreach ($alumnos as $alumno) {
@@ -81,19 +81,12 @@ class clsConstanciaGenerarSolicitud
         return $alumno;
     }
     
+    //consultar catalogos 
     public function consultar($id){
-        if ($id === null || trim((string)$id) === '') {
-            return null;
-        }
-
-        $registros = $this->leer($this->rutaConfiguraciones);
-
+        if ($id === null || trim((string)$id) === '') return null;
+            $registros = $this->leer($this->rutaConfiguraciones);
         foreach ($registros as $registro) {
-
-            if (
-                isset($registro['id']) &&
-                (string)$registro['id'] === (string)$id
-            ) {
+            if (isset($registro['id']) && (string)$registro['id'] === (string)$id) {
                 return $registro;
             }
         }
@@ -104,6 +97,7 @@ class clsConstanciaGenerarSolicitud
     public function consultarDatoAdicional(){
         return $this->leer($this->rutaDatoAdicional);
     }
+
     public function consultarEstatusSolicitud(){
         return $this->leer($this->rutaEstatusSolicitud);
     }
@@ -148,21 +142,15 @@ class clsConstanciaGenerarSolicitud
         }
 
         $datos['id'] = $ultimoId + 1;
-        if (!isset($datos['fechaRegistro'])) {
-            $datos['fechaRegistro'] = date('Y-m-d');
-        }
-
-        if (!isset($datos['Estatus'])) {
-            $datos['Estatus'] = 'Solicitado';
-        }
-
+        if (!isset($datos['fechaRegistro'])) $datos['fechaRegistro'] = date('Y-m-d');
+        if (!isset($datos['Estatus'])) $datos['Estatus'] = 'Solicitado';
+    
         $registros[] = $datos;
 
         if (!$this->guardarJson($this->rutaConfiguraciones, $registros)) {
             return array(
                 'ok' => false,
-                'mensaje' => 'No fue posible guardar la solicitud.'
-            );
+                'mensaje' => 'No fue posible guardar la solicitud.');
         }
 
         return array(
@@ -172,9 +160,7 @@ class clsConstanciaGenerarSolicitud
         );
     }
 
-    /**
-     * Actualiza una solicitud existente.
-     */
+    // Actualiza una solicitud existente.
     public function actualizar($datos) {
         if (!isset($datos['id'])) {
             return array(
@@ -186,9 +172,12 @@ class clsConstanciaGenerarSolicitud
         $registros = $this->leer($this->rutaConfiguraciones);
 
         foreach ($registros as $indice => $registro) {
-            if (
-                isset($registro['id']) &&
-                (string)$registro['id'] === (string)$datos['id']) {
+            if (isset($registro['id']) && (string)$registro['id'] === (string)$datos['id']) {
+                if(isset($registro['Estatus']) && $registro['Estatus'] === 'Cancelado'){
+                    return array(
+                        'ok' => false, 'mensaje' => 'No se puede editar una solicitud cancelada.'
+                    );
+                }
                 foreach ($datos as $campo => $valor) {
                     $registros[$indice][$campo] = $valor;
                 }
@@ -214,10 +203,39 @@ class clsConstanciaGenerarSolicitud
             'ok' => false,
             'mensaje' => 'No se encontró la solicitud.');
     }
+    public function cancelar($id){
+        if ($id === null || trim((string)$id) === '') {
+            return array('ok' => false, 'mensaje' => 'No se recibió el identificador de la solicitud.');
+        }
 
-    /**
-     * Busca una solicitud por número de cuenta.
-     */
+        $registros = $this->leer($this->rutaConfiguraciones);
+
+        foreach ($registros as $indice => $registro) {
+            if (isset($registro['id']) && (string)$registro['id'] === (string)$id) {
+
+                if (isset($registro['Estatus']) && $registro['Estatus'] === 'Cancelado') {
+                    return array('ok' => false, 'mensaje' => 'La solicitud ya está cancelada.');
+                }
+
+                $registros[$indice]['Estatus']         = 'Cancelado';
+                $registros[$indice]['fechaCancelacion'] = date('Y-m-d');
+
+                if (!$this->guardarJson($this->rutaConfiguraciones, $registros)) {
+                    return array('ok' => false, 'mensaje' => 'No fue posible cancelar la solicitud.');
+                }
+
+                return array(
+                    'ok' => true,
+                    'mensaje' => 'La solicitud se canceló correctamente.',
+                    'datos' => $registros[$indice]
+                );
+            }
+        }
+
+        return array('ok' => false, 'mensaje' => 'No se encontró la solicitud.');
+    }
+
+    //Busca una solicitud por número de cuenta.
     public function buscarSolicitud($numeroCuenta){
         $registros = $this->leer($this->rutaConfiguraciones);
         $numeroCuenta = $this->normalizar($numeroCuenta);
@@ -233,29 +251,17 @@ class clsConstanciaGenerarSolicitud
         return null;
     }
 
-    /**
-     * Lee un archivo JSON.
-     */
+    // Lee un archivo JSON.
     private function leer($ruta){
-        if (!file_exists($ruta)) {
-            return array();
-        }
-
+        if (!file_exists($ruta)) return array();
         $contenido = file_get_contents($ruta);
-        if ($contenido === false || trim($contenido) === '') {
-            return array();
-        }
+        if ($contenido === false || trim($contenido) === '') return array();
         $datos = json_decode($contenido, true);
-        if (!is_array($datos)) {
-            return array();
-        }
-
+        if (!is_array($datos)) return array();
         return $datos;
     }
 
-    /**
-     * Guarda información en formato JSON.
-     */
+    //Guarda información en formato JSON.
     private function guardarJson($ruta, $datos)
     {
         $json = json_encode(
@@ -269,9 +275,7 @@ class clsConstanciaGenerarSolicitud
         return file_put_contents($ruta, $json) !== false;
     }
 
-    /**
-     * Normaliza un texto para realizar búsquedas.
-     */
+    // Normaliza un texto para realizar búsquedas.
     private function normalizar($texto) {
         $texto = trim((string)$texto);
 
