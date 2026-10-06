@@ -72,8 +72,8 @@
                     '<td><span class="badge text-bg-' + (configuracion.tipo === 'GENERAL' ? 'primary' : 'info') + '">' + configuracion.tipo + '</span></td>' +
                     '<td>' + planes + escapeHtml(mas) + '</td>' +
                     '<td>' + escapeHtml(configuracion.fechaSolicitudConstanciaInicio) + ' a ' + escapeHtml(configuracion.fechaSolicitudConstanciaTermino) + '</td>' +
-                    '<td><button type="button" class="btn btn-estado estado-toggle ' + (activo ? 'is-active' : '') + '" data-tipo="' + configuracion.tipo + '" data-id="' + idConfig + '" data-estado="' + configuracion.estado + '" aria-label="Cambiar estado a ' + (activo ? 'INACTIVO' : 'ACTIVO') + '" role="switch" aria-checked="' + (activo ? 'true' : 'false') + '"><span class="estado-toggle__track"><span class="estado-toggle__thumb"></span></span><span class="estado-toggle__text">' + (activo ? 'Activo' : 'Inactivo') + '</span></button></td>' +
-                    '<td class="text-end"><button type="button" class="btn btn-sm btn-outline-primary btn-editar" data-tipo="' + configuracion.tipo + '" data-id="' + idConfig + '"><i class="bi bi-pencil"></i> Editar</button></td></tr>';
+                    '<td><button type="button" class="btn btn-estado estado-toggle ' + (activo ? 'is-active' : '') + '" data-tipo="' + configuracion.tipo + '" data-id="' + idConfig + '" data-estado="' + configuracion.estado + '" aria-label="Cambiar estado a ' + (activo ? 'INACTIVO' : 'ACTIVO') + '" role="switch" aria-checked="' + (activo ? 'true' : 'false') + '"><span class="estado-toggle__track"><span class="estado-toggle__thumb"></span></span><span class="estado-toggle__text fs-5">' + (activo ? 'Activo' : 'Inactivo') + '</span></button></td>' +
+                    '<td class="text-end"><button type="button" class="btn btn-sm btn-outline-primary btn-editar fs-5" data-tipo="' + configuracion.tipo + '" data-id="' + idConfig + '"><i class="bi bi-pencil"></i> Editar</button></td></tr>';
             }).join('');
     }
 

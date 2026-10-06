@@ -27,6 +27,9 @@
     background-color: var(--secondary-color);
     border-color: var(--secondary-color);
 }
+.container-80 {
+    max-width: 80%;
+}
 
 /* HEADER */
 .header__structure {

@@ -2,20 +2,20 @@
 include './header_constancias.php';
 include './sidebar_constancias.php';
 ?>
-<main class="container ciclos-page my-4 my-md-5" id="constanciaCiclos">
+<main class="container-fluid container-80 ciclos-page my-4 my-md-5" id="constanciaCiclos">
     <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4 ciclos-page__header">
         <div>
-            <p class="ciclos-page__eyebrow mb-2">Emisión de constancias</p>
-            <h1 class="h3 mb-0">Planeación de Ciclos Escolares</h1>
+            <p class="ciclos-page__eyebrow mb-2 fs-1">Emisión de constancias</p>
+            <h1 class="h3 mb-0 fs-2">Planeación de Ciclos Escolares</h1>
         </div>
-        <a href="./vtaCiclosNuevo.php" class="btn btn-primary-uaeh" id="btnNuevoCiclo">
+        <a href="./vtaCiclosNuevo.php" class="btn btn-primary-uaeh fs-5 fw-bold" id="btnNuevoCiclo">
             <i class="bi bi-plus-lg"></i> Nuevo ciclo
         </a>
     </div>
 
     <div id="mensajeCiclos" class="alert d-none" role="alert"></div>
     <div class="table-responsive ciclos-table-wrap">
-        <table class="table table-hover align-middle mb-0 ciclos-table" id="tablaCiclos">
+        <table class="table table-hover align-middle mb-0 ciclos-table fs-5" id="tablaCiclos">
             <thead>
                 <tr>
                     <th scope="col"><button type="button" class="btn btn-link p-0 text-reset text-decoration-none btn-ordenar" data-ordenar="nombre" aria-label="Ordenar por ciclo">Ciclo <span class="indicador-orden" aria-hidden="true"></span></button></th>
