@@ -3,17 +3,65 @@ class clsAlumnoSolicitudes
 {
     private $rutaHistorial;
     private $rutaDatosConstancia;
+    private $rutaBloqueo;
 
     public function __construct()
     {
         $directorioDatos = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR;
+        $directorioDatosListaNegra = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'constancia-estudios' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR;
+
         $this->rutaHistorial = $directorioDatos . 'constancia_historial_solicitudes.json';
         $this->rutaDatosConstancia = $directorioDatos . 'ae_Datos_Constancia.json';
+        $this->rutaBloqueo = $directorioDatos . 'solicitudes.lock';
     }
 
     public function listar()
     {
         return $this->leer($this->rutaHistorial);
+    }
+
+
+    public function mostrarDatosPersonales()
+    {
+        $datos = $this->leer($this->rutaDatosConstancia);
+
+        if (!is_array($datos)) {
+            throw new RuntimeException(
+                'Los datos de la constancia no tienen un formato válido.'
+            );
+        }
+
+        if (isset($datos['Folio'])) {
+            $datos = [$datos];
+        }
+
+        foreach ($datos as $registro) {
+            if (!is_array($registro)) {
+                continue;
+            }
+
+            if (
+                isset($registro['Cuenta']) &&
+                trim((string) $registro['Cuenta']) !== ''
+            ) {
+                return [
+                    'Nombre' => $registro['Nombre'] ?? '',
+                    'PrimerApellido' => $registro['PrimerApellido'] ?? '',
+                    'SegundoApellido' => $registro['SegundoApellido'] ?? '',
+                    'CURP' => $registro['CURP'] ?? '',
+                    'UnidadAcademica' => $registro['UnidadAcademica'] ?? '',
+                    'ProgramaEducativo' => $registro['ProgramaEducativo'] ?? '',
+                    'Cuenta' => $registro['Cuenta'] ?? '',
+                    'Semestre' => $registro['Semestre'] ?? '',
+                    'CalidadAlumno' => $registro['CalidadAlumno'] ?? '',
+                    'Promedio' => $registro['Promedio'] ?? ''
+                ];
+            }
+        }
+
+        throw new RuntimeException(
+            'No fue posible obtener los datos personales del alumno.'
+        );
     }
 
     public function consultarPorFolio($folio)
@@ -52,308 +100,125 @@ class clsAlumnoSolicitudes
         }
 
         if ($calificaciones === '') {
-            throw new InvalidArgumentException('Seleccionar si se necesita la inclusión de calificaciones es obligatoria.');
+            throw new InvalidArgumentException('La selección de calificaciones es obligatoria.');
         }
 
-        $historial = $this->leer($this->rutaHistorial);
-        $datosConstancia = $this->leer($this->rutaDatosConstancia);
+        $tipoFirmaNormalizado = $this->normalizar($tipoFirma);
+        $calificacionesNormalizadas = $this->normalizar($calificaciones);
 
-        if (!is_array($historial)) {
-            $historial = [];
+        if (!in_array($tipoFirmaNormalizado, ['digital', 'autografa'], true)) {
+            throw new InvalidArgumentException('El tipo de firma seleccionado no es válido.');
         }
 
-        if (!is_array($datosConstancia)) {
-            $datosConstancia = [];
+        if ($calificacionesNormalizadas === 'sí') {
+            $calificacionesNormalizadas = 'si';
         }
 
-        $folio = $this->generarSiguienteFolio(
-            $historial,
-            $datosConstancia
-        );
-
-
-        $fechaRegistro = '05/10/2026';
-
-        $descripcion = 'Julio-Diciembre 2026. ' . $tipoFirma;
-
-        if ($this->normalizar($calificaciones) === 'No') {
-            // stdClass() genera JSONs con {} en vez de []
-            $calificacionesJson = new stdClass();
-        } else {
-
-            $calificacionesJson = array(
-                array(
-                    'Ciclo' => 'Julio-Diciembre 2026',
-                    'Materia' => 'LOGROS Y EXPERIENCIAS. LENGUA EXTRANJERA',
-                    'Calificacion' => '10',
-                    'Creditos' => '5'
-                ),
-                array(
-                    'Ciclo' => 'Julio-Diciembre 2026',
-                    'Materia' => 'ÁLGEBRA LINEAL',
-                    'Calificacion' => '8',
-                    'Creditos' => '5'
-                ),
-                array(
-                    'Ciclo' => 'Julio-Diciembre 2026',
-                    'Materia' => 'SEXUALIDAD RESPONSABLE',
-                    'Calificacion' => '10',
-                    'Creditos' => '5'
-                ),
-                array(
-                    'Ciclo' => 'Julio-Diciembre 2026',
-                    'Materia' => 'DISEÑO DE BASES DE DATOS',
-                    'Calificacion' => '8',
-                    'Creditos' => '5'
-                ),
-                array(
-                    'Ciclo' => 'Julio-Diciembre 2026',
-                    'Materia' => 'PROGRAMACIÓN ORIENTADA A OBJETOS',
-                    'Calificacion' => '9',
-                    'Creditos' => '5'
-                ),
-                array(
-                    'Ciclo' => 'Julio-Diciembre 2026',
-                    'Materia' => 'FUNDAMENTOS ELECTRÓNICOS PARA LA COMPUTACIÓN',
-                    'Calificacion' => '9',
-                    'Creditos' => '5'
-                ),
-                array(
-                    'Ciclo' => 'Julio-Diciembre 2026',
-                    'Materia' => 'INGENIERÍA DE SOFTWARE',
-                    'Calificacion' => '9',
-                    'Creditos' => '5'
-                ),
-                array(
-                    'Ciclo' => 'Enero-Junio 2025',
-                    'Materia' => 'GRAFICACIÓN',
-                    'Calificacion' => '9',
-                    'Creditos' => '5'
-                ),
-                array(
-                    'Ciclo' => 'Enero-Junio 2025',
-                    'Materia' => 'PROGRAMACIÓN DE MICROPROCESADORES',
-                    'Calificacion' => '9',
-                    'Creditos' => '5'
-                ),
-                array(
-                    'Ciclo' => 'Enero-Junio 2025',
-                    'Materia' => 'ADMINISTRACIÓN DE BASES DE DATOS',
-                    'Calificacion' => '9',
-                    'Creditos' => '5'
-                ),
-                array(
-                    'Ciclo' => 'Enero-Junio 2025',
-                    'Materia' => 'GESTIÓN DE PROYECTOS INFORMÁTICOS',
-                    'Calificacion' => '10',
-                    'Creditos' => '5'
-                ),
-                array(
-                    'Ciclo' => 'Enero-Junio 2025',
-                    'Materia' => 'ESTADÍSTICA Y PROBABILIDAD',
-                    'Calificacion' => '9',
-                    'Creditos' => '5'
-                ),
-                array(
-                    'Ciclo' => 'Enero-Junio 2025',
-                    'Materia' => 'SALUD FÍSICA Y EMOCIONAL',
-                    'Calificacion' => '10',
-                    'Creditos' => '5'
-                ),
-                array(
-                    'Ciclo' => 'Enero-Junio 2025',
-                    'Materia' => 'DECISIONES PERSONALES. LENGUA EXTRANJERA',
-                    'Calificacion' => '10',
-                    'Creditos' => '5'
-                ),
-                array(
-                    'Ciclo' => 'Julio-Diciembre 2025',
-                    'Materia' => 'CAUSA Y EFECTO. LENGUA EXTRANJERA',
-                    'Calificacion' => '9',
-                    'Creditos' => '5'
-                ),
-                array(
-                    'Ciclo' => 'Julio-Diciembre 2025',
-                    'Materia' => 'ARTES VISUALES',
-                    'Calificacion' => '9',
-                    'Creditos' => '5'
-                ),
-                array(
-                    'Ciclo' => 'Julio-Diciembre 2025',
-                    'Materia' => 'SISTEMAS MULTIMEDIA',
-                    'Calificacion' => '9',
-                    'Creditos' => '5'
-                ),
-                array(
-                    'Ciclo' => 'Julio-Diciembre 2025',
-                    'Materia' => 'INTELIGENCIA ARTIFICIAL',
-                    'Calificacion' => '9',
-                    'Creditos' => '5'
-                ),
-                array(
-                    'Ciclo' => 'Julio-Diciembre 2025',
-                    'Materia' => 'COMUNICACIÓN ORAL',
-                    'Calificacion' => '10',
-                    'Creditos' => '5'
-                ),
-                array(
-                    'Ciclo' => 'Julio-Diciembre 2025',
-                    'Materia' => 'ORGANIZACIÓN DE COMPUTADORAS',
-                    'Calificacion' => '9',
-                    'Creditos' => '5'
-                ),
-                array(
-                    'Ciclo' => 'Enero-Junio 2024',
-                    'Materia' => 'BASES DE DATOS DISTRIBUIDAS',
-                    'Calificacion' => '9',
-                    'Creditos' => '5'
-                ),
-                array(
-                    'Ciclo' => 'Enero-Junio 2024',
-                    'Materia' => 'AUTÓMATAS Y COMPILADORES',
-                    'Calificacion' => '9',
-                    'Creditos' => '5'
-                ),
-                array(
-                    'Ciclo' => 'Enero-Junio 2024',
-                    'Materia' => 'SISTEMAS BASADOS EN CONOCIMIENTO',
-                    'Calificacion' => '9',
-                    'Creditos' => '5'
-                ),
-                array(
-                    'Ciclo' => 'Enero-Junio 2024',
-                    'Materia' => 'FUNDAMENTOS DE METODOLOGÍA DE LA INVESTIGACIÓN',
-                    'Calificacion' => '10',
-                    'Creditos' => '5'
-                ),
-                array(
-                    'Ciclo' => 'Enero-Junio 2024',
-                    'Materia' => 'MÚSICA',
-                    'Calificacion' => '9',
-                    'Creditos' => '5'
-                ),
-                array(
-                    'Ciclo' => 'Enero-Junio 2024',
-                    'Materia' => 'EN OTRAS PALABRAS... LENGUA EXTRANJERA',
-                    'Calificacion' => '9',
-                    'Creditos' => '5'
-                ),
-                array(
-                    'Ciclo' => 'Julio-Diciembre 2026',
-                    'Materia' => 'OPTATIVA I (APRENDIZAJE COLABORATIVO ASISTIDO POR COMPUTADORA)',
-                    'Calificacion' => '9',
-                    'Creditos' => '5'
-                ),
-                array(
-                    'Ciclo' => 'Julio-Diciembre 2026',
-                    'Materia' => 'ADMINISTRACIÓN DE LA FUNCIÓN INFORMÁTICA',
-                    'Calificacion' => '10',
-                    'Creditos' => '5'
-                ),
-                array(
-                    'Ciclo' => 'Julio-Diciembre 2026',
-                    'Materia' => 'SISTEMAS DE REALIDAD VIRTUAL',
-                    'Calificacion' => '10',
-                    'Creditos' => '5'
-                ),
-                array(
-                    'Ciclo' => 'Julio-Diciembre 2026',
-                    'Materia' => 'PROGRAMACIÓN WEB',
-                    'Calificacion' => '10',
-                    'Creditos' => '5'
-                )
-            );
+        if (!in_array($calificacionesNormalizadas, ['si', 'no'], true)) {
+            throw new InvalidArgumentException('La opción de calificaciones seleccionada no es válida.');
         }
 
-        $nuevoHistorial = [
-            'Folio' => $folio,
-            'FechaRegistro' => $fechaRegistro,
-            'Descripción' => $descripcion,
-            'Estado' => 'Pendiente de Pago'
-        ];
-
-        $nuevaConstancia = [
-            'Folio' => $folio,
-            'FechaEmision' => 'En proceso...',
-            'Estado' => 'Pendiente de Pago',
-
-            'Nombre' => 'Sergio',
-            'ApellidoPaterno' => 'García',
-            'ApellidoMaterno' => 'León',
-            'CURP' => 'GASL031114HHGRNEF6',
-            'Cuenta' => '401129',
-            'UnidadAcademica' => 'Instituto de Ciencias Básicas e Ingeniería',
-            'ProgramaEducativo' => 'Licenciatura en Ciencias Computacionales (2010)',
-            'CCTUA' => '13MSU0017T',
-            'CCTUAEH' => '13USU3018V',
-            'CondicionEscolar' => 'Cursando',
-            'Semestre' => '9',
-            'DuracionPE' => '9 semestres',
-            'TipoIngreso' => 'Examen',
-            'PeriodoEstudios' =>
-            '03/08/2026 - 02/12/2026',
-            'PeriodoVacacional' =>
-            '03/12/2026 - 17/01/2026',
-            'CalidadAlumno' => 'Regular',
-            'Promedio' => '9.02',
-            'AvancePE' => '97%',
-            'Calificaciones' => $calificacionesJson
-        ];
-
-        // Se necesitan copias para restaurar los datos si falla alguna edición.
-        $historialAnterior = $historial;
-        $datosConstanciaAnterior = $datosConstancia;
+        $bloqueo = $this->adquirirBloqueo();
 
         try {
-            //Se intenta guardar los cambios
-            $historial[] = $nuevoHistorial;
-            $datosConstancia[] = $nuevaConstancia;
+            $historial = $this->leer($this->rutaHistorial);
+            $datosConstancia = $this->leer($this->rutaDatosConstancia);
 
-            $this->escribir(
-                $this->rutaHistorial,
-                $historial
-            );
+            if (!is_array($historial)) {
+                $historial = [];
+            }
 
-            $this->escribir(
-                $this->rutaDatosConstancia,
+            if (!is_array($datosConstancia)) {
+                $datosConstancia = [];
+            }
+
+            $folio = $this->generarSiguienteFolio(
+                $historial,
                 $datosConstancia
             );
-        } catch (Exception $excepcion) {
+
+
+            $fechaRegistro = date('d/m/Y');
+
+            $descripcion = 'Julio-Diciembre 2026. ' . $tipoFirma;
+
+            if ($calificacionesNormalizadas === 'no') {
+                // stdClass() genera JSONs con {} en vez de []
+                $calificacionesJson = new stdClass();
+            } else {
+
+                $calificacionesJson = $this->obtenerCalificacionesPredefinidas();
+            }
+
+            $nuevoHistorial = [
+                'Folio' => $folio,
+                'FechaRegistro' => $fechaRegistro,
+                'Descripción' => $descripcion,
+                'Estado' => 'Pendiente de Pago'
+            ];
+
+            $nuevaConstancia = $this->obtenerDatosAlumnoBase($datosConstancia);
+            $nuevaConstancia['Folio'] = $folio;
+            $nuevaConstancia['FechaEmision'] = 'En proceso...';
+            $nuevaConstancia['Estado'] = 'Pendiente de Pago';
+            $nuevaConstancia['Calificaciones'] = $calificacionesJson;
+
+            // Se necesitan copias para restaurar los datos si falla alguna edición.
+            $historialAnterior = $historial;
+            $datosConstanciaAnterior = $datosConstancia;
 
             try {
+                // Se intenta guardar los cambios
+                $historial[] = $nuevoHistorial;
+                $datosConstancia[] = $nuevaConstancia;
+
                 $this->escribir(
                     $this->rutaHistorial,
-                    $historialAnterior
+                    $historial
                 );
 
                 $this->escribir(
                     $this->rutaDatosConstancia,
-                    $datosConstanciaAnterior
+                    $datosConstancia
                 );
-            } catch (Exception $rollbackExcepcion) {
-                /*
-                 * No sustituir el mensaje de error original
-                 * por el error del rollback.
-                 */
+            } catch (Exception $excepcion) {
+
+                try {
+                    $this->escribir(
+                        $this->rutaHistorial,
+                        $historialAnterior
+                    );
+
+                    $this->escribir(
+                        $this->rutaDatosConstancia,
+                        $datosConstanciaAnterior
+                    );
+                } catch (Exception $rollbackExcepcion) {
+                    /*
+         * No sustituir el mensaje de error original
+         * por el error del rollback.
+         */
+                }
+
+                throw new RuntimeException(
+                    'No fue posible guardar la nueva solicitud: ' .
+                        $excepcion->getMessage()
+                );
             }
 
-            throw new RuntimeException(
-                'No fue posible guardar la nueva solicitud: ' .
-                    $excepcion->getMessage()
-            );
+            return [
+                'Folio' => $folio,
+                'FechaRegistro' => $fechaRegistro,
+                'Estado' => 'Pendiente de Pago',
+                'mensaje' =>
+                'La solicitud ' .
+                    $folio .
+                    ' fue registrada correctamente.'
+            ];
+        } finally {
+            $this->liberarBloqueo($bloqueo);
         }
-
-        return [
-            'Folio' => $folio,
-            'FechaRegistro' => $fechaRegistro,
-            'Estado' => 'Pendiente de Pago',
-            'mensaje' =>
-            'La solicitud ' .
-                $folio .
-                ' fue registrada correctamente.'
-        ];
     }
-
     public function cancelar($folio)
     {
         $folio = trim((string) $folio);
@@ -362,68 +227,105 @@ class clsAlumnoSolicitudes
             throw new InvalidArgumentException('El folio de la solicitud es obligatorio.');
         }
 
+        $bloqueo = $this->adquirirBloqueo();
 
-        //Lee el historial de solicitudes    
-        $registros = $this->leer($this->rutaHistorial);
-        $detalleConstancias = $this->leer($this->rutaDatosConstancia);
+        try {
+            $registros = $this->leer($this->rutaHistorial);
+            $detalleConstancias = $this->leer($this->rutaDatosConstancia);
 
-        if (!is_array($registros)) {
-            throw new RuntimeException('El historial de solicitudes no tiene un formato válido.');
-        }
+            if (!is_array($registros)) {
+                throw new RuntimeException('El historial de solicitudes no tiene un formato válido.');
+            }
 
-        if (!is_array($detalleConstancias)) {
-            throw new RuntimeException('Los datos de la solicitud no tienen un formato válido.');
-        }
+            if (!is_array($detalleConstancias)) {
+                throw new RuntimeException('Los datos de la solicitud no tienen un formato válido.');
+            }
 
-        $encontrado = false;
-        $historialActualizado = [];
-        $detalleActualizado = [];
+            $encontrado = false;
+            $historialActualizado = [];
+            $detalleActualizado = [];
 
-        // Primero es realizado el cambio en el historial de solicitudes
-        foreach ($registros as $registro) {
-            if (
-                is_array($registro) &&
-                isset($registro['Folio']) &&
-                (string) $registro['Folio'] === $folio
-            ) {
-                $encontrado = true;
+            foreach ($registros as $registro) {
+                if (
+                    is_array($registro) &&
+                    isset($registro['Folio']) &&
+                    (string) $registro['Folio'] === $folio
+                ) {
+                    $encontrado = true;
 
-                //Valida que la solicitud esté en un estado cancelable         
-                if (!isset($registro['Estado']) || $registro['Estado'] !== 'Pendiente de Pago') {
-                    throw new RuntimeException(
-                        'La solicitud no puede cancelarse porque su estado actual es: ' .
-                            ($registro['Estado'] ?? 'Desconocido') . '.'
-                    );
+                    if (!isset($registro['Estado']) || $registro['Estado'] !== 'Pendiente de Pago') {
+                        throw new RuntimeException(
+                            'La solicitud no puede cancelarse porque su estado actual es: ' .
+                                ($registro['Estado'] ?? 'Desconocido') . '.'
+                        );
+                    }
+
+                    $registro['Estado'] = 'Solicitud Cancelada';
+                }
+                $historialActualizado[] = $registro;
+            }
+
+            foreach ($detalleConstancias as $detalleConstancia) {
+                if (
+                    is_array($detalleConstancia) &&
+                    isset($detalleConstancia['Folio']) &&
+                    (string) $detalleConstancia['Folio'] === $folio
+                ) {
+                    $detalleConstancia['Estado'] = 'Solicitud Cancelada';
+                }
+                $detalleActualizado[] = $detalleConstancia;
+            }
+
+            if (!$encontrado) {
+                throw new RuntimeException('No se encontró la solicitud con el folio indicado.');
+            }
+
+            try {
+                $this->escribir($this->rutaHistorial, array_values($historialActualizado));
+                $this->escribir($this->rutaDatosConstancia, array_values($detalleActualizado));
+            } catch (Exception $excepcion) {
+                try {
+                    $this->escribir($this->rutaHistorial, $registros);
+                    $this->escribir($this->rutaDatosConstancia, $detalleConstancias);
+                } catch (Exception $rollbackExcepcion) {
+                    // Conservar el error original.
                 }
 
-                $registro['Estado'] = 'Solicitud Cancelada';
+                throw new RuntimeException(
+                    'No fue posible cancelar la solicitud: ' . $excepcion->getMessage()
+                );
             }
-            $historialActualizado[] = $registro;
-        }
 
-        // Actualiza detalles
-        foreach ($detalleConstancias as $detalleConstancia) {
-            if (
-                is_array($detalleConstancia) &&
-                isset($detalleConstancia['Folio']) &&
-                (string) $detalleConstancia['Folio'] === $folio
-            ) {
-                $detalleConstancia['Estado'] = 'Solicitud Cancelada';
+            return [
+                'Folio' => $folio,
+                'mensaje' => 'La solicitud fue cancelada correctamente.'
+            ];
+        } finally {
+            $this->liberarBloqueo($bloqueo);
+        }
+    }
+
+    private function adquirirBloqueo()
+    {
+        $bloqueo = fopen($this->rutaBloqueo, 'c');
+
+        if ($bloqueo === false || !flock($bloqueo, LOCK_EX)) {
+            if (is_resource($bloqueo)) {
+                fclose($bloqueo);
             }
-            $detalleActualizado[] = $detalleConstancia;
+
+            throw new RuntimeException('No fue posible bloquear las solicitudes para realizar la operación.');
         }
 
-        if (!$encontrado) {
-            throw new RuntimeException('No se encontró la solicitud con el folio indicado.');
+        return $bloqueo;
+    }
+
+    private function liberarBloqueo($bloqueo)
+    {
+        if (is_resource($bloqueo)) {
+            flock($bloqueo, LOCK_UN);
+            fclose($bloqueo);
         }
-
-        $this->escribir($this->rutaHistorial, array_values($historialActualizado));
-        $this->escribir($this->rutaDatosConstancia, array_values($detalleActualizado));
-
-        return [
-            'Folio' => $folio,
-            'mensaje' => 'La solicitud fue cancelada correctamente.'
-        ];
     }
 
     private function generarSiguienteFolio(
@@ -544,13 +446,216 @@ class clsAlumnoSolicitudes
      * Sustituir el contenido del arreglo por el arreglo exacto
      * de calificaciones definido para este módulo.
      */
+    private function obtenerDatosAlumnoBase($datosConstancia)
+    {
+        foreach ($datosConstancia as $registro) {
+            if (!is_array($registro)) {
+                continue;
+            }
+
+            if (!isset($registro['Cuenta']) || trim((string) $registro['Cuenta']) === '') {
+                continue;
+            }
+
+            unset(
+                $registro['Folio'],
+                $registro['FechaEmision'],
+                $registro['Estado'],
+                $registro['Calificaciones']
+            );
+
+            return $registro;
+        }
+
+        throw new RuntimeException(
+            'No fue posible obtener los datos base del alumno para crear la solicitud.'
+        );
+    }
+
     private function obtenerCalificacionesPredefinidas()
     {
-        return [
-            /*
-             * Aquí va el arreglo de aproximadamente 30
-             * calificaciones proporcionado para la solicitud.
-             */];
+        return array(
+            array(
+                'Ciclo' => 'Julio-Diciembre 2026',
+                'Materia' => 'LOGROS Y EXPERIENCIAS. LENGUA EXTRANJERA',
+                'Calificacion' => '10',
+                'Creditos' => '5'
+            ),
+            array(
+                'Ciclo' => 'Julio-Diciembre 2026',
+                'Materia' => 'ÁLGEBRA LINEAL',
+                'Calificacion' => '8',
+                'Creditos' => '5'
+            ),
+            array(
+                'Ciclo' => 'Julio-Diciembre 2026',
+                'Materia' => 'SEXUALIDAD RESPONSABLE',
+                'Calificacion' => '10',
+                'Creditos' => '5'
+            ),
+            array(
+                'Ciclo' => 'Julio-Diciembre 2026',
+                'Materia' => 'DISEÑO DE BASES DE DATOS',
+                'Calificacion' => '8',
+                'Creditos' => '5'
+            ),
+            array(
+                'Ciclo' => 'Julio-Diciembre 2026',
+                'Materia' => 'PROGRAMACIÓN ORIENTADA A OBJETOS',
+                'Calificacion' => '9',
+                'Creditos' => '5'
+            ),
+            array(
+                'Ciclo' => 'Julio-Diciembre 2026',
+                'Materia' => 'FUNDAMENTOS ELECTRÓNICOS PARA LA COMPUTACIÓN',
+                'Calificacion' => '9',
+                'Creditos' => '5'
+            ),
+            array(
+                'Ciclo' => 'Julio-Diciembre 2026',
+                'Materia' => 'INGENIERÍA DE SOFTWARE',
+                'Calificacion' => '9',
+                'Creditos' => '5'
+            ),
+            array(
+                'Ciclo' => 'Enero-Junio 2025',
+                'Materia' => 'GRAFICACIÓN',
+                'Calificacion' => '9',
+                'Creditos' => '5'
+            ),
+            array(
+                'Ciclo' => 'Enero-Junio 2025',
+                'Materia' => 'PROGRAMACIÓN DE MICROPROCESADORES',
+                'Calificacion' => '9',
+                'Creditos' => '5'
+            ),
+            array(
+                'Ciclo' => 'Enero-Junio 2025',
+                'Materia' => 'ADMINISTRACIÓN DE BASES DE DATOS',
+                'Calificacion' => '9',
+                'Creditos' => '5'
+            ),
+            array(
+                'Ciclo' => 'Enero-Junio 2025',
+                'Materia' => 'GESTIÓN DE PROYECTOS INFORMÁTICOS',
+                'Calificacion' => '10',
+                'Creditos' => '5'
+            ),
+            array(
+                'Ciclo' => 'Enero-Junio 2025',
+                'Materia' => 'ESTADÍSTICA Y PROBABILIDAD',
+                'Calificacion' => '9',
+                'Creditos' => '5'
+            ),
+            array(
+                'Ciclo' => 'Enero-Junio 2025',
+                'Materia' => 'SALUD FÍSICA Y EMOCIONAL',
+                'Calificacion' => '10',
+                'Creditos' => '5'
+            ),
+            array(
+                'Ciclo' => 'Enero-Junio 2025',
+                'Materia' => 'DECISIONES PERSONALES. LENGUA EXTRANJERA',
+                'Calificacion' => '10',
+                'Creditos' => '5'
+            ),
+            array(
+                'Ciclo' => 'Julio-Diciembre 2025',
+                'Materia' => 'CAUSA Y EFECTO. LENGUA EXTRANJERA',
+                'Calificacion' => '9',
+                'Creditos' => '5'
+            ),
+            array(
+                'Ciclo' => 'Julio-Diciembre 2025',
+                'Materia' => 'ARTES VISUALES',
+                'Calificacion' => '9',
+                'Creditos' => '5'
+            ),
+            array(
+                'Ciclo' => 'Julio-Diciembre 2025',
+                'Materia' => 'SISTEMAS MULTIMEDIA',
+                'Calificacion' => '9',
+                'Creditos' => '5'
+            ),
+            array(
+                'Ciclo' => 'Julio-Diciembre 2025',
+                'Materia' => 'INTELIGENCIA ARTIFICIAL',
+                'Calificacion' => '9',
+                'Creditos' => '5'
+            ),
+            array(
+                'Ciclo' => 'Julio-Diciembre 2025',
+                'Materia' => 'COMUNICACIÓN ORAL',
+                'Calificacion' => '10',
+                'Creditos' => '5'
+            ),
+            array(
+                'Ciclo' => 'Julio-Diciembre 2025',
+                'Materia' => 'ORGANIZACIÓN DE COMPUTADORAS',
+                'Calificacion' => '9',
+                'Creditos' => '5'
+            ),
+            array(
+                'Ciclo' => 'Enero-Junio 2024',
+                'Materia' => 'BASES DE DATOS DISTRIBUIDAS',
+                'Calificacion' => '9',
+                'Creditos' => '5'
+            ),
+            array(
+                'Ciclo' => 'Enero-Junio 2024',
+                'Materia' => 'AUTÓMATAS Y COMPILADORES',
+                'Calificacion' => '9',
+                'Creditos' => '5'
+            ),
+            array(
+                'Ciclo' => 'Enero-Junio 2024',
+                'Materia' => 'SISTEMAS BASADOS EN CONOCIMIENTO',
+                'Calificacion' => '9',
+                'Creditos' => '5'
+            ),
+            array(
+                'Ciclo' => 'Enero-Junio 2024',
+                'Materia' => 'FUNDAMENTOS DE METODOLOGÍA DE LA INVESTIGACIÓN',
+                'Calificacion' => '10',
+                'Creditos' => '5'
+            ),
+            array(
+                'Ciclo' => 'Enero-Junio 2024',
+                'Materia' => 'MÚSICA',
+                'Calificacion' => '9',
+                'Creditos' => '5'
+            ),
+            array(
+                'Ciclo' => 'Enero-Junio 2024',
+                'Materia' => 'EN OTRAS PALABRAS... LENGUA EXTRANJERA',
+                'Calificacion' => '9',
+                'Creditos' => '5'
+            ),
+            array(
+                'Ciclo' => 'Julio-Diciembre 2026',
+                'Materia' => 'OPTATIVA I (APRENDIZAJE COLABORATIVO ASISTIDO POR COMPUTADORA)',
+                'Calificacion' => '9',
+                'Creditos' => '5'
+            ),
+            array(
+                'Ciclo' => 'Julio-Diciembre 2026',
+                'Materia' => 'ADMINISTRACIÓN DE LA FUNCIÓN INFORMÁTICA',
+                'Calificacion' => '10',
+                'Creditos' => '5'
+            ),
+            array(
+                'Ciclo' => 'Julio-Diciembre 2026',
+                'Materia' => 'SISTEMAS DE REALIDAD VIRTUAL',
+                'Calificacion' => '10',
+                'Creditos' => '5'
+            ),
+            array(
+                'Ciclo' => 'Julio-Diciembre 2026',
+                'Materia' => 'PROGRAMACIÓN WEB',
+                'Calificacion' => '10',
+                'Creditos' => '5'
+            )
+        );
     }
 
     /**
@@ -630,9 +735,12 @@ class clsAlumnoSolicitudes
      */
     private function normalizar($texto)
     {
-        return mb_strtolower(
-            trim((string) $texto),
-            'UTF-8'
-        );
+        $texto = trim((string) $texto);
+
+        if (function_exists('mb_strtolower')) {
+            return mb_strtolower($texto, 'UTF-8');
+        }
+
+        return strtolower($texto);
     }
 }

@@ -38,23 +38,23 @@
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="calificaciones" id="calificacionesSi"
-                                value="Sí" required>
+                                value="sí" required>
                             <label class="form-check-label" for="calificacionesSi">
                                 Sí
                             </label>
                         </div>
                         <div class="form-check form-check-inline"">
                             <input class=" form-check-input" type="radio" name="calificaciones" id="calificacionesNo"
-                            value="No">
+                            value="no">
                             <label class="form-check-label" for="calificacionesNo">
                                 No
                             </label>
                         </div>
                     </div>
 
-                    <div id="tablaCorroborarDatos" class="mb-3 d-none">
+                    <div id="contenedorTablaDatos" class="mb-3 d-none">
                         <label class="form-label fw-bold">La constancia contendrá los siguientes datos:</label>
-                        <table class="table table-striped-columns table-hover">
+                        <table id="tablaCorroborarDatos" class="table table-striped-columns table-hover">
                             <thead class="table-light">
                                 <tr>
                                     <th>Campo</th>
@@ -64,43 +64,43 @@
                             <tbody>
                                 <tr>
                                     <th scope="row" class="mark">Nombre</th>
-                                    <td id="nombreAlumno">Sergio</td>
+                                    <td id="nombreAlumno"> </td>
                                 </tr>
                                 <tr>
                                     <th scope="row" class="mark">Apellido Paterno</th>
-                                    <td id="apellidoPaterno">García</td>
+                                    <td id="apellidoPaterno"> </td>
                                 </tr>
                                 <tr>
                                     <th scope="row" class="mark">Apellido Materno</th>
-                                    <td id="apellidoMaterno">León</td>
+                                    <td id="apellidoMaterno"> </td>
                                 </tr>
                                 <tr>
                                     <th scope="row" class="mark">CURP</th>
-                                    <td id="curp">GASL031114HHGRNEF6</td>
+                                    <td id="curp"> </td>
                                 </tr>
                                 <tr>
                                     <th scope="row" class="mark">Unidad Académica</th>
-                                    <td id="unidadAcademica">Instituto de Ciencias Básicas e Ingeniería</td>
+                                    <td id="unidadAcademica"> </td>
                                 </tr>
                                 <tr>
                                     <th scope="row" class="mark">Programa Educativo</th>
-                                    <td id="programaEducativo">Licenciatura en Ciencias Computacionales (2010)</td>
+                                    <td id="programaEducativo"> </td>
                                 </tr>
                                 <tr>
                                     <th scope="row" class="mark">Número de cuenta</th>
-                                    <td id="numeroCuenta">401129</td>
+                                    <td id="numeroCuenta"> </td>
                                 </tr>
                                 <tr>
                                     <th scope="row" class="mark">Semestre</th>
-                                    <td id="semestre">9</td>
+                                    <td id="semestre"> </td>
                                 </tr>
                                 <tr>
                                     <th scope="row" class="mark">Calidad del Alumno</th>
-                                    <td id="calidadAlumno">Regular</td>
+                                    <td id="calidadAlumno"> </td>
                                 </tr>
                                 <tr>
                                     <th scope="row" class="mark">Promedio</th>
-                                    <td id="promedio">9.02</td>
+                                    <td id="promedio"> </td>
                                 </tr>
                             </tbody>
                         </table>

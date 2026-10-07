@@ -9,21 +9,34 @@ $accion = isset($_REQUEST['accion']) ? trim((string) $_REQUEST['accion']) : 'lis
 
 try {
     switch ($accion) {
+        //Acciones que despliegan datos dentro de tablas
         case 'listar':
+            
             $respuesta = $consulta->listar();
             break;
 
+        case 'mostrarDatosPersonales':
+
+            $respuesta = $consulta->mostrarDatosPersonales();
+            break;
+
+        //Acción que realiza búsquedas con base en el folio
         case 'consultar':
+
             $folio = isset($_REQUEST['folio']) ? $_REQUEST['folio'] : '';
             $respuesta = $consulta->consultarPorFolio($folio);
             break;
 
+        //Acción que realiza cambios al cancelar solicitudes
         case 'cancelar':
+
             $folio = isset($_POST['folio']) ? $_POST['folio'] : '';
             $respuesta = $consulta->cancelar($folio);
             break;
 
+        //Acción que realiza cambios al guardar solicitudes nuevas
         case 'guardar':
+
             $tipoFirma = isset($_POST['tipoFirma']) ? trim($_POST['tipoFirma']) : '';
             $calificaciones = isset($_POST['calificaciones']) ? trim($_POST['calificaciones']) : '';
             if ($tipoFirma === '') {
@@ -43,7 +56,7 @@ try {
         array('ok' => true, 'datos' => $respuesta),
         JSON_UNESCAPED_UNICODE
     );
-} catch (Exception $excepcion) {
+} catch (Throwable $excepcion) {
     http_response_code(400);
 
     echo json_encode(

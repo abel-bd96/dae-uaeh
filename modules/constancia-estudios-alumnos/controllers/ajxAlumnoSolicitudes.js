@@ -146,7 +146,7 @@
                     .join("");
             })
             .catch(function (e) {
-                mostrarMensaje(e.message || "No fue posible cargar el historial.", error);
+                mostrarMensaje(e.message || "No fue posible cargar el historial.", "error");
             });
         limpiarModal();
         //Cada vez que se actualizan los registros, muestra datos actualizados en el modal.
@@ -246,6 +246,9 @@
                 porcentaje = 100;
                 barra.classList.remove("bg-primary");
                 barra.classList.add("bg-success");
+                /*Revisar campos de ae_ciclo.json (dependiendo del id_kardex):
+                fechaSolicitudConstanciaTermino && fechaPeriodoVacacionalTermino cuál es mayor + 14 días, 23 horas y 59 minutos
+                deshabilitar btnConstanciaDigital*/
                 break;
 
             case "Solicitud Cancelada":
@@ -399,6 +402,7 @@
                     mostrarMensaje(e.message || "No fue posible cancelar la solicitud.", "error");
                 });
         });
+        //
     }
 
     document.addEventListener("DOMContentLoaded", function () {
@@ -415,6 +419,7 @@
             return;
         }
 
+        //Va sin "var" para poder funcionar correctamente
         modal = new bootstrap.Modal(elementoModal);
 
         cargarRegistros();
