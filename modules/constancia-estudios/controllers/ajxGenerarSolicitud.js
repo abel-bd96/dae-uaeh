@@ -66,6 +66,13 @@
         contenedor.textContent = texto || "";
         contenedor.className = "alert alert-" + (tipo || "info");
         contenedor.classList.remove("d-none");
+        if (contenedor._timeoutId) {
+            clearTimeout(contenedor._timeoutId);
+            }
+        contenedor._timeoutId = setTimeout(function () {
+            contenedor.classList.add("d-none");
+            contenedor.textContent = "";
+        }, 3000);
     }
     //Limpiar mensajes
     function limpiarMensaje(idContenedor) {
@@ -91,97 +98,131 @@
     }
 
     //filtros
-    function leerFiltros() {
-        return {
-            numeroCuenta: (document.getElementById("filtroNumeroCuenta").value || "").toLowerCase().trim(),
-            nombre: (document.getElementById("filtroNombre").value || "").toLowerCase().trim(),
-            estatus: (document.getElementById("filtroEstatus").value || "").trim(),
-            ciclo: (document.getElementById("filtroCiclo").value || "").toLowerCase().trim(),
-        };
+        function leerFiltros() {
+            return {
+                numeroCuenta: (document.getElementById("filtroNumeroCuenta").value || "").toLowerCase().trim(),
+                nombre: (document.getElementById("filtroNombre").value || "").toLowerCase().trim(),
+                estatus: (document.getElementById("filtroEstatus").value || "").toLowerCase().trim(),
+                ciclo: (document.getElementById("filtroCiclo").value || "").toLowerCase().trim(),
+            };
+        }
+
+        function aplicarFiltros() {
+            var f = leerFiltros();
+            return todosLosRegistros.filter(function (s) {
+                var ciclo = String(s.CicloEscolar || "")
+                    .toLowerCase()
+                    .trim();
+                var nc = String(s.NumeroCuenta || "")
+                    .toLowerCase()
+                    .trim();
+                var nom = String(s.NombreCompleto || "")
+                    .toLowerCase()
+                    .trim();
+                var est = String(s.Estatus || s.EstatusSolicitud || "")
+                    .toLowerCase()
+                    .trim();
+
+                //  comparamos en minúsculas
+                var fEst = String(f.estatus || "")
+                    .toLowerCase()
+                    .trim();
+
+                if (f.ciclo && ciclo.indexOf(f.ciclo) === -1) return false;
+                if (f.numeroCuenta && nc.indexOf(f.numeroCuenta) === -1) return false;
+                if (f.nombre && nom.indexOf(f.nombre) === -1) return false;
+                if (fEst && est !== fEst) return false;
+                return true;
+            });
+        }
+
+    //botones con accion segun el estatus
+    function generarBotones(s) {
+        var id = escapeHtml(s.id || s.idSolicitud || "");
+        var estatus = s.Estatus || s.EstatusSolicitud || "";
+        var botones = [];
+
+        // Si está cancelada: solo mostrar botones deshabilitados
+        if (estatus === "Cancelado") {
+            return (
+                '<button type="button" class="btn btn-sm btn-outline-secondary" disabled>' +
+                '<i class="bi bi-pencil"></i> Editar</button> ' +
+                '<button type="button" class="btn btn-sm btn-outline-secondary" disabled>' +
+                '<i class="bi bi-x-circle"></i> Cancelada</button>'
+            );
+        }
+
+        // Editar (siempre visible mientras no esté cancelada)
+        botones.push(
+            '<button type="button" class="btn btn-sm btn-outline-primary btn-editar" data-id="' +
+                id +
+                '">' +
+                '<i class="bi bi-pencil"></i> Editar</button>'
+        );
+
+        // Elaborar (solo si está Solicitado)
+        if (estatus === "Solicitado") {
+            botones.push(
+                '<button type="button" class="btn btn-sm btn-outline-info btn-elaborar" data-id="' +
+                    id +
+                    '">' +
+                    '<i class="bi bi-gear"></i> Elaborar</button>',
+            );
+        }
+
+        // Mandar a firma (solo si está En elaboración)
+        if (estatus === "En elaboración") {
+            botones.push(
+                '<button type="button" class="btn btn-sm btn-outline-warning btn-mandar-firma" data-id="' +
+                    id +
+                    '">' +
+                    '<i class="bi bi-pen"></i> Mandar a firma</button>',
+            );
+        }
+
+        // Cambiar estado (siempre disponible mientras no esté cancelada)
+        botones.push(
+            '<button type="button" class="btn btn-sm btn-outline-secondary btn-cambiar-estatus" data-id="' +
+                id +
+                '">' +
+                '<i class="bi bi-arrow-repeat"></i> Cambiar estado</button>',
+        );
+
+        // Cancelar (si no está Terminado ni Cancelado)
+        if (estatus !== "Terminado") {
+            botones.push(
+                '<button type="button" class="btn btn-sm btn-outline-danger btn-cancelar" data-id="' +
+                    id +
+                    '">' +
+                    '<i class="bi bi-x-circle"></i> Cancelar</button>',
+            );
+        }
+
+        return botones.join(" ");
     }
 
-    function aplicarFiltros() {
-        var f = leerFiltros();
-        return todosLosRegistros.filter(function (s) {
-            var ciclo = String(s.CicloEscolar || "").toLowerCase();
-            var nc = String(s.NumeroCuenta || "").toLowerCase();
-            var nom = String(s.NombreCompleto || "").toLowerCase();
-            var est = String(s.Estatus || s.EstatusSolicitud || "").toLowerCase();
-
-            if (f.ciclo && ciclo.indexOf(f.ciclo) === -1) return false;
-            if (f.numeroCuenta && nc.indexOf(f.numeroCuenta) === -1) return false;
-            if (f.nombre && nom.indexOf(f.nombre) === -1) return false;
-            if (f.estatus && est !== f.estatus) return false;
-            return true;
-        });
-    }
     function pintarTabla(registros) {
         var tbody = document.querySelector("#tablaSolicitudes tbody");
         if (!tbody) return;
 
         if (!registros.length) {
             tbody.innerHTML =
-                '<tr><td colspan="8" class="text-center text-muted py-4">' +
+                '<tr><td colspan="7" class="text-center text-muted py-4">' +
                 "No se encontraron solicitudes con los filtros aplicados." +
                 "</td></tr>";
             return;
         }
 
-        tbody.innerHTML = registros
-            .map(function (s) {
-                var id = escapeHtml(s.id || s.idSolicitud || "");
-                var estatus = s.Estatus || s.EstatusSolicitud || "";
-                var cancelada = estatus === "Cancelado";
-                var botones = "";
-
-                if (cancelada) {
-                    botones =
-                        '<button type="button" class="btn btn-sm btn-outline-secondary" disabled>' +
-                        '<i class="bi bi-pencil"></i> Editar' +
-                        "</button> " +
-                        '<button type="button" class="btn btn-sm btn-outline-secondary" disabled>' +
-                        '<i class="bi bi-x-circle"></i> Cancelada' +
-                        "</button>";
-                } else {
-                    botones =
-                        '<button type="button" class="btn btn-sm btn-outline-primary btn-editar" data-id="' +
-                        id +
-                        '">' +
-                        '<i class="bi bi-pencil"></i> Editar' +
-                        "</button> " +
-                        '<button type="button" class="btn btn-sm btn-outline-danger btn-cancelar" data-id="' +
-                        id +
-                        '">' +
-                        '<i class="bi bi-x-circle"></i> Cancelar' +
-                        "</button>";
-                }
-
+        tbody.innerHTML = registros.map(function (s) {
                 return (
                     "<tr>" +
-                    "<td>" +
-                    escapeHtml(s.fechaRegistro || "") +
-                    "</td>" +
-                    "<td>" +
-                    escapeHtml(s.CicloEscolar || "") +
-                    "</td>" +
-                    "<td>" +
-                    escapeHtml(s.NumeroCuenta || "") +
-                    "</td>" +
-                    "<td>" +
-                    escapeHtml(s.DatoAdicional || "") +
-                    "</td>" +
-                    "<td>" +
-                    escapeHtml(s.Observacion || "") +
-                    "</td>" +
-                    "<td>" +
-                    escapeHtml(s.NombreCompleto || "") +
-                    "</td>" +
-                    "<td>" +
-                    escapeHtml(estatus) +
-                    "</td>" +
-                    '<td class="text-end">' +
-                    botones +
-                    "</td>" +
+                    "<td>" + escapeHtml(s.fechaRegistro || "") + "</td>" +
+                    "<td>" + escapeHtml(s.CicloEscolar || "") +  "</td>" +
+                    "<td>" + escapeHtml(s.NumeroCuenta || "") +  "</td>" +
+                    "<td>" + escapeHtml(s.NombreCompleto || "") + "</td>" +
+                    "<td>" + escapeHtml(s.Estatus || "") + "</td>" +
+                    "<td>" + escapeHtml(s.DatoAdicional || "") + "</td>" +
+                    '<td class="text-end">' + generarBotones(s) + "</td>" +
                     "</tr>"
                 );
             })
@@ -189,6 +230,7 @@
     }
 
     function cargarSolicitudes() {
+        limpiarMensaje("mensajeSolicitud"); 
         consultar("listar")
             .then(function (solicitudes) {
                 todosLosRegistros = solicitudes || [];
@@ -199,36 +241,205 @@
             });
     }
 
-    function limpiarFiltros() {
-        document.getElementById("filtroNumeroCuenta").value = "";
-        document.getElementById("filtroNombre").value = "";
-        document.getElementById("filtroEstatus").value = "";
-        document.getElementById("filtroCiclo").value = "";
+        function limpiarFiltros() {
+            document.getElementById("filtroCiclo").value = "";
+            document.getElementById("filtroNumeroCuenta").value = "";
+            document.getElementById("filtroNombre").value = "";
+            document.getElementById("filtroEstatus").value = "";
 
-        todosLosRegistros = [];
-        document.querySelector("#tablaSolicitudes tbody").innerHTML =
-            '<tr><td colspan="8" class="text-center text-muted py-4">' +
-            "Seleccione los filtros y presione <strong>Buscar</strong> para ver resultados." +
-            "</td></tr>";
+            todosLosRegistros = [];
+            document.querySelector("#tablaSolicitudes tbody").innerHTML =
+                '<tr><td colspan="7" class="text-center text-muted py-4">' +
+                "Seleccione los filtros y presione <strong>Buscar</strong> para ver resultados." +
+                "</td></tr>";
+        }
+
+    //  MODAL GENÉRICO DE CONFIRMACIÓN
+    function abrirModal(opciones) {
+        var modalEl = document.getElementById("modalConfirmar");
+        if (!modalEl) {
+            // Fallback si no existe el modal
+            if (confirm(opciones.mensaje || "¿Continuar?")) {
+                opciones.onAceptar(null);
+            }
+            return;
+        }
+
+        var titulo   = document.getElementById("modalConfirmarTitulo");
+        var mensaje  = document.getElementById("modalConfirmarMensaje");
+        var selectWrap = document.getElementById("modalConfirmarSelectWrap");
+        var select   = document.getElementById("modalConfirmarSelect");
+        var btnOk    = document.getElementById("modalConfirmarAceptar");
+
+        titulo.textContent  = opciones.titulo  || "Confirmar acción";
+        mensaje.textContent = opciones.mensaje || "¿Está seguro?";
+
+        // Mostrar/ocultar el select
+        if (opciones.tipo === "select") {
+            selectWrap.classList.remove("d-none");
+            // Poblar las opciones
+            select.innerHTML = "";
+            (opciones.opciones || []).forEach(function (op) {
+                var opt = document.createElement("option");
+                opt.value = op;
+                opt.textContent = op;
+                select.appendChild(opt);
+            });
+            if (opciones.valorInicial) {
+                select.value = opciones.valorInicial;
+            }
+        } else {
+            selectWrap.classList.add("d-none");
+        }
+
+        // Botón de aceptar
+        var btnClass = opciones.btnClass || "btn-primary";
+        btnOk.className = "btn " + btnClass;
+        btnOk.textContent = opciones.btnTexto || "Aceptar";
+
+        // Clonar el botón para eliminar listeners previos
+        var btnOkClone = btnOk.cloneNode(true);
+        btnOk.parentNode.replaceChild(btnOkClone, btnOk);
+        btnOk = document.getElementById("modalConfirmarAceptar");
+
+        btnOkClone.addEventListener("click", function () {
+            var valor = opciones.tipo === "select" ? select.value : null;
+            // Cerrar modal
+            var modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+            modalInstance.hide();
+            // Ejecutar callback
+            opciones.onAceptar(valor);
+        });
+
+        var modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+        modalInstance.show();
     }
 
-    //  CANCELAR
+    // ============================================================
+    //  ACCIONES
+    // ============================================================
+
     function cancelarSolicitud(id) {
-        if (!confirm("¿Está seguro de cancelar esta solicitud? Esta acción no se puede deshacer.")) return;
-        solicitar({ accion: "cancelar", id: id })
-            .then(function () {
-                mostrarMensaje("La solicitud se canceló correctamente.", "success", "mensajeSolicitud");
-                cargarSolicitudes();
-            })
-            .catch(function (error) {
-                mostrarMensaje(error.message, "danger", "mensajeSolicitud");
-            });
+        abrirModal({
+            titulo: "Cancelar solicitud",
+            mensaje: "¿Está seguro de cancelar esta solicitud? Esta acción no se puede deshacer.",
+            btnTexto: "Sí, cancelar",
+            btnClass: "btn-danger",
+            onAceptar: function () {
+                solicitar({ accion: "cancelar", id: id })
+                    .then(function () {
+                        mostrarMensaje("La solicitud se canceló correctamente.", "success", "mensajeSolicitud");
+                        cargarSolicitudes();
+                    })
+                    .catch(function (error) {
+                        mostrarMensaje(error.message, "danger", "mensajeSolicitud");
+                    });
+            }
+        });
+    }
+
+    function elaborarSolicitud(id) {
+        abrirModal({
+            titulo: "Elaborar solicitud",
+            mensaje: "¿Marcar esta solicitud como 'En elaboración'?",
+            btnTexto: "Sí, elaborar",
+            btnClass: "btn-info",
+            onAceptar: function () {
+                solicitar({ accion: "elaborar", id: id })
+                    .then(function () {
+                        mostrarMensaje("La solicitud se marcó como En elaboración.", "success", "mensajeSolicitud");
+                        cargarSolicitudes();
+                    })
+                    .catch(function (error) {
+                        mostrarMensaje(error.message, "danger", "mensajeSolicitud");
+                    });
+            }
+        });
+    }
+
+    function mandarFirmaSolicitud(id) {
+        abrirModal({
+            titulo: "Mandar a firma",
+            mensaje: "¿Mandar esta solicitud a firma?",
+            btnTexto: "Sí, mandar",
+            btnClass: "btn-warning",
+            onAceptar: function () {
+                solicitar({ accion: "mandarFirma", id: id })
+                    .then(function () {
+                        mostrarMensaje("La solicitud se envió a firma.", "success", "mensajeSolicitud");
+                        cargarSolicitudes();
+                    })
+                    .catch(function (error) {
+                        mostrarMensaje(error.message, "danger", "mensajeSolicitud");
+                    });
+            }
+        });
+    }
+
+    function cambiarEstatusSolicitud(id) {
+        abrirModal({
+            titulo: "Cambiar estatus",
+            mensaje: "Seleccione el nuevo estatus para esta solicitud:",
+            tipo: "select",
+            opciones: ["Solicitado", "En elaboración", "En firma", "Terminado", "Cancelado"],
+            valorInicial: "En elaboración",
+            btnTexto: "Cambiar estatus",
+            btnClass: "btn-primary",
+            onAceptar: function (nuevoEstatus) {
+                if (!nuevoEstatus) return;
+                solicitar({ accion: "cambiarEstatus", id: id, estatus: nuevoEstatus })
+                    .then(function () {
+                        mostrarMensaje("El estatus se actualizó correctamente.", "success", "mensajeSolicitud");
+                        cargarSolicitudes();
+                    })
+                    .catch(function (error) {
+                        mostrarMensaje(error.message, "danger", "mensajeSolicitud");
+                    });
+            }
+        });
     }
 
     function editarSolicitud(id) {
+        // Editar no necesita confirmación, solo redirige
         limpiarMensaje();
-        window.location.href = "vtaCrearSolicitud.php?id=" + encodeURIComponent(id);
+        window.location.href = "?vta=solicitudNueva&id=" + encodeURIComponent(id);
     }
+
+        //  CAMBIO: CONFIRMAR CAMBIO DE ESTATUS
+        function confirmarCambiarEstatus() {
+            var id = document.getElementById("cambiarEstatusId").value;
+            var nuevo = document.getElementById("selectNuevoEstatus").value;
+            var errorDiv = document.getElementById("errorCambiarEstatus");
+
+            // Validar que se haya seleccionado algo
+            if (!nuevo) {
+                errorDiv.textContent = "Debe seleccionar un estatus.";
+                return;
+            }
+
+            errorDiv.textContent = "";
+
+            solicitar({ accion: "cambiarEstatus", id: id, estatus: nuevo })
+                .then(function () {
+                    // Cerrar el modal
+                    var modalEl = document.getElementById("modalCambiarEstatus");
+                    var modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+                    modal.hide();
+
+                    mostrarMensaje("El estatus se actualizó correctamente.", "success", "mensajeSolicitud");
+                    cargarSolicitudes();
+                })
+                .catch(function (error) {
+                    errorDiv.textContent = error.message;
+                });
+        }
+
+    function editarSolicitud(id) {
+        limpiarMensaje();
+        window.location.href = "?vta=solicitudNueva&id=" + encodeURIComponent(id);
+    }
+
+
 
     // MOSTRAR navegacion por PASOs
     function mostrarPaso(numero) {
@@ -311,51 +522,51 @@
                                 .join(" ")
                                 .trim();
 
-                            return (
-                                '<button type="button" ' +
-                                'class="list-group-item list-group-item-action" ' +
-                                'data-numero="' +
-                                escapeHtml(numero) +
-                                '"' +
-                                'data-nombrecompleto="' +
-                                escapeHtml(alumno.NombreCompleto || "") +
-                                '"' +
-                                'data-instituto="' +
-                                escapeHtml(alumno.Instituto || "") +
-                                '"' +
-                                'data-semestre="' +
-                                escapeHtml(alumno.Semestre || "") +
-                                '"' +
-                                'data-programa-educativo="' +
-                                escapeHtml(alumno.ProgramaEducativo || "") +
-                                '"' +
-                                'data-cicloescolar="' +
-                                escapeHtml(alumno.CicloEscolar || "") +
-                                '"' +
-                                ">" +
-                                "<strong>" +
-                                escapeHtml(numero) +
-                                "</strong>" +
-                                (nombreCompleto ? "<br><small>" + escapeHtml(nombreCompleto) + "</small>" : "") +
-                                (detalle ? '<br><small class="text-muted">' + escapeHtml(detalle) + "</small>" : "") +
-                                "</button>"
-                            );
+                        return (
+                            '<button type="button" ' +
+                            'class="list-group-item list-group-item-action" ' +
+                            'data-numero="' +
+                            escapeHtml(numero) +
+                            '" ' +
+                            'data-nombre-completo="' +
+                            escapeHtml(alumno.NombreCompleto || "") +
+                            '" ' +
+                            'data-instituto="' +
+                            escapeHtml(alumno.Instituto || "") +
+                            '" ' +
+                            'data-semestre="' +
+                            escapeHtml(alumno.Semestre || "") +
+                            '" ' +
+                            'data-programa-educativo="' +
+                            escapeHtml(alumno.ProgramaEducativo || "") +
+                            '" ' +
+                            'data-ciclo-escolar="' +
+                            escapeHtml(alumno.CicloEscolar || "") +
+                            '" ' +
+                            ">" +
+                            "<strong>" +
+                            escapeHtml(numero) +
+                            "</strong>" +
+                            (nombreCompleto ? "<br><small>" + escapeHtml(nombreCompleto) + "</small>" : "") +
+                            (detalle ? '<br><small class="text-muted">' + escapeHtml(detalle) + "</small>" : "") +
+                            "</button>"
+                        );
                         })
                         .join("") || '<div class="text-muted small">No se encontraron alumnos.</div>';
             })
             .catch(function (error) {
-                mostrarMensaje(error.message, "danger");
+                mostrarMensaje(error.message, "danger", "mensajeFormulario");
             });
     }
 
     // SELECCIONAR ALUMNO
     function seleccionarAlumno(elemento) {
-        var cicloEscolar = elemento.dataset.cicloescolar || "";
+        var cicloEscolar = elemento.dataset.cicloEscolar || ""; 
         var numero = elemento.dataset.numero || "";
-        var nombreCompleto = elemento.dataset.nombreCompleto || "";
+        var nombreCompleto = elemento.dataset.nombreCompleto || ""; 
         var instituto = elemento.dataset.instituto || "";
         var semestre = elemento.dataset.semestre || "";
-        var programaEducativo = elemento.dataset.programaEducativo || "";
+        var programaEducativo = elemento.dataset.programaEducativo || ""; 
 
         //Guardar datos
         document.getElementById("CicloEscolar").value = cicloEscolar;
@@ -474,6 +685,7 @@
             });
     }
     function iniciarFormulario() {
+        limpiarMensaje("mensajeFormulario");
         // Leer ?id= de la URL
         var params = new URLSearchParams(window.location.search);
         var id = params.get("id");
@@ -580,13 +792,13 @@
                 mostrarMensaje(
                     error.message || "Ocurrió un error al consultar la solicitud.",
                     "danger",
-                    "mensajeFormulario",
+                    "mensajeFormulario"
                 );
             });
     }
 
     function guardarSolicitud() {
-        limpiarMensajes();
+        limpiarMensaje("mensajeFormulario");
         var datos = datosFormulario();
 
         if (!datos.NumeroCuenta) {
@@ -606,7 +818,7 @@
                 );
 
                 setTimeout(function () {
-                    window.location.href = "vtaGenerarSolicitud.php";
+                    window.location.href = "?vta=index";
                 }, 1000);
             })
             .catch(function (error) {
@@ -616,29 +828,67 @@
 
     //  INICIALIZACIÓN LISTADO
     function iniciarListado() {
+        limpiarMensaje("mensajeSolicitud");
         document.getElementById("btnFiltrar")?.addEventListener("click", cargarSolicitudes);
         document.getElementById("btnLimpiarFiltros")?.addEventListener("click", limpiarFiltros);
 
         document.getElementById("tablaSolicitudes").addEventListener("click", function (evento) {
-                var btnEditar = evento.target.closest(".btn-editar");
-                if (btnEditar) {
-                    editarSolicitud(btnEditar.dataset.id);
-                    return;
-                }
+            var btnEditar = evento.target.closest(".btn-editar");
+            if (btnEditar) {
+                editarSolicitud(btnEditar.dataset.id);
+                return;
+            }
+            var btnElaborar = evento.target.closest(".btn-elaborar");
+            if (btnElaborar) {
+                elaborarSolicitud(btnElaborar.dataset.id);
+                return;
+            }
 
-                var btnCancelar = evento.target.closest(".btn-cancelar");
-                if (btnCancelar) cancelarSolicitud(btnCancelar.dataset.id);
-            });
+            var btnMandarFirma = evento.target.closest(".btn-mandar-firma");
+            if (btnMandarFirma) {
+                mandarFirmaSolicitud(btnMandarFirma.dataset.id);
+                return;
+            }
 
-    }
+            var btnCambiarEstatus = evento.target.closest(".btn-cambiar-estatus");
+            if (btnCambiarEstatus) {
+                cambiarEstatusSolicitud(btnCambiarEstatus.dataset.id);
+                return;
+            }
 
-    //  ARRANQUE SEGÚN PANTALLA
-    document.addEventListener("DOMContentLoaded", function () {
-        if (esPantallaFormulario()) {
-            iniciarFormulario();
-        } else if (esPantallaListado()) {
-            iniciarListado();
+            var btnCancelar = evento.target.closest(".btn-cancelar");
+            if (btnCancelar) {
+                cancelarSolicitud(btnCancelar.dataset.id);
+                return;
+            }
+        });
+
+        // botón "Aceptar" del modal
+        var btnConfirmar = document.getElementById("btnConfirmarCambiarEstatus");
+        if (btnConfirmar) {
+            btnConfirmar.addEventListener("click", confirmarCambiarEstatus);
         }
+
+        // Enter dentro del select para confirmar
+        var selectNuevo = document.getElementById("selectNuevoEstatus");
+        if (selectNuevo) {
+            selectNuevo.addEventListener("keydown", function (e) {
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                    confirmarCambiarEstatus();
+                }
+            });
+        }
+    }
+    
+
+        //  ARRANQUE SEGÚN PANTALLA
+        document.addEventListener("DOMContentLoaded", function () {
+            if (esPantallaFormulario()) {
+                iniciarFormulario();
+            } else if (esPantallaListado()) {
+                iniciarListado();
+            }
     });
 })();
 

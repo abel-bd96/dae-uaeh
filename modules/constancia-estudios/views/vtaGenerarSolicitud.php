@@ -4,7 +4,7 @@
             <p class="text-uppercase text-muted small mb-1">Emisión de constancias</p>
             <h1 class="h3 mb-0">Seguimiento de constancias</h1>
         </div>
-        <a href="vtaCrearSolicitud.php" class="btn btn-primary" id="btnNuevaSolicitud">
+        <a href="?vta=CrearSolicitud" class="btn btn-primary" id="btnNuevaSolicitud">
             <i class="bi bi-plus-lg"></i> Crear Solicitud
         </a>
     </div>
@@ -26,15 +26,16 @@
             </div>
 
                 <div class="col-md-2">
-                    <label for="filtroEstatus" class="form-label">Estatus</label>
-                    <select class="form-select" id="filtroEstatus">
-                        <option value="">Todos</option>
-                        <option value="Solicitado">Solicitado</option>
-                        <option value="En proceso">En proceso</option>
-                        <option value="Terminado">Terminado</option>
-                        <option value="Cancelado">Cancelado</option>
-                    </select>
-                </div>
+                <label for="filtroEstatus" class="form-label">Estatus</label>
+                <select class="form-select" id="filtroEstatus">
+                    <option value="">Todos</option>
+                    <option value="Solicitado">Solicitado</option>
+                    <option value="En elaboración">En elaboración</option>
+                    <option value="En firma">En firma</option>
+                    <option value="Terminado">Terminado</option>
+                    <option value="Cancelado">Cancelado</option>
+                </select>
+            </div>
 
             <div class="col-md-2">
                     <label for="filtroCiclo" class="form-label">Ciclo escolar</label>
@@ -65,16 +66,15 @@
                             <th>Fecha Solicitud</th>
                             <th>Ciclo Escolar</th>
                             <th>Número de Cuenta</th>
-                            <th>Dato Adicional</th>
-                            <th>Observación</th>
                             <th>Nombre Completo</th>
                             <th>Estatus Solicitud</th>
+                            <th>Dato Adicional</th>
                             <th class="text-end">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td colspan="8" class="text-center text-muted py-4">Seleccione los filtros y presione <strong>Buscar</strong> para ver resultados
+                            <td colspan="7" class="text-center text-muted py-4">Seleccione los filtros y presione <strong>Buscar</strong> para ver resultados
                                 </td>
                             </tr>
                         </tbody>
@@ -82,4 +82,33 @@
                 </div>
             </div>
         </div>
-    </main>
+    
+        <div class="modal fade" id="modalConfirmar" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalConfirmarTitulo">Confirmar acción</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="modalConfirmarMensaje" class="mb-3">¿Está seguro?</p>
+
+                    <div id="modalConfirmarSelectWrap" class="d-none">
+                        <label for="modalConfirmarSelect" class="form-label">Seleccione el nuevo estatus</label>
+                        <select class="form-select" id="modalConfirmarSelect">
+                            <option value="Solicitado">Solicitado</option>
+                            <option value="En elaboración">En elaboración</option>
+                            <option value="En firma">En firma</option>
+                            <option value="Terminado">Terminado</option>
+                            <option value="Cancelado">Cancelado</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="modalConfirmarAceptar">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>

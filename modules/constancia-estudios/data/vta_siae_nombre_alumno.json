@@ -1,32 +1,82 @@
 [
     {
+        "NumeroCuenta": "250122",
+        "NombreCompleto": "Petronilo Anastacio ",
+        "ApellidoPaterno": "",
+        "ApellidoMaterno": "",
+        "Instituto": "ICEA",
+        "Semestre": "Segundo",
+        "ProgramaEducativo": "Ingeniería en Sistemas",
+        "CicloEscolar": "Julio-Diciembre 2026"
+    },
+    {
+        "NumeroCuenta": "5621557",
+        "NombreCompleto": "Anastacio",
+        "ApellidoPaterno": "",
+        "ApellidoMaterno": "",
+        "Instituto": "ICEA",
+        "Semestre": "Segundo",
+        "ProgramaEducativo": "Ingeniería Industrial",
+        "CicloEscolar": "Julio-Diciembre 2026"
+    },
+    {
+        "NumeroCuenta": "255892",
+        "NombreCompleto": "Juan",
+        "ApellidoPaterno": "",
+        "ApellidoMaterno": "",
+        "Instituto": "ICEA",
+        "Semestre": "Segundo",
+        "ProgramaEducativo": "Ingeniería en Computación",
+        "CicloEscolar": "Julio-Diciembre 2026"
+    },
+    {
+        "NumeroCuenta": "405995",
+        "NombreCompleto": "Diego",
+        "ApellidoPaterno": "",
+        "ApellidoMaterno": "",
+        "Instituto": "ICEA",
+        "Semestre": "Segundo",
+        "ProgramaEducativo": "Ingeniería Civil",
+        "CicloEscolar": "Julio-Diciembre 2026"
+    },
+    {
+        "NumeroCuenta": "405999",
+        "NombreCompleto": "Diego",
+        "ApellidoPaterno": "",
+        "ApellidoMaterno": "",
+        "Instituto": "ICEA",
+        "Semestre": "Segundo",
+        "ProgramaEducativo": "Ingeniería Civil",
+        "CicloEscolar": "Julio-Diciembre 2026"
+    },
+    {
         "NumeroCuenta": "12345678",
-        "Nombre": "Krista",
+        "NombreCompleto": "Krista Osorio Monroy",
         "ApellidoPaterno": "Osorio",
         "ApellidoMaterno": "Monroy",
         "Instituto": "Instituto de Ciencias Básicas e Ingeniería",
         "Semestre": "8",
         "ProgramaEducativo": "Ingeniería en Sistemas Computacionales",
-        "Periodo": "Julio-Diciembre 2026"
+        "CicloEscolar": "Julio-Diciembre 2026"
     },
     {
         "NumeroCuenta": "87654321",
-        "Nombre": "María",
+        "NombreCompleto": "María Hernández López",
         "ApellidoPaterno": "Hernández",
         "ApellidoMaterno": "López",
         "Instituto": "Instituto de Ciencias de la Salud",
         "Semestre": "6",
         "ProgramaEducativo": "Licenciatura en Enfermería",
-        "Periodo": "Julio-Diciembre 2026"
+        "CicloEscolar": "Julio-Diciembre 2026"
     },
     {
         "NumeroCuenta": "11223344",
-        "Nombre": "Juan",
+        "NombreCompleto": "Juan García Martínez",
         "ApellidoPaterno": "García",
         "ApellidoMaterno": "Martínez",
         "Instituto": "Instituto de Ciencias Agropecuarias",
         "Semestre": "5",
         "ProgramaEducativo": "Ingeniería Agroindustrial",
-        "Periodo": "Julio-Diciembre 2026"
+        "CicloEscolar": "Julio-Diciembre 2026"
     }
 ]

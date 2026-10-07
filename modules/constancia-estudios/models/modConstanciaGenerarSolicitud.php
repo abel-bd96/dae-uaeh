@@ -46,6 +46,43 @@ try {
             }
             $respuesta = isset($resultado['datos']) ? $resultado['datos'] : $resultado;
             break;
+        case 'elaborar':
+            $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
+            $resultado = $consulta->elaborar($id);
+            if (isset($resultado['ok']) && $resultado['ok'] === false) {
+                throw new Exception(
+                    isset($resultado['mensaje']) ? $resultado['mensaje'] : 'No fue posible elaborar la solicitud.'
+                );
+            }
+            $respuesta = isset($resultado['datos']) ? $resultado['datos'] : $resultado;
+            break;
+
+        case 'mandarFirma':
+            $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
+            $resultado = $consulta->mandarFirma($id);
+            if (isset($resultado['ok']) && $resultado['ok'] === false) {
+                throw new Exception(
+                    isset($resultado['mensaje']) ? $resultado['mensaje'] : 'No fue posible mandar a firma la solicitud.'
+                );
+            }
+            $respuesta = isset($resultado['datos']) ? $resultado['datos'] : $resultado;
+            break;
+
+        case 'cambiarEstatus':
+            $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
+            $nuevoEstatus = isset($_REQUEST['estatus']) ? $_REQUEST['estatus'] : '';
+            $resultado = $consulta->cambiarEstatus($id, $nuevoEstatus);
+            if (isset($resultado['ok']) && $resultado['ok'] === false) {
+                throw new Exception(
+                    isset($resultado['mensaje']) ? $resultado['mensaje'] : 'No fue posible cambiar el estatus.'
+                );
+            }
+            $respuesta = isset($resultado['datos']) ? $resultado['datos'] : $resultado;
+            break;
+
+        case 'estatusValidos':
+            $respuesta = $consulta->estatusValidos();
+            break;
         case 'observacion':
             $respuesta = $consulta->consultarObservacion();
             break;

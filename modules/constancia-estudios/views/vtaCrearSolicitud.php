@@ -5,12 +5,12 @@
             <p class="text-uppercase text-muted small mb-1">Emisión de constancias</p>
             <h1 class="h3 mb-0" id="tituloFormularioSolicitud">Nueva Solicitud</h1>
         </div>
-        <a href="vtaGenerarSolicitud.php" class="btn btn-outline-secondary" id="btnRegresarListado">
-            <i class="bi bi-arrow-left"></i> Regresar al listado
+        <a href="?vta=index" class="btn btn-outline-secondary" id="btnRegresarListado">
+            <i class="bi bi-arrow-left"></i> Regresar
         </a>
     </div>
 
-    <div id="mensajeFormulario" class="alert" role="alert"></div>
+    <div id="mensajeFormulario" class="alert d-none" role="alert"></div>
 
     <div class="card shadow-sm border-0">
         <div class="card-body">
