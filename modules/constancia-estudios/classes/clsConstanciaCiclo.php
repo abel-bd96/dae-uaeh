@@ -9,7 +9,7 @@ class clsConstanciaCiclo
 
     /**
      * Constructor de la clase
-    */
+     */
     public function __construct()
     {
         $directorioDatos = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR;
@@ -21,12 +21,16 @@ class clsConstanciaCiclo
 
     public function consultarCiclos($texto = '')
     {
-        $ciclosSiae = $this->leer($this->rutaCiclos);
         $texto = $this->normalizar($texto);
+        if ($texto === '') {
+            return array();
+        }
+
+        $ciclosSiae = $this->leer($this->rutaCiclos);
         $resultado = array();
 
         foreach ($ciclosSiae as $ciclo) {
-            if ($texto === '' || strpos($this->normalizar($ciclo['nombre']), $texto) !== false) {
+            if ($this->normalizar($ciclo['nombre']) === $texto) {
                 $resultado[] = $ciclo;
             }
         }
@@ -428,8 +432,9 @@ class clsConstanciaCiclo
 
     private function nombreCicloSiae($nombre)
     {
+        $nombreNormalizado = $this->normalizar($nombre);
         foreach ($this->leer($this->rutaCiclos) as $ciclo) {
-            if ($ciclo['nombre'] === $nombre) {
+            if ($this->normalizar($ciclo['nombre']) === $nombreNormalizado) {
                 return $ciclo['nombre'];
             }
         }

@@ -489,6 +489,49 @@
     border-bottom: 1px solid var(--surface-border);
 }
 
+.ciclos-form__cycle-context {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.35rem 0.6rem;
+    margin-bottom: 1rem;
+    padding: 0.7rem 0.9rem;
+    color: #4d4d4d;
+    background-color: var(--white-color);
+    border: 1px solid var(--surface-border);
+    border-radius: 0.35rem;
+}
+
+.ciclos-form__cycle-context > .bi,
+.ciclos-form__cycle-context strong {
+    color: var(--primary-color);
+}
+
+.ciclos-form__cycle-label {
+    color: #6c757d;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.ciclos-form__notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    margin-bottom: 1.25rem;
+    padding: 0.85rem 1rem;
+    color: #4d4d4d;
+    background-color: var(--white-color);
+    border: 1px solid var(--surface-border);
+    border-left: 4px solid var(--primary-color);
+    border-radius: 0.35rem;
+}
+
+.ciclos-form__notice .bi {
+    margin-top: 0.15rem;
+    color: var(--primary-color);
+}
+
 .ciclos-form-page .form-label,
 .ciclos-modal .form-label {
     color: #4d4d4d;

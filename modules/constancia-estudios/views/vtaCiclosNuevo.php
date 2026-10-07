@@ -19,17 +19,41 @@ include './sidebar_constancias.php';
         <div class="progress ciclos-form__progress mb-4" aria-label="Progreso del formulario">
             <div class="progress-bar" id="barraPaso" role="progressbar" style="width: 25%" aria-valuemin="0" aria-valuemax="100" aria-valuenow="25"></div>
         </div>
+        <div class="ciclos-form__cycle-context d-none" id="cicloContexto" aria-live="polite">
+            <i class="bi bi-calendar2-week" aria-hidden="true"></i>
+            <span class="ciclos-form__cycle-label">Ciclo en configuración</span>
+            <strong id="nombreCicloContexto"></strong>
+        </div>
+        <div class="ciclos-form__notice d-none" id="leyendaTipoCiclo" role="status" aria-live="polite">
+            <i class="bi bi-info-circle-fill" aria-hidden="true"></i>
+            <span id="textoLeyendaTipoCiclo"></span>
+        </div>
 
         <section class="paso-ciclo" data-paso="1">
             <h2 class="h5">Seleccionar ciclo de SIAE</h2>
-            <label for="buscarCiclo" class="form-label">Buscar por nombre</label>
-            <input type="search" class="form-control form-control-lg mb-3" id="buscarCiclo" placeholder="Ej. 2026" autocomplete="off">
-            <div id="resultadosCiclos" class="list-group"></div>
+            <label for="buscarCiclo" class="form-label">Nombre exacto del ciclo</label>
+            <div class="input-group mb-3">
+                <input type="search" class="form-control form-control-lg" id="buscarCiclo" placeholder="Ej. Enero-Junio 2026" autocomplete="off" aria-describedby="ayudaBusquedaCiclo">
+                <button type="button" class="btn btn-primary-uaeh" id="btnBuscarCiclo"><i class="bi bi-search" aria-hidden="true"></i> Buscar</button>
+            </div>
+            <p class="form-text" id="ayudaBusquedaCiclo">Escribe el nombre completo. La búsqueda no distingue mayúsculas y minúsculas.</p>
+            <div id="resultadosCiclos" class="list-group" aria-live="polite"></div>
             <input type="hidden" name="nombre" id="cicloNombre">
             <div class="invalid-feedback d-block" id="errorCiclo"></div>
         </section>
 
         <section class="paso-ciclo d-none" data-paso="2">
+            <h2 class="h5">Programas educativos</h2>
+            <p class="small text-muted" id="ayudaPlanes">Selecciona uno o varios programas educativos para asociarlos a esta configuración.</p>
+            <div id="selectorPlanes" class="d-none">
+                <label for="buscarPlan" class="form-label">Buscar por nombre</label>
+                <input type="search" class="form-control mb-3" id="buscarPlan" placeholder="Ej. Derecho" autocomplete="off">
+                <div id="resultadosPlanes" class="list-group"></div>
+                <div class="invalid-feedback d-block" id="errorPlanes"></div>
+            </div>
+        </section>
+
+        <section class="paso-ciclo d-none" data-paso="3">
             <h2 class="h5 mb-3">Configurar fechas</h2>
             <div class="row g-3">
                 <div class="col-md-6"><label class="form-label" for="fechaPeriodoEstudiosInicio">Inicio periodo de estudios</label><input type="date" class="form-control fecha-ciclo" name="fechaPeriodoEstudiosInicio" id="fechaPeriodoEstudiosInicio"></div>
@@ -40,17 +64,6 @@ include './sidebar_constancias.php';
                 <div class="col-md-6"><label class="form-label" for="fechaSolicitudConstanciaTermino">Fin periodo de solicitud</label><input type="date" class="form-control fecha-ciclo" name="fechaSolicitudConstanciaTermino" id="fechaSolicitudConstanciaTermino"></div>
             </div>
             <div class="invalid-feedback d-block" id="errorFechas"></div>
-        </section>
-
-        <section class="paso-ciclo d-none" data-paso="3">
-            <h2 class="h5">Programas educativos</h2>
-            <p class="small text-muted" id="ayudaPlanes">La primera configuración del ciclo es GENERAL y no requiere programas.</p>
-            <div id="selectorPlanes" class="d-none">
-                <label for="buscarPlan" class="form-label">Buscar por nombre</label>
-                <input type="search" class="form-control mb-3" id="buscarPlan" placeholder="Ej. Derecho" autocomplete="off">
-                <div id="resultadosPlanes" class="list-group"></div>
-                <div class="invalid-feedback d-block" id="errorPlanes"></div>
-            </div>
         </section>
 
         <section class="paso-ciclo d-none" data-paso="4">

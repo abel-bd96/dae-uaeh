@@ -3,7 +3,10 @@
 
     var endpoint = "../models/modConstanciaCiclo.php";
     var paso = 1;
+    var pasosActivos = [1, 2, 3, 4];
     var modoEdicion = false;
+    var tipoCicloCargando = false;
+    var versionBusquedaCiclo = 0;
     var planesSeleccionados = [];
     var configuraciones = [];
     var orden = { campo: "", direccion: 1 };
@@ -40,13 +43,14 @@
 
     function consultar(accion, texto) {
         var url = endpoint + "?accion=" + encodeURIComponent(accion) + "&texto=" + encodeURIComponent(texto || "");
-        return fetch(url)
-            .then(function (respuesta) {
-                return respuesta.json();
-            })
-            .then(function (cuerpo) {
+        return fetch(url).then(function (respuesta) {
+            return respuesta.json().then(function (cuerpo) {
+                if (!respuesta.ok || !cuerpo.ok) {
+                    throw new Error(cuerpo.mensaje || "No fue posible realizar la consulta.");
+                }
                 return cuerpo.datos || [];
             });
+        });
     }
 
     function consultarConfiguraciones(filtros) {
@@ -307,24 +311,56 @@
         renderizarConfiguraciones();
     }
 
-    function pintarCiclos(texto) {
-        consultar("ciclos", texto).then(function (ciclos) {
-            document.getElementById("resultadosCiclos").innerHTML =
-                ciclos
-                    .map(function (ciclo) {
-                        var seleccionado = ciclo.nombre === document.getElementById("cicloNombre").value;
-                        return (
-                            '<button type="button" class="list-group-item list-group-item-action ' +
-                            (seleccionado ? "active" : "") +
-                            '" data-nombre="' +
-                            escapeHtml(ciclo.nombre) +
-                            '">' +
-                            escapeHtml(ciclo.nombre) +
-                            "</button>"
-                        );
-                    })
-                    .join("") || '<div class="text-muted small">No se encontraron ciclos.</div>';
-        });
+    function buscarCicloExacto() {
+        var texto = document.getElementById("buscarCiclo").value.trim();
+        var resultados = document.getElementById("resultadosCiclos");
+        var boton = document.getElementById("btnBuscarCiclo");
+        document.getElementById("cicloNombre").value = "";
+        document.getElementById("cicloTipo").value = "";
+        document.getElementById("btnSiguiente").disabled = true;
+        document.getElementById("selectorPlanes").classList.add("d-none");
+        document.getElementById("errorCiclo").textContent = "";
+        document.getElementById("errorPlanes").textContent = "";
+        planesSeleccionados = [];
+        pasosActivos = [1, 2, 3, 4];
+
+        if (!texto) {
+            resultados.innerHTML = '<div class="text-muted small">Escribe el nombre completo del ciclo.</div>';
+            return;
+        }
+
+        var version = ++versionBusquedaCiclo;
+        boton.disabled = true;
+        resultados.innerHTML = '<div class="text-muted small">Buscando ciclo...</div>';
+        consultar("ciclos", texto)
+            .then(function (ciclos) {
+                if (version !== versionBusquedaCiclo) {
+                    return;
+                }
+                resultados.innerHTML =
+                    ciclos
+                        .map(function (ciclo) {
+                            return (
+                                '<button type="button" class="list-group-item list-group-item-action" data-nombre="' +
+                                escapeHtml(ciclo.nombre) +
+                                '">' +
+                                escapeHtml(ciclo.nombre) +
+                                "</button>"
+                            );
+                        })
+                        .join("") ||
+                    '<div class="text-muted small">No se encontró un ciclo con ese nombre exacto.</div>';
+            })
+            .catch(function (error) {
+                if (version === versionBusquedaCiclo) {
+                    resultados.innerHTML = '<div class="small text-danger">' + escapeHtml(error.message) + "</div>";
+                }
+            })
+            .then(function () {
+                if (version === versionBusquedaCiclo) {
+                    boton.disabled = false;
+                }
+            });
     }
 
     function pintarPlanes(texto) {
@@ -359,32 +395,47 @@
 
                 document.getElementById("cicloTipo").value = existe ? "ESPECIFICO" : "GENERAL";
                 selector.classList.toggle("d-none", !existe);
+                pasosActivos = existe ? [1, 2, 3, 4] : [1, 3, 4];
                 ayuda.textContent = existe
-                    ? "El ciclo ya tiene una configuración general. Seleccione uno o varios programas para registrar una configuración ESPECÍFICA."
-                    : "La primera configuración del ciclo es GENERAL y no requiere programas.";
+                    ? "Selecciona uno o varios programas educativos para asociarlos a esta configuración."
+                    : "La configuración GENERAL no requiere seleccionar programas educativos.";
+                document.getElementById("textoLeyendaTipoCiclo").textContent = existe
+                    ? "Este ciclo ya cuenta con una configuración GENERAL. Esta nueva configuración será ESPECÍFICA y aplicará únicamente a los programas seleccionados."
+                    : "Como aún no hay una configuración para este ciclo, esta será la primera y se registrará como GENERAL. Aplicará a todos los programas educativos.";
 
-                if (existe) {
-                    pintarPlanes("");
-                } else {
-                    planesSeleccionados = [];
-                }
+                planesSeleccionados = [];
+                tipoCicloCargando = false;
+                document.getElementById("btnSiguiente").disabled = false;
+                mostrarPaso(1);
             })
             .catch(function (error) {
+                tipoCicloCargando = false;
+                document.getElementById("btnSiguiente").disabled = false;
                 document.getElementById("errorCiclo").textContent = error.message;
             });
     }
 
     function mostrarPaso(numero) {
         paso = numero;
+        var posicion = pasosActivos.indexOf(paso);
+        var totalPasos = pasosActivos.length;
+        var progreso = Math.round(((posicion + 1) / totalPasos) * 100);
+        var mostrarLeyenda =
+            (document.getElementById("cicloTipo").value === "GENERAL" && paso === 3) ||
+            (document.getElementById("cicloTipo").value === "ESPECIFICO" && paso === 2);
+        var nombreCiclo = document.getElementById("cicloNombre").value;
+        document.getElementById("nombreCicloContexto").textContent = nombreCiclo;
+        document.getElementById("cicloContexto").classList.toggle("d-none", paso === 1 || !nombreCiclo);
+        document.getElementById("leyendaTipoCiclo").classList.toggle("d-none", !mostrarLeyenda);
         document.querySelectorAll(".paso-ciclo").forEach(function (seccion) {
             seccion.classList.toggle("d-none", Number(seccion.dataset.paso) !== paso);
         });
-        document.getElementById("subtituloModalCiclo").textContent = "Paso " + paso + " de 4";
-        document.getElementById("barraPaso").style.width = paso * 25 + "%";
-        document.getElementById("barraPaso").setAttribute("aria-valuenow", String(paso * 25));
-        document.getElementById("btnAnterior").classList.toggle("invisible", paso === 1);
-        document.getElementById("btnSiguiente").classList.toggle("d-none", paso === 4);
-        document.getElementById("btnGuardar").classList.toggle("d-none", paso !== 4);
+        document.getElementById("subtituloModalCiclo").textContent = "Paso " + (posicion + 1) + " de " + totalPasos;
+        document.getElementById("barraPaso").style.width = progreso + "%";
+        document.getElementById("barraPaso").setAttribute("aria-valuenow", String(progreso));
+        document.getElementById("btnAnterior").classList.toggle("invisible", posicion === 0);
+        document.getElementById("btnSiguiente").classList.toggle("d-none", posicion === totalPasos - 1);
+        document.getElementById("btnGuardar").classList.toggle("d-none", posicion !== totalPasos - 1);
         if (paso === 4) {
             actualizarResumen();
         }
@@ -392,11 +443,21 @@
 
     function validarPaso() {
         var mensaje = "";
-        if (paso === 1 && !document.getElementById("cicloNombre").value) {
-            mensaje = "Debe seleccionar un ciclo existente en SIAE.";
+        if (paso === 1) {
+            if (!document.getElementById("cicloNombre").value) {
+                mensaje = "Busca y selecciona un ciclo existente en SIAE.";
+            } else if (tipoCicloCargando || !document.getElementById("cicloTipo").value) {
+                mensaje = "Espera a que se determine el tipo de configuración.";
+            }
             document.getElementById("errorCiclo").textContent = mensaje;
         }
-        if (paso === 2) {
+        if (paso === 2 && document.getElementById("cicloTipo").value === "ESPECIFICO") {
+            if (!planesSeleccionados.length) {
+                mensaje = "Seleccione al menos un programa educativo.";
+            }
+            document.getElementById("errorPlanes").textContent = mensaje;
+        }
+        if (paso === 3) {
             for (var i = 0; i < camposFecha.length; i++) {
                 if (!document.getElementById(camposFecha[i]).value) {
                     mensaje = "Todas las fechas son obligatorias.";
@@ -415,14 +476,6 @@
                 mensaje = "Cada fecha de inicio debe ser menor o igual a su término.";
             }
             document.getElementById("errorFechas").textContent = mensaje;
-        }
-        if (
-            paso === 3 &&
-            document.getElementById("selectorPlanes").classList.contains("d-none") === false &&
-            !planesSeleccionados.length
-        ) {
-            mensaje = "Seleccione al menos un programa educativo.";
-            document.getElementById("errorPlanes").textContent = mensaje;
         }
         return !mensaje;
     }
@@ -443,14 +496,26 @@
         document.getElementById("formCiclo").reset();
         document.getElementById("cicloId").value = "";
         document.getElementById("cicloTipo").value = "";
+        document.getElementById("buscarCiclo").value = "";
         document.getElementById("tituloModalCiclo").textContent = "Nuevo ciclo";
         document.getElementById("selectorPlanes").classList.add("d-none");
+        document.getElementById("btnSiguiente").disabled = false;
+        document.getElementById("resultadosCiclos").innerHTML =
+            '<div class="text-muted small">Escribe el nombre completo del ciclo y selecciona Buscar.</div>';
         document.getElementById("ayudaPlanes").textContent =
             "La primera configuración del ciclo es GENERAL y no requiere programas.";
         document.getElementById("errorCiclo").textContent = "";
         document.getElementById("errorFechas").textContent = "";
         document.getElementById("errorPlanes").textContent = "";
-        pintarCiclos("");
+        document.getElementById("textoLeyendaTipoCiclo").textContent = "";
+        document.getElementById("leyendaTipoCiclo").classList.add("d-none");
+        tipoCicloCargando = false;
+        versionBusquedaCiclo++;
+        document.getElementById("btnBuscarCiclo").disabled = false;
+        document.getElementById("resultadosCiclos").innerHTML =
+            '<div class="text-muted small">Escribe el nombre completo del ciclo y selecciona Buscar.</div>';
+        pasosActivos = [1, 2, 3, 4];
+        document.getElementById("btnSiguiente").disabled = true;
         mostrarPaso(1);
     }
 
@@ -469,18 +534,29 @@
                 document.getElementById("cicloId").value = id;
                 document.getElementById("cicloTipo").value = tipo;
                 document.getElementById("cicloNombre").value = configuracion.nombre;
+                document.getElementById("buscarCiclo").value = configuracion.nombre;
+                tipoCicloCargando = false;
                 document.getElementById("tituloModalCiclo").textContent = "Editar configuración " + tipo;
                 document.getElementById("selectorPlanes").classList.toggle("d-none", tipo === "GENERAL");
+                pasosActivos = tipo === "GENERAL" ? [1, 3, 4] : [1, 2, 3, 4];
                 document.getElementById("ayudaPlanes").textContent =
                     tipo === "GENERAL"
-                        ? "La configuración general aplica a los programas sin configuración específica."
-                        : "Puede modificar los programas asociados a esta configuración.";
+                        ? "La configuración GENERAL aplica a todos los programas sin una configuración específica."
+                        : "Modifica los programas asociados a esta configuración específica.";
+                document.getElementById("textoLeyendaTipoCiclo").textContent =
+                    tipo === "GENERAL"
+                        ? "Estás editando la configuración GENERAL de este ciclo. Aplica a todos los programas sin una configuración específica."
+                        : "Estás editando una configuración ESPECÍFICA. Solo aplicará a los programas educativos asociados.";
                 camposFecha.forEach(function (campo) {
                     document.getElementById(campo).value = configuracion[campo];
                 });
                 document.querySelector('input[name="estado"][value="' + configuracion.estado + '"]').checked = true;
-                pintarPlanes("");
-                mostrarPaso(2);
+                if (tipo === "ESPECIFICO") {
+                    pintarPlanes("");
+                    mostrarPaso(2);
+                } else {
+                    mostrarPaso(3);
+                }
             })
             .catch(function (error) {
                 mostrarMensaje(error.message, "danger");
@@ -579,8 +655,28 @@
             return;
         }
 
-        document.getElementById("buscarCiclo").addEventListener("input", function () {
-            pintarCiclos(this.value);
+        var campoCiclo = document.getElementById("buscarCiclo");
+        campoCiclo.addEventListener("input", function () {
+            versionBusquedaCiclo++;
+            document.getElementById("btnBuscarCiclo").disabled = false;
+            document.getElementById("cicloNombre").value = "";
+            document.getElementById("cicloTipo").value = "";
+            document.getElementById("btnSiguiente").disabled = true;
+            document.getElementById("selectorPlanes").classList.add("d-none");
+            document.getElementById("resultadosCiclos").innerHTML =
+                '<div class="text-muted small">Escribe el nombre completo del ciclo y selecciona Buscar.</div>';
+            document.getElementById("errorCiclo").textContent = "";
+            planesSeleccionados = [];
+            tipoCicloCargando = false;
+            pasosActivos = [1, 2, 3, 4];
+            mostrarPaso(1);
+        });
+        document.getElementById("btnBuscarCiclo").addEventListener("click", buscarCicloExacto);
+        campoCiclo.addEventListener("keydown", function (evento) {
+            if (evento.key === "Enter") {
+                evento.preventDefault();
+                buscarCicloExacto();
+            }
         });
         document.getElementById("buscarPlan").addEventListener("input", function () {
             pintarPlanes(this.value);
@@ -591,9 +687,11 @@
                 return;
             }
             document.getElementById("cicloNombre").value = opcion.dataset.nombre;
+            tipoCicloCargando = true;
+            document.getElementById("btnSiguiente").disabled = true;
             document.getElementById("errorCiclo").textContent = "";
+            document.getElementById("errorPlanes").textContent = "";
             actualizarTipoDelCiclo(opcion.dataset.nombre);
-            pintarCiclos(document.getElementById("buscarCiclo").value);
         });
         document.getElementById("resultadosPlanes").addEventListener("change", function (evento) {
             if (!evento.target.classList.contains("plan-ciclo")) {
@@ -608,18 +706,21 @@
                     return plan !== id;
                 });
             }
+            document.getElementById("errorPlanes").textContent = "";
         });
         document.getElementById("btnSiguiente").addEventListener("click", function () {
             if (!validarPaso()) {
                 return;
             }
-            mostrarPaso(Math.min(4, paso + 1));
-            if (paso === 3 && !document.getElementById("selectorPlanes").classList.contains("d-none")) {
+            var posicion = pasosActivos.indexOf(paso);
+            mostrarPaso(pasosActivos[posicion + 1]);
+            if (paso === 2 && document.getElementById("cicloTipo").value === "ESPECIFICO") {
                 pintarPlanes("");
             }
         });
         document.getElementById("btnAnterior").addEventListener("click", function () {
-            mostrarPaso(Math.max(1, paso - 1));
+            var posicion = pasosActivos.indexOf(paso);
+            mostrarPaso(pasosActivos[posicion - 1]);
         });
         formulario.addEventListener("submit", function (evento) {
             evento.preventDefault();
