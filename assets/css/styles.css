@@ -364,12 +364,11 @@
 }
 
 .ciclos-table th {
-    font-size: 0.82rem;
     font-weight: 700;
 }
 
 .ciclos-table thead th {
-    border-bottom: 0;
+    border-bottom: 4px solid var(--secondary-color);
 }
 
 .ciclos-table .btn-ordenar {

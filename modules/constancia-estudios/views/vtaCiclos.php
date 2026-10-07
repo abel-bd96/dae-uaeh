@@ -58,12 +58,12 @@ include './sidebar_constancias.php';
         <table class="table table-hover align-middle mb-0 ciclos-table fs-5" id="tablaCiclos">
             <thead>
                 <tr>
-                    <th scope="col"><button type="button" class="btn btn-link p-0 text-reset text-decoration-none btn-ordenar" data-ordenar="nombre" aria-label="Ordenar por ciclo">Ciclo <span class="indicador-orden" aria-hidden="true"></span></button></th>
-                    <th scope="col"><button type="button" class="btn btn-link p-0 text-reset text-decoration-none btn-ordenar" data-ordenar="tipo" aria-label="Ordenar por tipo">Tipo <span class="indicador-orden" aria-hidden="true"></span></button></th>
-                    <th scope="col">Programas educativos</th>
-                    <th scope="col">Periodo de solicitud</th>
-                    <th scope="col"><button type="button" class="btn btn-link p-0 text-reset text-decoration-none btn-ordenar" data-ordenar="estado" aria-label="Ordenar por estado">Estado <span class="indicador-orden" aria-hidden="true"></span></button></th>
-                    <th scope="col" class="text-end">Acciones</th>
+                    <th scope="col" class="fs-5"><button type="button" class="btn btn-link p-0 text-reset text-decoration-none btn-ordenar" data-ordenar="nombre" aria-label="Ordenar por ciclo">Ciclo <span class="indicador-orden" aria-hidden="true"></span></button></th>
+                    <th scope="col" class="fs-5"><button type="button" class="btn btn-link p-0 text-reset text-decoration-none btn-ordenar" data-ordenar="tipo" aria-label="Ordenar por tipo">Tipo <span class="indicador-orden" aria-hidden="true"></span></button></th>
+                    <th scope="col" class="fs-5">Programas educativos</th>
+                    <th scope="col" class="fs-5">Periodo de solicitud</th>
+                    <th scope="col" class="fs-5"><button type="button" class="btn btn-link p-0 text-reset text-decoration-none btn-ordenar" data-ordenar="estado" aria-label="Ordenar por estado">Estado <span class="indicador-orden" aria-hidden="true"></span></button></th>
+                    <th scope="col" class="fs-5 text-end">Acciones</th>
                 </tr>
             </thead>
             <tbody></tbody>
