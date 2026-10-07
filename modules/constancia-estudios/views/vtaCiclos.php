@@ -16,31 +16,40 @@ include './sidebar_constancias.php';
     <div id="mensajeCiclos" class="alert d-none" role="alert"></div>
     <form id="formFiltrosCiclos" class="ciclos-filtros mb-4 pb-3" novalidate>
         <div class="row g-3 align-items-end">
-            <div class="col-12 col-md-4">
-                <label class="form-label" for="filtroAnio">Año del ciclo</label>
-                <input type="text" class="form-control" id="filtroAnio" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="Ej. 2026" autocomplete="off" aria-describedby="errorFiltrosCiclos">
+            <div class="col-12 col-md-4 col-lg-2">
+                <label class="form-label fs-5" for="filtroAnio">Año del ciclo</label>
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text fs-5" aria-hidden="true"><i class="bi bi-calendar3"></i></span>
+                    <input type="text" class="form-control fs-5" id="filtroAnio" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="Ej. <?php echo date('Y'); ?>" autocomplete="off" aria-describedby="errorFiltrosCiclos">
+                </div>
             </div>
-            <div class="col-12 col-md-3">
-                <label class="form-label" for="filtroTipo">Tipo</label>
-                <select class="form-select" id="filtroTipo">
-                    <option value="">Todos</option>
-                    <option value="GENERAL">GENERAL</option>
-                    <option value="ESPECIFICO">ESPECIFICO</option>
-                </select>
+            <div class="col-12 col-md-4 col-lg-2">
+                <label class="form-label fs-5" for="filtroTipo">Tipo</label>
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text fs-5" aria-hidden="true"><i class="bi bi-tags"></i></span>
+                    <select class="form-select fs-5" id="filtroTipo">
+                        <option value="">Todos los tipos</option>
+                        <option value="GENERAL">GENERAL</option>
+                        <option value="ESPECIFICO">ESPECIFICO</option>
+                    </select>
+                </div>
             </div>
-            <div class="col-12 col-md-3">
-                <label class="form-label" for="filtroEstado">Estado</label>
-                <select class="form-select" id="filtroEstado">
-                    <option value="">Todos</option>
-                    <option value="ACTIVO">ACTIVO</option>
-                    <option value="INACTIVO">INACTIVO</option>
-                </select>
+            <div class="col-12 col-md-4 col-lg-2">
+                <label class="form-label fs-5" for="filtroEstado">Estado</label>
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text fs-5" aria-hidden="true"><i class="bi bi-toggle-on"></i></span>
+                    <select class="form-select fs-5" id="filtroEstado">
+                        <option value="">Todos los estados</option>
+                        <option value="ACTIVO">ACTIVO</option>
+                        <option value="INACTIVO">INACTIVO</option>
+                    </select>
+                </div>
             </div>
-            <div class="col-12 col-md-2 ciclos-filtros__acciones">
-                <button type="submit" class="btn btn-primary-uaeh fs-5" id="btnBuscarCiclos"><i class="bi bi-search"></i> Buscar</button>
-                <button type="reset" class="btn btn-outline-secondary fs-5" id="btnLimpiarCiclos"><i class="bi bi-eraser-fill"></i> Limpiar Búsqueda</button>
+            <div class="col-12 col-lg-6 ciclos-filtros__acciones">
+                <button type="submit" class="btn btn-primary-uaeh btn-sm fs-5" id="btnBuscarCiclos"><i class="bi bi-search"></i> Buscar</button>
+                <button type="reset" class="btn btn-outline-secondary btn-sm fs-5" id="btnLimpiarCiclos"><i class="bi bi-eraser-fill"></i> Limpiar búsqueda</button>
             </div>
-            <div class="col-12">
+            <div class="col-12 ciclos-filtros__error">
                 <div id="errorFiltrosCiclos" class="small text-danger d-none" role="alert" aria-live="polite"></div>
             </div>
         </div>
