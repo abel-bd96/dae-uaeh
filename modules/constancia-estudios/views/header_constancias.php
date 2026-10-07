@@ -5,7 +5,7 @@
     <!-- Meta Tags -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema Web de la Dirección de Administración Escolar - UAEH</title>
+    <title>Sistema Web de la Dirección de Administración Escolar - UAEH - Módulo de Constancia de Estudios</title>
     <meta name="description" content="Sistema web de la Dirección de Administración Escolar de la Universidad Autónoma del Estado de Hidalgo">
     <meta name="keywords" content="UAEH, Universidad Autónoma del Estado de Hidalgo, Dirección de Administración Escolar, Sistema web">
     <!-- Links -->
@@ -21,6 +21,7 @@
 </head>
 
 <body class="d-flex flex-column min-vh-100 bg-secondary-uaeh"> <!-- Clases necesarias para mandar el footer al final siembre al fondo. -->
+
     <header class="bg-primary-uaeh text-white">
         <div class="container-fluid header__structure">
             <button class="menu-toggle" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-label="Abrir menú">

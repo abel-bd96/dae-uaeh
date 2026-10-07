@@ -1,121 +1,106 @@
-<main class="container p-4 shadow bg-white rounded my-5" id="constanciaCiclos">
-    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+<?php
+include './header_constancias.php';
+include './sidebar_constancias.php';
+?>
+<main class="container-fluid container-80 ciclos-page my-4 my-md-5" id="constanciaCiclos">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4 ciclos-page__header">
         <div>
-            <p class="text-uppercase text-muted small mb-4 fs-2 fw-bold">Emisión de constancias</p>
-            <h1 class="h3 mb-0 fs-2">Registro y configuración de ciclos</h1>
+            <p class="ciclos-page__eyebrow mb-2 fs-1">Emisión de constancias</p>
+            <h1 class="h3 mb-0 fs-2">Planeación de Ciclos Escolares</h1>
         </div>
-        <button type="button" class="btn btn-primary btn-lg" id="btnNuevoCiclo">
+        <a href="./vtaCiclosNuevo.php" class="btn btn-primary-uaeh fs-5 fw-bold" id="btnNuevoCiclo">
             <i class="bi bi-plus-lg"></i> Nuevo ciclo
-        </button>
+        </a>
     </div>
 
     <div id="mensajeCiclos" class="alert d-none" role="alert"></div>
-    <div class="card shadow-sm border-0">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0 fs-5" id="tablaCiclos">
-                    <thead class="table-light">
-                        <tr>
-                            <th scope="col"><button type="button" class="btn btn-link p-0 text-reset text-decoration-none btn-ordenar" data-ordenar="nombre" aria-label="Ordenar por ciclo">Ciclo <span class="indicador-orden" aria-hidden="true"></span></button></th>
-                            <th scope="col"><button type="button" class="btn btn-link p-0 text-reset text-decoration-none btn-ordenar" data-ordenar="tipo" aria-label="Ordenar por tipo">Tipo <span class="indicador-orden" aria-hidden="true"></span></button></th>
-                            <th scope="col">Programas educativos</th>
-                            <th scope="col">Periodo de solicitud</th>
-                            <th scope="col"><button type="button" class="btn btn-link p-0 text-reset text-decoration-none btn-ordenar" data-ordenar="estado" aria-label="Ordenar por estado">Estado <span class="indicador-orden" aria-hidden="true"></span></button></th>
-                            <th scope="col" class="text-end">Acciones</th>
-                        </tr>
-                        <tr class="table-secondary">
-                            <th scope="col"><label class="visually-hidden" for="filtroCiclo">Filtrar ciclo</label><input type="search" class="form-control form-control-sm" id="filtroCiclo" placeholder="Buscar ciclo..." autocomplete="off"></th>
-                            <th scope="col"><label class="visually-hidden" for="filtroTipo">Filtrar tipo</label><select class="form-select form-select-sm" id="filtroTipo">
-                                    <option value="">Todos</option>
-                                    <option value="GENERAL">GENERAL</option>
-                                    <option value="ESPECIFICO">ESPECIFICO</option>
-                                </select></th>
-                            <th scope="col"></th>
-                            <th scope="col"></th>
-                            <th scope="col"><label class="visually-hidden" for="filtroEstado">Filtrar estado</label><select class="form-select form-select-sm" id="filtroEstado">
-                                    <option value="">Todos</option>
-                                    <option value="ACTIVO">ACTIVO</option>
-                                    <option value="INACTIVO">INACTIVO</option>
-                                </select></th>
-                            <th scope="col"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td colspan="6" class="text-center text-muted py-4">Cargando configuraciones...</td>
-                        </tr>
-                    </tbody>
-                </table>
+    <form id="formFiltrosCiclos" class="ciclos-filtros mb-4 pb-3" novalidate>
+        <div class="row g-3 align-items-end">
+            <div class="col-12 col-md-4 col-lg-2">
+                <label class="form-label fs-5" for="filtroAnio">Año del ciclo</label>
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text fs-5" aria-hidden="true"><i class="bi bi-calendar3"></i></span>
+                    <input type="text" class="form-control fs-5" id="filtroAnio" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="Ej. <?php echo date('Y'); ?>" autocomplete="off" aria-describedby="errorFiltrosCiclos">
+                </div>
+            </div>
+            <div class="col-12 col-md-4 col-lg-2">
+                <label class="form-label fs-5" for="filtroTipo">Tipo</label>
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text fs-5" aria-hidden="true"><i class="bi bi-tags"></i></span>
+                    <select class="form-select fs-5" id="filtroTipo">
+                        <option value="">Todos los tipos</option>
+                        <option value="GENERAL">GENERAL</option>
+                        <option value="ESPECIFICO">ESPECIFICO</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-12 col-md-4 col-lg-2">
+                <label class="form-label fs-5" for="filtroEstado">Estado</label>
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text fs-5" aria-hidden="true"><i class="bi bi-toggle-on"></i></span>
+                    <select class="form-select fs-5" id="filtroEstado">
+                        <option value="">Todos los estados</option>
+                        <option value="ACTIVO">ACTIVO</option>
+                        <option value="INACTIVO">INACTIVO</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-12 col-lg-6 ciclos-filtros__acciones">
+                <button type="submit" class="btn btn-primary-uaeh btn-sm fs-5" id="btnBuscarCiclos"><i class="bi bi-search"></i> Buscar</button>
+                <button type="reset" class="btn btn-outline-secondary btn-sm fs-5" id="btnLimpiarCiclos"><i class="bi bi-eraser-fill"></i> Limpiar búsqueda</button>
+            </div>
+            <div class="col-12 ciclos-filtros__error">
+                <div id="errorFiltrosCiclos" class="small text-danger d-none" role="alert" aria-live="polite"></div>
+            </div>
+        </div>
+    </form>
+    <div class="table-responsive ciclos-table-wrap">
+        <table class="table table-hover align-middle mb-0 ciclos-table fs-5" id="tablaCiclos">
+            <thead>
+                <tr>
+                    <th scope="col" class="fs-5"><button type="button" class="btn btn-link p-0 text-reset text-decoration-none btn-ordenar" data-ordenar="nombre" aria-label="Ordenar por ciclo">Ciclo <span class="indicador-orden" aria-hidden="true"></span></button></th>
+                    <th scope="col" class="fs-5"><button type="button" class="btn btn-link p-0 text-reset text-decoration-none btn-ordenar" data-ordenar="tipo" aria-label="Ordenar por tipo">Tipo <span class="indicador-orden" aria-hidden="true"></span></button></th>
+                    <th scope="col" class="fs-5">Programas educativos</th>
+                    <th scope="col" class="fs-5">Periodo de solicitud</th>
+                    <th scope="col" class="fs-5"><button type="button" class="btn btn-link p-0 text-reset text-decoration-none btn-ordenar" data-ordenar="estado" aria-label="Ordenar por estado">Estado <span class="indicador-orden" aria-hidden="true"></span></button></th>
+                    <th scope="col" class="fs-5 text-end">Acciones</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    <div class="modal fade ciclos-modal" id="modalEditarCiclo" tabindex="-1" aria-labelledby="tituloModalEditarCiclo" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <form id="formFechasCiclo" novalidate>
+                    <div class="modal-header">
+                        <div>
+                            <h2 class="modal-title h5 mb-1 fs-2" id="tituloModalEditarCiclo">Editar fechas</h2>
+                            <p class="small text-muted mb-0 fs-4" id="detalleModalEditarCiclo"></p>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="editarCicloId">
+                        <input type="hidden" id="editarCicloTipo">
+                        <div id="errorFechasEdicion" class="alert d-none" role="alert"></div>
+                        <div class="row g-3">
+                            <div class="col-md-6"><label class="form-label fs-5" for="editarFechaPeriodoEstudiosInicio">Inicio periodo de estudios</label><input type="date" class="form-control" name="fechaPeriodoEstudiosInicio" id="editarFechaPeriodoEstudiosInicio" required></div>
+                            <div class="col-md-6"><label class="form-label fs-5" for="editarFechaPeriodoEstudiosTermino">Fin periodo de estudios</label><input type="date" class="form-control" name="fechaPeriodoEstudiosTermino" id="editarFechaPeriodoEstudiosTermino" required></div>
+                            <div class="col-md-6"><label class="form-label fs-5" for="editarFechaPeriodoVacacionalInicio">Inicio periodo vacacional</label><input type="date" class="form-control" name="fechaPeriodoVacacionalInicio" id="editarFechaPeriodoVacacionalInicio" required></div>
+                            <div class="col-md-6"><label class="form-label fs-5" for="editarFechaPeriodoVacacionalTermino">Fin periodo vacacional</label><input type="date" class="form-control" name="fechaPeriodoVacacionalTermino" id="editarFechaPeriodoVacacionalTermino" required></div>
+                            <div class="col-md-6"><label class="form-label fs-5" for="editarFechaSolicitudConstanciaInicio">Inicio periodo de solicitud</label><input type="date" class="form-control" name="fechaSolicitudConstanciaInicio" id="editarFechaSolicitudConstanciaInicio" required></div>
+                            <div class="col-md-6"><label class="form-label fs-5" for="editarFechaSolicitudConstanciaTermino">Fin periodo de solicitud</label><input type="date" class="form-control" name="fechaSolicitudConstanciaTermino" id="editarFechaSolicitudConstanciaTermino" required></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary fs-5" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary-uaeh fs-5" id="btnGuardarFechas">Guardar fechas</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </main>
-
-<div class="modal fade fs-4" id="modalCiclo" tabindex="-1" aria-labelledby="tituloModalCiclo" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-scrollable">
-        <div class="modal-content p-3">
-            <div class="modal-header">
-                <div>
-                    <h2 class="modal-title h5" id="tituloModalCiclo">Nuevo ciclo</h2>
-                    <p class="small text-muted mb-0" id="subtituloModalCiclo">Paso 1 de 4</p>
-                </div>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-            </div>
-            <form id="formCiclo" novalidate>
-                <div class="modal-body">
-                    <input type="hidden" name="id" id="cicloId">
-                    <input type="hidden" name="tipo" id="cicloTipo">
-                    <div class="progress mb-4" style="height: 5px">
-                        <div class="progress-bar" id="barraPaso" style="width: 25%"></div>
-                    </div>
-
-                    <section class="paso-ciclo" data-paso="1">
-                        <h3 class="h5">Seleccionar ciclo de SIAE</h3>
-                        <label for="buscarCiclo" class="form-label">Buscar por nombre</label>
-                        <input type="search" class="form-control form-control-lg mb-3" id="buscarCiclo" placeholder="Ej. 2026">
-                        <div id="resultadosCiclos" class="list-group"></div>
-                        <input type="hidden" name="nombre" id="cicloNombre">
-                        <div class="invalid-feedback d-block" id="errorCiclo"></div>
-                    </section>
-
-                    <section class="paso-ciclo d-none" data-paso="2">
-                        <h3 class="h5 mb-3">Configurar fechas</h3>
-                        <div class="row g-3">
-                            <div class="col-md-6"><label class="form-label" for="fechaPeriodoEstudiosInicio">Inicio periodo de estudios</label><input type="date" class="form-control fecha-ciclo" name="fechaPeriodoEstudiosInicio" id="fechaPeriodoEstudiosInicio"></div>
-                            <div class="col-md-6"><label class="form-label" for="fechaPeriodoEstudiosTermino">Fin periodo de estudios</label><input type="date" class="form-control fecha-ciclo" name="fechaPeriodoEstudiosTermino" id="fechaPeriodoEstudiosTermino"></div>
-                            <div class="col-md-6"><label class="form-label" for="fechaPeriodoVacacionalInicio">Inicio periodo vacacional</label><input type="date" class="form-control fecha-ciclo" name="fechaPeriodoVacacionalInicio" id="fechaPeriodoVacacionalInicio"></div>
-                            <div class="col-md-6"><label class="form-label" for="fechaPeriodoVacacionalTermino">Fin periodo vacacional</label><input type="date" class="form-control fecha-ciclo" name="fechaPeriodoVacacionalTermino" id="fechaPeriodoVacacionalTermino"></div>
-                            <div class="col-md-6"><label class="form-label" for="fechaSolicitudConstanciaInicio">Inicio periodo de solicitud</label><input type="date" class="form-control fecha-ciclo" name="fechaSolicitudConstanciaInicio" id="fechaSolicitudConstanciaInicio"></div>
-                            <div class="col-md-6"><label class="form-label" for="fechaSolicitudConstanciaTermino">Fin periodo de solicitud</label><input type="date" class="form-control fecha-ciclo" name="fechaSolicitudConstanciaTermino" id="fechaSolicitudConstanciaTermino"></div>
-                        </div>
-                        <div class="invalid-feedback d-block" id="errorFechas"></div>
-                    </section>
-
-                    <section class="paso-ciclo d-none" data-paso="3">
-                        <h3 class="h5">Programas educativos</h3>
-                        <p class="small text-muted" id="ayudaPlanes">La primera configuración del ciclo es GENERAL y no requiere programas.</p>
-                        <div id="selectorPlanes" class="d-none">
-                            <label for="buscarPlan" class="form-label">Buscar por nombre</label>
-                            <input type="search" class="form-control mb-3" id="buscarPlan" placeholder="Ej. Derecho">
-                            <div id="resultadosPlanes" class="list-group"></div>
-                            <div class="invalid-feedback d-block" id="errorPlanes"></div>
-                        </div>
-                    </section>
-
-                    <section class="paso-ciclo d-none" data-paso="4">
-                        <h3 class="h6">Estado inicial</h3>
-                        <p class="small text-muted">La opción predeterminada es INACTIVO.</p>
-                        <div class="form-check"><input class="form-check-input" type="radio" name="estado" id="estadoInactivo" value="INACTIVO" checked><label class="form-check-label" for="estadoInactivo">INACTIVO</label></div>
-                        <div class="form-check"><input class="form-check-input" type="radio" name="estado" id="estadoActivo" value="ACTIVO"><label class="form-check-label" for="estadoActivo">ACTIVO</label></div>
-                        <div class="mt-4 p-3 bg-light rounded" id="resumenCiclo"></div>
-                    </section>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" id="btnAnterior">Anterior</button>
-                    <button type="button" class="btn btn-primary" id="btnSiguiente">Siguiente</button>
-                    <button type="submit" class="btn btn-success d-none" id="btnGuardar">Guardar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+<script src="../controllers/ajxCiclos.js"></script>
+<?php include './footer_constancias.php'; ?>

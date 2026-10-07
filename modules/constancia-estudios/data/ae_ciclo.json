@@ -1,0 +1,46 @@
+[
+    {
+        "fechaPeriodoEstudiosInicio": "2026-10-01",
+        "fechaPeriodoEstudiosTermino": "2026-10-23",
+        "fechaPeriodoVacacionalInicio": "2026-10-25",
+        "fechaPeriodoVacacionalTermino": "2026-10-31",
+        "fechaSolicitudConstanciaInicio": "2026-10-01",
+        "fechaSolicitudConstanciaTermino": "2026-10-31",
+        "estado": "ACTIVO",
+        "idCiclo": 1,
+        "nombre": "ENERO-JUNIO 2026"
+    },
+    {
+        "fechaPeriodoEstudiosInicio": "2026-08-03",
+        "fechaPeriodoEstudiosTermino": "2026-12-11",
+        "fechaPeriodoVacacionalInicio": "2026-12-12",
+        "fechaPeriodoVacacionalTermino": "2026-12-31",
+        "fechaSolicitudConstanciaInicio": "2026-08-03",
+        "fechaSolicitudConstanciaTermino": "2026-12-31",
+        "estado": "ACTIVO",
+        "idCiclo": 2,
+        "nombre": "AGOSTO-DICIEMBRE 2026"
+    },
+    {
+        "fechaPeriodoEstudiosInicio": "2026-10-01",
+        "fechaPeriodoEstudiosTermino": "2026-10-23",
+        "fechaPeriodoVacacionalInicio": "2026-10-24",
+        "fechaPeriodoVacacionalTermino": "2026-11-01",
+        "fechaSolicitudConstanciaInicio": "2026-10-01",
+        "fechaSolicitudConstanciaTermino": "2026-11-01",
+        "estado": "INACTIVO",
+        "idCiclo": 3,
+        "nombre": "JUNIO 2026-JULIO 2027"
+    },
+    {
+        "fechaPeriodoEstudiosInicio": "2026-09-01",
+        "fechaPeriodoEstudiosTermino": "2026-10-23",
+        "fechaPeriodoVacacionalInicio": "2026-10-24",
+        "fechaPeriodoVacacionalTermino": "2026-11-01",
+        "fechaSolicitudConstanciaInicio": "2026-09-01",
+        "fechaSolicitudConstanciaTermino": "2026-11-01",
+        "estado": "ACTIVO",
+        "idCiclo": 4,
+        "nombre": "SEPTIEMBRE-OCTUBRE 2026"
+    }
+]

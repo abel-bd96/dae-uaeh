@@ -15,7 +15,12 @@ try {
             $respuesta = $consulta->consultarPlanes(isset($_REQUEST['texto']) ? $_REQUEST['texto'] : '');
             break;
         case 'listar':
-            $respuesta = $consulta->listarConfiguraciones();
+            $respuesta = $consulta->listarConfiguraciones(array(
+                'ciclo' => isset($_REQUEST['ciclo']) ? $_REQUEST['ciclo'] : '',
+                'anio' => isset($_REQUEST['anio']) ? $_REQUEST['anio'] : '',
+                'tipo' => isset($_REQUEST['tipo']) ? $_REQUEST['tipo'] : '',
+                'estado' => isset($_REQUEST['estado']) ? $_REQUEST['estado'] : ''
+            ));
             break;
         case 'obtener':
             $configuracion = $consulta->obtenerConfiguracion($_REQUEST['tipo'], $_REQUEST['id']);
@@ -29,6 +34,9 @@ try {
             break;
         case 'actualizar':
             $respuesta = $consulta->actualizar($_POST);
+            break;
+        case 'actualizarFechas':
+            $respuesta = $consulta->actualizarFechas($_POST);
             break;
         default:
             throw new Exception('La acción solicitada no es válida.');
