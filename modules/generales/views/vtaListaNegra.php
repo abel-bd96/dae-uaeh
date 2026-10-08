@@ -17,15 +17,6 @@
         </div>
 </div>
 
-    <!--
-    <div class="input-group mb-3">
-        <input type="search" class="form-control" id="numCuentaBuscado" placeholder="Ingresa número de cuenta a buscar">
-        <button type="button" class="btn btn-primary" id="btnBuscarNumeroCuenta">Buscar</button>
-
-        <div class="col"></div>
-    </div>
-    -->
-
     <div class="card border-0">
         <div class="card-body p-0">
             <div class="table-responsive">
