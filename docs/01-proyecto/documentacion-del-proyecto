@@ -1,0 +1,440 @@
+Perfecto. Ya que en conversaciones anteriores trabajamos S0-01 a S0-06, vamos con:
+
+# S0-07 · Preparación de la Documentación del Proyecto
+
+## Objetivo
+
+Definir una estructura documental estandarizada que permita almacenar, organizar y mantener toda la información técnica, funcional y administrativa del proyecto durante su ciclo de vida.
+
+---
+
+# ¿Por qué es importante?
+
+En proyectos institucionales es común que después de algunos meses aparezcan preguntas como:
+
+* ¿Por qué se tomó esta decisión?
+* ¿Quién aprobó este requerimiento?
+* ¿Dónde está el modelo de base de datos?
+* ¿Cuál es el flujo de autenticación?
+* ¿Cómo se instala el sistema?
+* ¿Qué cambió en la versión anterior?
+
+Si no existe documentación organizada, el conocimiento queda únicamente en las personas.
+
+La documentación debe convertirse en la fuente oficial de información del proyecto.
+
+---
+
+# Estructura documental propuesta
+
+Dentro del repositorio:
+
+```text
+/
+├── docs/
+│
+├── README.md
+│
+└── src/
+```
+
+Dentro de `docs`:
+
+```text
+docs/
+│
+├── 01-Proyecto
+│
+├── 02-Analisis
+│
+├── 03-Requerimientos
+│
+├── 04-Arquitectura
+│
+├── 05-Diseno
+│
+├── 06-BaseDatos
+│
+├── 07-Desarrollo
+│
+├── 08-Pruebas
+│
+├── 09-Infraestructura
+│
+├── 10-Despliegue
+│
+└── 11-Manuales
+```
+
+---
+
+# 01-Proyecto
+
+Documentación general del proyecto.
+
+```text
+01-Proyecto/
+│
+├── ActaProyecto.md
+├── Alcance.md
+├── Objetivos.md
+├── Equipo.md
+└── Cronograma.md
+```
+
+Contenido:
+
+* Nombre del proyecto
+* Descripción general
+* Objetivo general
+* Objetivos específicos
+* Alcance
+* Fuera de alcance
+* Equipo participante
+* Roles y responsabilidades
+
+---
+
+# 02-Analisis
+
+Información obtenida durante el análisis del negocio.
+
+```text
+02-Analisis/
+│
+├── ProcesosActuales.md
+├── ProcesosPropuestos.md
+├── Actores.md
+├── ReglasNegocio.md
+└── Glosario.md
+```
+
+Contenido:
+
+* Procesos actuales de la DAE
+* Problemas identificados
+* Actores involucrados
+* Reglas de negocio
+* Definiciones institucionales
+
+---
+
+# 03-Requerimientos
+
+Repositorio oficial de requerimientos.
+
+```text
+03-Requerimientos/
+│
+├── RF/
+│   ├── RF-001.md
+│   ├── RF-002.md
+│   └── ...
+│
+├── RNF/
+│   ├── RNF-001.md
+│   └── ...
+│
+└── HistoriasUsuario/
+```
+
+Contenido:
+
+### Requerimientos Funcionales
+
+Ejemplo:
+
+```text
+RF-001
+Inicio de sesión
+```
+
+### Requerimientos No Funcionales
+
+Ejemplo:
+
+```text
+RNF-001
+Contraseñas almacenadas mediante hash seguro.
+```
+
+### Historias de Usuario
+
+Ejemplo:
+
+```text
+US-001
+Como administrador
+quiero iniciar sesión
+para acceder al sistema.
+```
+
+---
+
+# 04-Arquitectura
+
+Toda decisión técnica importante.
+
+```text
+04-Arquitectura/
+│
+├── ArquitecturaGeneral.md
+├── MVC.md
+├── Seguridad.md
+├── Autenticacion.md
+├── Autorizacion.md
+├── Integraciones.md
+└── Diagramas/
+```
+
+Contenido:
+
+* Arquitectura MVC
+* Flujo de autenticación
+* Gestión de sesiones
+* Manejo de errores
+* Integración con otras bases de datos
+
+---
+
+# 05-Diseño
+
+Documentación del área de UX/UI.
+
+```text
+05-Diseno/
+│
+├── Wireframes
+├── Mockups
+├── Prototipos
+├── ComponentesUI
+└── GuiaEstilos.md
+```
+
+Contenido:
+
+* Diseño visual
+* Navegación
+* Componentes reutilizables
+* Paleta de colores
+* Tipografías
+* Diseño responsivo
+
+---
+
+# 06-BaseDatos
+
+Toda la documentación relacionada con SQL Server.
+
+```text
+06-BaseDatos/
+│
+├── ModeloConceptual
+├── ModeloLogico
+├── ModeloFisico
+├── DiccionarioDatos.md
+├── Scripts
+└── Migraciones
+```
+
+Contenido:
+
+* Diagramas entidad-relación
+* Catálogo de tablas
+* Relaciones
+* Índices
+* Restricciones
+* Scripts SQL
+
+---
+
+# 07-Desarrollo
+
+Información para los desarrolladores.
+
+```text
+07-Desarrollo/
+│
+├── ConvencionesCodigo.md
+├── GitFlow.md
+├── EstructuraProyecto.md
+├── APIs.md
+└── Librerias.md
+```
+
+Contenido:
+
+* Estándares de codificación
+* Convenciones Git
+* Organización MVC
+* Dependencias utilizadas
+
+---
+
+# 08-Pruebas
+
+Planificación y evidencia de pruebas.
+
+```text
+08-Pruebas/
+│
+├── PlanPruebas.md
+├── CasosPrueba
+├── Evidencias
+└── Reportes
+```
+
+Contenido:
+
+* Casos de prueba
+* Resultados
+* Evidencias
+* Incidencias detectadas
+
+---
+
+# 09-Infraestructura
+
+Información de servidores y ambientes.
+
+```text
+09-Infraestructura/
+│
+├── Desarrollo.md
+├── QA.md
+├── Produccion.md
+├── Backups.md
+└── Seguridad.md
+```
+
+Contenido:
+
+* Configuración de servidores
+* Versiones instaladas
+* Políticas de respaldo
+* Seguridad
+
+---
+
+# 10-Despliegue
+
+Procedimientos de publicación.
+
+```text
+10-Despliegue/
+│
+├── Procedimiento.md
+├── Checklist.md
+└── Rollback.md
+```
+
+Contenido:
+
+* Cómo desplegar
+* Cómo revertir cambios
+* Verificaciones previas
+
+---
+
+# 11-Manuales
+
+Documentación destinada a usuarios finales.
+
+```text
+11-Manuales/
+│
+├── Usuario
+├── Administrador
+└── Tecnico
+```
+
+Contenido:
+
+### Manual de Usuario
+
+* Uso del sistema
+* Capturas
+* Procedimientos
+
+### Manual Técnico
+
+* Instalación
+* Configuración
+* Arquitectura
+
+### Manual de Administrador
+
+* Gestión de usuarios
+* Roles
+* Configuración
+
+---
+
+# README Principal
+
+En la raíz del repositorio:
+
+```text
+README.md
+```
+
+Debe contener:
+
+```text
+Nombre del proyecto
+Descripción
+Tecnologías utilizadas
+Requisitos
+Instalación
+Configuración
+Estructura del proyecto
+GitFlow
+Participantes
+```
+
+---
+
+# Convención para nombrar documentos
+
+Recomiendo:
+
+```text
+RF-001-InicioSesion.md
+RF-002-CerrarSesion.md
+
+US-001-IniciarSesion.md
+
+RNF-001-Seguridad.md
+```
+
+Evitar nombres como:
+
+```text
+DocumentoFinal2.md
+DocumentoBueno.md
+NuevaVersion.md
+```
+
+porque se vuelven inmanejables con el tiempo.
+
+---
+
+# Criterio de aceptación de S0-07
+
+S0-07 se considerará completado cuando:
+
+* [ ] Existe la carpeta `docs`.
+* [ ] Existe la estructura documental definida.
+* [ ] Se asignó responsable a cada sección.
+* [ ] Existe README inicial.
+* [ ] Se definieron convenciones de nombres.
+* [ ] El equipo conoce dónde documentar cada tema.
+* [ ] La estructura fue aprobada por el equipo.
+
+---
+
+## Entregable S0-07
+
+El resultado esperado al finalizar esta actividad es una estructura documental preparada para soportar todo el ciclo de vida del proyecto, permitiendo la trazabilidad de requerimientos, decisiones técnicas, diseño, desarrollo, pruebas y despliegue del sistema de la Dirección de Administración Escolar de la UAEH.
+
+**Estado sugerido:** ✅ Completado, una vez creada la estructura en el repositorio y validada por el equipo.

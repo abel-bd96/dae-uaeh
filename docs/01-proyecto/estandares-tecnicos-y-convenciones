@@ -1,0 +1,575 @@
+# S0-06 — Estándares Técnicos y Convenciones
+
+## Objetivo
+
+Definir los estándares técnicos que regirán el desarrollo del Sistema de Administración Escolar de la UAEH para garantizar uniformidad, mantenibilidad, legibilidad y escalabilidad del código.
+
+---
+
+## 1. Convenciones de Nomenclatura
+
+### 1.1 PHP
+
+#### Clases
+
+Se utilizará **PascalCase**.
+
+**Correcto**
+
+```php
+UserController
+StudentModel
+AuthService
+DatabaseConnection
+```
+
+**Incorrecto**
+
+```php
+userController
+user_controller
+USERCONTROLLER
+```
+
+---
+
+#### Métodos
+
+Se utilizará **camelCase**.
+
+**Correcto**
+
+```php
+loginUser()
+generateCertificate()
+findStudentById()
+```
+
+**Incorrecto**
+
+```php
+LoginUser()
+login_user()
+LOGINUSER()
+```
+
+---
+
+#### Variables
+
+Se utilizará **camelCase**.
+
+**Correcto**
+
+```php
+$userId
+$studentName
+$certificateCode
+```
+
+---
+
+#### Constantes
+
+Se utilizará **UPPER_SNAKE_CASE**.
+
+**Correcto**
+
+```php
+MAX_LOGIN_ATTEMPTS
+SESSION_TIMEOUT
+SYSTEM_NAME
+```
+
+---
+
+## 1.2 JavaScript
+
+#### Variables
+
+```javascript
+const studentId = 1;
+let currentUser = null;
+```
+
+#### Funciones
+
+```javascript
+validateForm();
+loadStudents();
+generateCertificate();
+```
+
+#### Clases
+
+```javascript
+StudentService;
+ModalManager;
+```
+
+---
+
+## 1.3 CSS
+
+Se utilizará nomenclatura descriptiva.
+
+```css
+.login-container
+.student-table
+.certificate-card
+.user-profile
+```
+
+Evitar:
+
+```css
+.c1
+.box1
+.red-box
+```
+
+---
+
+<!-- TODO: Definir convenciones para la base de datos (Danny). Ejemplo abajo -->
+
+## 2. Convenciones de Base de Datos
+
+## Tablas
+
+Se recomienda **PascalCase singular**.
+
+```sql
+User
+Role
+Permission
+Student
+Certificate
+```
+
+---
+
+## Columnas
+
+Se utilizará **PascalCase**.
+
+```sql
+UserId
+UserName
+PasswordHash
+CreatedAt
+UpdatedAt
+```
+
+---
+
+## Llaves primarias
+
+Formato:
+
+```sql
+EntityId
+```
+
+Ejemplos:
+
+```sql
+UserId
+RoleId
+StudentId
+CertificateId
+```
+
+---
+
+## Llaves foráneas
+
+Mantener el mismo nombre de la PK referenciada.
+
+```sql
+RoleId
+UserId
+StudentId
+```
+
+---
+
+## Índices
+
+Prefijo:
+
+```text
+IX_
+```
+
+Ejemplo:
+
+```sql
+IX_User_UserName
+```
+
+---
+
+## Restricciones
+
+### Primary Key
+
+```text
+PK_
+```
+
+### Foreign Key
+
+```text
+FK_
+```
+
+### Unique
+
+```text
+UQ_
+```
+
+Ejemplo:
+
+```sql
+PK_User
+FK_User_Role
+UQ_User_UserName
+```
+
+---
+
+## 3. Estructura de Carpetas
+
+Se adopta una arquitectura MVC.
+
+Estructura inicial propuesta:
+
+```text
+project/
+│
+├── app/
+│   ├── Controllers/
+│   ├── Models/
+│   ├── Views/
+│   ├── Services/
+│   ├── Middleware/
+│   └── Core/
+│
+├── config/
+│
+├── public/
+│   ├── css/
+│   ├── js/
+│   ├── img/
+│   └── uploads/
+│
+├── routes/
+│
+├── storage/
+│
+├── docs/
+│
+└── vendor/
+```
+
+---
+
+## 4. Convención de Archivos
+
+## Controladores
+
+```text
+AuthController.php
+UserController.php
+CertificateController.php
+```
+
+---
+
+## Modelos
+
+```text
+UserModel.php
+StudentModel.php
+CertificateModel.php
+```
+
+---
+
+## Servicios
+
+```text
+AuthService.php
+CertificateService.php
+```
+
+---
+
+## Vistas
+
+```text
+login.php
+dashboard.php
+certificate-list.php
+```
+
+---
+
+# 5. Convenciones Git
+
+## Branches
+
+### Feature
+
+```text
+feature/login
+feature/student-search
+feature/certificate-generation
+```
+
+### Fix
+
+```text
+fix/login-validation
+fix/session-timeout
+```
+
+### Refactor
+
+```text
+refactor/auth-service
+```
+
+### Release
+
+```text
+release/1.0.0
+```
+
+### Hotfix
+
+```text
+hotfix/1.0.1
+```
+
+---
+
+# 6. Convención de Commits
+
+Se utilizará una variante de Conventional Commits.
+
+### Nuevas funcionalidades
+
+```text
+feat: add login module
+```
+
+---
+
+### Correcciones
+
+```text
+fix: validate empty password
+```
+
+---
+
+### Refactorización
+
+```text
+refactor: separate authentication logic
+```
+
+---
+
+### Documentación
+
+```text
+docs: add installation guide
+```
+
+---
+
+### Estilos
+
+```text
+style: improve login page layout
+```
+
+---
+
+### Pruebas
+
+```text
+test: add login test cases
+```
+
+---
+
+# 7. Estándares de Código
+
+## Indentación
+
+Se utilizarán **4 espacios**.
+
+No utilizar tabuladores.
+
+---
+
+## Longitud de línea
+
+Máximo recomendado:
+
+```text
+120 caracteres
+```
+
+---
+
+## Apertura de llaves
+
+```php
+public function login()
+{
+    // código
+}
+```
+
+---
+
+## Condicionales
+
+```php
+if ($user !== null) {
+    // código
+}
+```
+
+Evitar:
+
+```php
+if($user!=null){
+}
+```
+
+---
+
+# 8. Manejo de Errores
+
+### Nunca mostrar errores de SQL al usuario
+
+Incorrecto:
+
+```php
+echo $exception->getMessage();
+```
+
+---
+
+### Mostrar mensajes amigables
+
+```text
+Ha ocurrido un error al procesar la solicitud.
+```
+
+Y registrar el detalle en logs.
+
+---
+
+# 9. Seguridad Básica
+
+Desde el inicio del proyecto:
+
+### Contraseñas
+
+Utilizar:
+
+```php
+password_hash()
+password_verify()
+```
+
+Nunca:
+
+```php
+md5()
+sha1()
+```
+
+---
+
+### Consultas SQL
+
+Utilizar consultas parametrizadas.
+
+Nunca concatenar directamente datos del usuario.
+
+Incorrecto:
+
+```php
+SELECT * FROM User
+WHERE UserName = '$userName'
+```
+
+---
+
+### Validación
+
+Validar siempre:
+
+- Frontend (JavaScript)
+- Backend (PHP)
+
+Nunca confiar únicamente en JavaScript.
+
+---
+
+# 10. Documentación del Código
+
+Métodos complejos deberán incluir documentación.
+
+Ejemplo:
+
+```php
+/**
+ * Generates a study certificate.
+ *
+ * @param int $studentId
+ * @return string
+ */
+public function generateCertificate($studentId)
+{
+}
+```
+
+---
+
+# 11. Definition of Done para S0-06
+
+El entregable se considera completado cuando:
+
+```text
+[ ] Convenciones PHP definidas.
+[ ] Convenciones JavaScript definidas.
+[ ] Convenciones CSS definidas.
+[ ] Convenciones SQL Server definidas.
+[ ] Estructura MVC definida.
+[ ] Convenciones Git definidas.
+[ ] Convenciones de commits definidas.
+[ ] Estándares de seguridad documentados.
+[ ] Estándares de código documentados.
+[ ] Equipo informado y de acuerdo.
+```
+
+---
+
+## Recomendación para este proyecto
+
+Dado que utilizarán **PHP 7.2.9 + SQL Server + MVC propio**, agregaría una regla adicional:
+
+> Toda la lógica de negocio debe residir en Services. Los Controllers únicamente recibirán la petición, validarán la entrada y coordinarán la respuesta.
+
+Esto evitará que, conforme crezca el sistema, terminen con controladores de cientos o miles de líneas, que es uno de los problemas más comunes en proyectos PHP desarrollados por equipos nuevos.
+
+Con esto, **S0-06 puede considerarse completamente definido y documentado**.
