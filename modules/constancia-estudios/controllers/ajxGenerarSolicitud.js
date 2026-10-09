@@ -5,6 +5,7 @@
     var paso = 1;
     var modoEdicion = false;
     var todosLosRegistros = [];
+    var idsSeleccionados = [];
 
     // ENVIAR DATOS AL PHP
     function solicitar(datos) {
@@ -12,9 +13,7 @@
         var accion = datos.accion || "guardar";
 
         Object.keys(datos).forEach(function (clave) {
-            if (clave === "accion") {
-                return;
-            }
+            if (clave === "accion") return;
             var valor = datos[clave];
             if (Array.isArray(valor)) {
                 valor.forEach(function (v) {
@@ -40,15 +39,11 @@
         var url = endpoint + "?accion=" + encodeURIComponent(accion) + "&texto=" + encodeURIComponent(texto || "");
         return fetch(url)
             .then(function (respuesta) {
-                if (!respuesta.ok) {
-                    throw new Error("Error al calcular el servidor");
-                }
+                if (!respuesta.ok) throw new Error("Error al calcular el servidor");
                 return respuesta.json();
             })
             .then(function (cuerpo) {
-                if (!cuerpo.ok) {
-                    throw new Error("Error en la consulta");
-                }
+                if (!cuerpo.ok) throw new Error("Error en la consulta");
                 return cuerpo.datos || [];
             });
     }
@@ -68,12 +63,16 @@
         contenedor.classList.remove("d-none");
         if (contenedor._timeoutId) {
             clearTimeout(contenedor._timeoutId);
-            }
-        contenedor._timeoutId = setTimeout(function () {
-            contenedor.classList.add("d-none");
-            contenedor.textContent = "";
-        }, 3000);
+        }
+        contenedor._timeoutId = setTimeout(
+            function () {
+                contenedor.classList.add("d-none");
+                contenedor.textContent = "";
+            },
+            tipo === "success" ? 2000 : 8000,
+        );
     }
+
     //Limpiar mensajes
     function limpiarMensaje(idContenedor) {
         var contenedor = document.getElementById(idContenedor || "mensajeFormulario");
@@ -89,53 +88,164 @@
         el.classList.toggle("d-block", !!texto);
         el.classList.toggle("d-none", !texto);
     }
+
     //en que pantalla estas
     function esPantallaListado() {
         return !!document.getElementById("tablaSolicitudes");
     }
+
     function esPantallaFormulario() {
         return !!document.getElementById("formSolicitud");
     }
 
+    function actualizarContadorSeleccionadas() {
+        var badge = document.getElementById("contadorSeleccionadas");
+        var btn = document.getElementById("btnImprimirSeleccionadas");
+        if (badge) badge.textContent = idsSeleccionados.length;
+        if (btn) {
+            if (idsSeleccionados.length > 0) {
+                btn.classList.remove("d-none");
+                btn.style.display = "inline-block";
+            } else {
+                btn.classList.add("d-none");
+                btn.style.display = "none";
+            }
+        }
+    }
+
+    function actualizarCheckTodos() {
+        var checkTodos = document.getElementById("checkTodos");
+        if (!checkTodos) return;
+        var checks = document.querySelectorAll(".check-solicitud:not([disabled])");
+        var marcados = document.querySelectorAll(".check-solicitud:checked");
+        checkTodos.checked = checks.length > 0 && marcados.length === checks.length;
+        checkTodos.indeterminate = marcados.length > 0 && marcados.length < checks.length;
+    }
+
+    function toggleSeleccion(id, marcado) {
+        id = String(id);
+        var idx = idsSeleccionados.indexOf(id);
+        if (marcado === true && idx === -1) {
+            idsSeleccionados.push(id);
+        } else if (marcado === false && idx !== -1) {
+            idsSeleccionados.splice(idx, 1);
+        }
+
+        actualizarContadorSeleccionadas();
+        actualizarCheckTodos();
+    }
+
     //filtros
-        function leerFiltros() {
+    function leerFiltros() {
+        return {
+            numeroCuenta: (document.getElementById("filtroNumeroCuenta").value || "").toLowerCase().trim(),
+            nombre: (document.getElementById("filtroNombre").value || "").toLowerCase().trim(),
+            estatus: (document.getElementById("filtroEstatus").value || "").toLowerCase().trim(),
+            ciclo: (document.getElementById("filtroCiclo").value || "").toLowerCase().trim(),
+            datoAdicional: (document.getElementById("filtroDatoAdicional").value || "").trim(),
+            fecha: (document.getElementById("filtroFecha").value || "").trim(),
+            fechaDesde: (document.getElementById("filtroFechaDesde").value || "").trim(),
+            fechaHasta: (document.getElementById("filtroFechaHasta").value || "").trim(),
+        };
+    }
+
+    function aplicarFiltros() {
+        var f = leerFiltros();
+        var rango = calcularRangoFechas(f);
+
+        return todosLosRegistros.filter(function (s) {
+            var ciclo = String(s.CicloEscolar || "")
+                .toLowerCase()
+                .trim();
+            var nc = String(s.NumeroCuenta || "")
+                .toLowerCase()
+                .trim();
+            var nom = String(s.NombreCompleto || "")
+                .toLowerCase()
+                .trim();
+            var est = String(s.Estatus || s.EstatusSolicitud || "")
+                .toLowerCase()
+                .trim();
+            var fEst = String(f.estatus || "")
+                .toLowerCase()
+                .trim();
+            var da = String(s.DatoAdicional || "").trim();
+
+            if (f.ciclo && ciclo.indexOf(f.ciclo) === -1) return false;
+            if (f.numeroCuenta && nc.indexOf(f.numeroCuenta) === -1) return false;
+            if (f.nombre && nom.indexOf(f.nombre) === -1) return false;
+            if (fEst && est !== fEst) return false;
+            if (f.datoAdicional && da !== f.datoAdicional) return false;
+
+            // Filtro por fecha
+            if (rango) {
+                var fecha = String(s.fechaRegistro || "").trim();
+                if (!fecha) return false;
+                if (rango.desde && fecha < rango.desde) return false;
+                if (rango.hasta && fecha > rango.hasta) return false;
+            }
+
+            return true;
+        });
+    }
+
+    // Calcula el rango de fechas en formato YYYY-MM-DD
+    function calcularRangoFechas(f) {
+        if (!f.fecha) return null;
+
+        var hoy = new Date();
+        function toISO(d) {
+            var y = d.getFullYear();
+            var m = String(d.getMonth() + 1).padStart(2, "0");
+            var day = String(d.getDate()).padStart(2, "0");
+            return y + "-" + m + "-" + day;
+        }
+
+        if (f.fecha === "hoy") {
+            var iso = toISO(hoy);
+            return { desde: iso, hasta: iso };
+        }
+
+        if (f.fecha === "semana") {
+            var dia = hoy.getDay(); // 0=domingo, 1=lunes...
+            var diffLunes = dia === 0 ? -6 : 1 - dia;
+            var lunes = new Date(hoy);
+            lunes.setDate(hoy.getDate() + diffLunes);
+            var domingo = new Date(lunes);
+            domingo.setDate(lunes.getDate() + 6);
+            return { desde: toISO(lunes), hasta: toISO(domingo) };
+        }
+
+        if (f.fecha === "mes") {
+            var primero = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+            var ultimo = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0);
+            return { desde: toISO(primero), hasta: toISO(ultimo) };
+        }
+
+        if (f.fecha === "rango") {
             return {
-                numeroCuenta: (document.getElementById("filtroNumeroCuenta").value || "").toLowerCase().trim(),
-                nombre: (document.getElementById("filtroNombre").value || "").toLowerCase().trim(),
-                estatus: (document.getElementById("filtroEstatus").value || "").toLowerCase().trim(),
-                ciclo: (document.getElementById("filtroCiclo").value || "").toLowerCase().trim(),
+                desde: f.fechaDesde || null,
+                hasta: f.fechaHasta || null,
             };
         }
+        return null;
+    }
 
-        function aplicarFiltros() {
-            var f = leerFiltros();
-            return todosLosRegistros.filter(function (s) {
-                var ciclo = String(s.CicloEscolar || "")
-                    .toLowerCase()
-                    .trim();
-                var nc = String(s.NumeroCuenta || "")
-                    .toLowerCase()
-                    .trim();
-                var nom = String(s.NombreCompleto || "")
-                    .toLowerCase()
-                    .trim();
-                var est = String(s.Estatus || s.EstatusSolicitud || "")
-                    .toLowerCase()
-                    .trim();
-
-                //  comparamos en minúsculas
-                var fEst = String(f.estatus || "")
-                    .toLowerCase()
-                    .trim();
-
-                if (f.ciclo && ciclo.indexOf(f.ciclo) === -1) return false;
-                if (f.numeroCuenta && nc.indexOf(f.numeroCuenta) === -1) return false;
-                if (f.nombre && nom.indexOf(f.nombre) === -1) return false;
-                if (fEst && est !== fEst) return false;
-                return true;
-            });
+    function hayFiltrosActivos() {
+        var ids = [
+            "filtroNumeroCuenta",
+            "filtroNombre",
+            "filtroEstatus",
+            "filtroCiclo",
+            "filtroDatoAdicional",
+            "filtroFecha",
+        ];
+        for (var i = 0; i < ids.length; i++) {
+            var el = document.getElementById(ids[i]);
+            if (el && (el.value || "").trim() !== "") return true;
         }
-
+        return false;
+    }
     //botones con accion segun el estatus
     function generarBotones(s) {
         var id = escapeHtml(s.id || s.idSolicitud || "");
@@ -152,12 +262,21 @@
             );
         }
 
+        if (estatus === "Finalizado") {
+            return (
+                '<button type="button" class="btn btn-sm btn-outline-secondary" disabled>' +
+                '<i class="bi bi-pencil"></i> Editar</button> ' +
+                '<button type="button" class="btn btn-sm btn-outline-success" disabled>' +
+                '<i class="bi bi-check-circle"></i> Finalizada</button>'
+            );
+        }
+
         // Editar (siempre visible mientras no esté cancelada)
         botones.push(
             '<button type="button" class="btn btn-sm btn-outline-primary btn-editar" data-id="' +
                 id +
                 '">' +
-                '<i class="bi bi-pencil"></i> Editar</button>'
+                '<i class="bi bi-pencil"></i> Editar</button>',
         );
 
         // Elaborar (solo si está Solicitado)
@@ -189,12 +308,11 @@
         );
 
         // Cancelar (si no está Terminado ni Cancelado)
-        if (estatus !== "Terminado") {
+        if (estatus !== "Terminado" && estatus !== "Finalizado") {
             botones.push(
                 '<button type="button" class="btn btn-sm btn-outline-danger btn-cancelar" data-id="' +
                     id +
-                    '">' +
-                    '<i class="bi bi-x-circle"></i> Cancelar</button>',
+                    '"><i class="bi bi-x-circle"></i> Cancelar</button>',
             );
         }
 
@@ -207,30 +325,95 @@
 
         if (!registros.length) {
             tbody.innerHTML =
-                '<tr><td colspan="7" class="text-center text-muted py-4">' +
+                '<tr><td colspan="8" class="text-center text-muted py-4">' +
                 "No se encontraron solicitudes con los filtros aplicados." +
                 "</td></tr>";
+            actualizarContadorSeleccionadas();
+            actualizarCheckTodos();
             return;
         }
 
-        tbody.innerHTML = registros.map(function (s) {
+        tbody.innerHTML = registros
+            .map(function (s) {
+                var id = String(s.id || s.idSolicitud || "");
+                var nombre =
+                    s.NombreCompleto ||
+                    [s.Nombre, s.ApellidoPaterno, s.ApellidoMaterno].filter(Boolean).join(" ") ||
+                    s.nombre ||
+                    "(Sin nombre)";
+
+                var ciclo = s.CicloEscolar || s.Periodo || s.ciclo || "(Sin ciclo)";
+                var estatus = s.Estatus || s.EstatusSolicitud || "";
+
+                var checkDisabled = estatus === "Cancelado" ? "disabled" : "";
+                var checkChecked = idsSeleccionados.indexOf(id) !== -1 ? "checked" : "";
+
                 return (
                     "<tr>" +
-                    "<td>" + escapeHtml(s.fechaRegistro || "") + "</td>" +
-                    "<td>" + escapeHtml(s.CicloEscolar || "") +  "</td>" +
-                    "<td>" + escapeHtml(s.NumeroCuenta || "") +  "</td>" +
-                    "<td>" + escapeHtml(s.NombreCompleto || "") + "</td>" +
-                    "<td>" + escapeHtml(s.Estatus || "") + "</td>" +
-                    "<td>" + escapeHtml(s.DatoAdicional || "") + "</td>" +
-                    '<td class="text-end">' + generarBotones(s) + "</td>" +
+                    '<td><input type="checkbox" class="form-check-input check-solicitud" ' +
+                    'data-id="' +
+                    escapeHtml(id) +
+                    '" ' +
+                    checkChecked +
+                    " " +
+                    checkDisabled +
+                    "></td>" +
+                    "<td>" +
+                    escapeHtml(s.fechaRegistro || "") +
+                    "</td>" +
+                    "<td>" +
+                    escapeHtml(ciclo) +
+                    "</td>" +
+                    "<td>" +
+                    escapeHtml(s.NumeroCuenta || "") +
+                    "</td>" +
+                    "<td>" +
+                    escapeHtml(nombre) +
+                    "</td>" +
+                    "<td>" +
+                    escapeHtml(estatus) +
+                    "</td>" +
+                    "<td>" +
+                    escapeHtml(s.DatoAdicional || "") +
+                    "</td>" +
+                    '<td class="text-end">' +
+                    generarBotones(s) +
+                    "</td>" +
                     "</tr>"
                 );
             })
             .join("");
+
+        // UN SOLO listener por checkbox, usando evento.target (no this)
+        tbody.querySelectorAll(".check-solicitud").forEach(function (chk) {
+            chk.addEventListener("change", function (evento) {
+                var checkbox = evento.target;
+                toggleSeleccion(checkbox.dataset.id, checkbox.checked);
+            });
+        });
+
+        actualizarContadorSeleccionadas();
+        actualizarCheckTodos();
     }
 
     function cargarSolicitudes() {
-        limpiarMensaje("mensajeSolicitud"); 
+        limpiarMensaje("mensajeSolicitud");
+
+        if (!hayFiltrosActivos()) {
+            mostrarMensaje("Seleccione al menos un filtro para poder buscar.", "warning", "mensajeSolicitud");
+            // Limpiar la tabla por si tenía datos anteriores
+            document.querySelector("#tablaSolicitudes tbody").innerHTML =
+                '<tr><td colspan="8" class="text-center text-muted py-4">' +
+                "Seleccione al menos un filtro y presione <strong>Buscar</strong>." +
+                "</td></tr>";
+
+            todosLosRegistros = [];
+            idsSeleccionados = [];
+            actualizarContadorSeleccionadas();
+            actualizarCheckTodos();
+            return;
+        }
+
         consultar("listar")
             .then(function (solicitudes) {
                 todosLosRegistros = solicitudes || [];
@@ -241,43 +424,51 @@
             });
     }
 
-        function limpiarFiltros() {
-            document.getElementById("filtroCiclo").value = "";
-            document.getElementById("filtroNumeroCuenta").value = "";
-            document.getElementById("filtroNombre").value = "";
-            document.getElementById("filtroEstatus").value = "";
+    function limpiarFiltros() {
+        document.getElementById("filtroCiclo").value = "";
+        document.getElementById("filtroNumeroCuenta").value = "";
+        document.getElementById("filtroNombre").value = "";
+        document.getElementById("filtroEstatus").value = "";
+        document.getElementById("filtroDatoAdicional").value = "";
+        document.getElementById("filtroFecha").value = "";
+        document.getElementById("filtroFechaDesde").value = "";
+        document.getElementById("filtroFechaHasta").value = "";
+        document.getElementById("wrapFechaDesde").classList.add("d-none");
+        document.getElementById("wrapFechaHasta").classList.add("d-none");
 
-            todosLosRegistros = [];
-            document.querySelector("#tablaSolicitudes tbody").innerHTML =
-                '<tr><td colspan="7" class="text-center text-muted py-4">' +
-                "Seleccione los filtros y presione <strong>Buscar</strong> para ver resultados." +
-                "</td></tr>";
-        }
+        todosLosRegistros = [];
+        idsSeleccionados = [];
+
+        document.querySelector("#tablaSolicitudes tbody").innerHTML =
+            '<tr><td colspan="8" class="text-center text-muted py-4">' +
+            "Seleccione los filtros y presione <strong>Buscar</strong> para ver resultados" +
+            "</td></tr>";
+
+        actualizarContadorSeleccionadas();
+        actualizarCheckTodos();
+    }
 
     //  MODAL GENÉRICO DE CONFIRMACIÓN
     function abrirModal(opciones) {
         var modalEl = document.getElementById("modalConfirmar");
         if (!modalEl) {
             // Fallback si no existe el modal
-            if (confirm(opciones.mensaje || "¿Continuar?")) {
-                opciones.onAceptar(null);
-            }
+            if (confirm(opciones.mensaje || "¿Continuar?")) opciones.onAceptar(null);
             return;
         }
 
-        var titulo   = document.getElementById("modalConfirmarTitulo");
-        var mensaje  = document.getElementById("modalConfirmarMensaje");
+        var titulo = document.getElementById("modalConfirmarTitulo");
+        var mensaje = document.getElementById("modalConfirmarMensaje");
         var selectWrap = document.getElementById("modalConfirmarSelectWrap");
-        var select   = document.getElementById("modalConfirmarSelect");
-        var btnOk    = document.getElementById("modalConfirmarAceptar");
+        var select = document.getElementById("modalConfirmarSelect");
+        var btnOk = document.getElementById("modalConfirmarAceptar");
 
-        titulo.textContent  = opciones.titulo  || "Confirmar acción";
+        titulo.textContent = opciones.titulo || "Confirmar acción";
         mensaje.textContent = opciones.mensaje || "¿Está seguro?";
 
         // Mostrar/ocultar el select
         if (opciones.tipo === "select") {
             selectWrap.classList.remove("d-none");
-            // Poblar las opciones
             select.innerHTML = "";
             (opciones.opciones || []).forEach(function (op) {
                 var opt = document.createElement("option");
@@ -285,29 +476,20 @@
                 opt.textContent = op;
                 select.appendChild(opt);
             });
-            if (opciones.valorInicial) {
-                select.value = opciones.valorInicial;
-            }
+            if (opciones.valorInicial) select.value = opciones.valorInicial;
         } else {
             selectWrap.classList.add("d-none");
         }
 
         // Botón de aceptar
-        var btnClass = opciones.btnClass || "btn-primary";
-        btnOk.className = "btn " + btnClass;
+        btnOk.className = "btn " + (opciones.btnClass || "btn-primary");
         btnOk.textContent = opciones.btnTexto || "Aceptar";
-
-        // Clonar el botón para eliminar listeners previos
-        var btnOkClone = btnOk.cloneNode(true);
-        btnOk.parentNode.replaceChild(btnOkClone, btnOk);
-        btnOk = document.getElementById("modalConfirmarAceptar");
 
         btnOkClone.addEventListener("click", function () {
             var valor = opciones.tipo === "select" ? select.value : null;
             // Cerrar modal
             var modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
             modalInstance.hide();
-            // Ejecutar callback
             opciones.onAceptar(valor);
         });
 
@@ -315,10 +497,7 @@
         modalInstance.show();
     }
 
-    // ============================================================
     //  ACCIONES
-    // ============================================================
-
     function cancelarSolicitud(id) {
         abrirModal({
             titulo: "Cancelar solicitud",
@@ -334,7 +513,7 @@
                     .catch(function (error) {
                         mostrarMensaje(error.message, "danger", "mensajeSolicitud");
                     });
-            }
+            },
         });
     }
 
@@ -353,7 +532,7 @@
                     .catch(function (error) {
                         mostrarMensaje(error.message, "danger", "mensajeSolicitud");
                     });
-            }
+            },
         });
     }
 
@@ -372,7 +551,7 @@
                     .catch(function (error) {
                         mostrarMensaje(error.message, "danger", "mensajeSolicitud");
                     });
-            }
+            },
         });
     }
 
@@ -381,7 +560,7 @@
             titulo: "Cambiar estatus",
             mensaje: "Seleccione el nuevo estatus para esta solicitud:",
             tipo: "select",
-            opciones: ["Solicitado", "En elaboración", "En firma", "Terminado", "Cancelado"],
+            opciones: ["Solicitado", "En elaboración", "En firma", "Terminado", "Finalizado", "Cancelado"],
             valorInicial: "En elaboración",
             btnTexto: "Cambiar estatus",
             btnClass: "btn-primary",
@@ -395,51 +574,115 @@
                     .catch(function (error) {
                         mostrarMensaje(error.message, "danger", "mensajeSolicitud");
                     });
-            }
+            },
         });
     }
-
     function editarSolicitud(id) {
-        // Editar no necesita confirmación, solo redirige
         limpiarMensaje();
         window.location.href = "?vta=solicitudNueva&id=" + encodeURIComponent(id);
     }
 
-        //  CAMBIO: CONFIRMAR CAMBIO DE ESTATUS
-        function confirmarCambiarEstatus() {
-            var id = document.getElementById("cambiarEstatusId").value;
-            var nuevo = document.getElementById("selectNuevoEstatus").value;
-            var errorDiv = document.getElementById("errorCambiarEstatus");
+    function imprimirSeleccionadas() {
+        if (!idsSeleccionados.length) {
+            mostrarMensaje("No hay solicitudes seleccionadas.", "warning", "mensajeSolicitud");
+            return;
+        }
+        // Buscar los registros completos a partir de los IDs seleccionados
+        var seleccionadas = todosLosRegistros.filter(function (s) {
+            return idsSeleccionados.indexOf(String(s.id || s.idSolicitud)) !== -1;
+        });
 
-            // Validar que se haya seleccionado algo
-            if (!nuevo) {
-                errorDiv.textContent = "Debe seleccionar un estatus.";
-                return;
-            }
-
-            errorDiv.textContent = "";
-
-            solicitar({ accion: "cambiarEstatus", id: id, estatus: nuevo })
-                .then(function () {
-                    // Cerrar el modal
-                    var modalEl = document.getElementById("modalCambiarEstatus");
-                    var modal = bootstrap.Modal.getOrCreateInstance(modalEl);
-                    modal.hide();
-
-                    mostrarMensaje("El estatus se actualizó correctamente.", "success", "mensajeSolicitud");
-                    cargarSolicitudes();
-                })
-                .catch(function (error) {
-                    errorDiv.textContent = error.message;
-                });
+        if (!seleccionadas.length) {
+            mostrarMensaje("No se encontraron los registros seleccionados.", "danger", "mensajeSolicitud");
+            return;
         }
 
-    function editarSolicitud(id) {
-        limpiarMensaje();
-        window.location.href = "?vta=solicitudNueva&id=" + encodeURIComponent(id);
+        // Construir el HTML de impresión
+        var ventana = window.open("", "_blank");
+        if (!ventana) {
+            mostrarMensaje("Permite las ventanas emergentes para imprimir.", "danger", "mensajeSolicitud");
+            return;
+        }
+
+        var html =
+            "" +
+            "<!DOCTYPE html>" +
+            "<html lang='es'>" +
+            "<head>" +
+            "<meta charset='UTF-8'>" +
+            "<title>Constancias seleccionadas</title>" +
+            "<style>" +
+            "  body { font-family: Arial, sans-serif; padding: 20px; }" +
+            "  .constancia { page-break-after: always; padding: 40px 20px; border-bottom: 1px dashed #999; }" +
+            "  .constancia:last-child { page-break-after: auto; border-bottom: none; }" +
+            "  h2 { margin-top: 0; }" +
+            "  .fila { margin: 8px 0; }" +
+            "  .label { font-weight: bold; display: inline-block; width: 180px; }" +
+            "  @media print { .no-print { display: none; } }" +
+            "</style>" +
+            "</head>" +
+            "<body>" +
+            "<div class='no-print' style='margin-bottom:20px;'>" +
+            "  <button onclick='window.print()' style='padding:10px 20px; font-size:16px; cursor:pointer;'>" +
+            "    🖨️ Imprimir" +
+            "  </button>" +
+            "  <span style='margin-left:15px; color:#666;'>" +
+            "    " +
+            seleccionadas.length +
+            " constancia(s) lista(s) para imprimir." +
+            "  </span>" +
+            "</div>";
+
+        seleccionadas.forEach(function (s) {
+            var nombre =
+                s.NombreCompleto ||
+                [s.Nombre, s.ApellidoPaterno, s.ApellidoMaterno].filter(Boolean).join(" ") ||
+                s.nombre ||
+                "";
+
+            html +=
+                "" +
+                "<div class='constancia'>" +
+                "  <h2>Constancia de Estudios</h2>" +
+                "  <div class='fila'><span class='label'>Número de Cuenta:</span>" +
+                escapeHtml(s.NumeroCuenta || "") +
+                "</div>" +
+                "  <div class='fila'><span class='label'>Nombre del Alumno:</span>" +
+                escapeHtml(nombre) +
+                "</div>" +
+                "  <div class='fila'><span class='label'>Ciclo Escolar:</span>" +
+                escapeHtml(s.CicloEscolar || "") +
+                "</div>" +
+                "  <div class='fila'><span class='label'>Instituto:</span>" +
+                escapeHtml(s.Instituto || "") +
+                "</div>" +
+                "  <div class='fila'><span class='label'>Semestre:</span>" +
+                escapeHtml(s.Semestre || "") +
+                "</div>" +
+                "  <div class='fila'><span class='label'>Programa Educativo:</span>" +
+                escapeHtml(s.ProgramaEducativo || "") +
+                "</div>" +
+                "  <div class='fila'><span class='label'>Datos Adicionales:</span>" +
+                escapeHtml(s.DatoAdicional === "S" ? "Sí" : "No") +
+                "</div>" +
+                "  <div class='fila'><span class='label'>Tipo de Firma:</span>" +
+                escapeHtml(s.TipoFirma === "S" ? "Digital (PDF)" : "Autógrafa") +
+                "</div>" +
+                "  <div class='fila'><span class='label'>Calificaciones:</span>" +
+                escapeHtml(s.Calificaciones === "S" ? "Sí" : "No") +
+                "</div>" +
+                "  <div class='fila'><span class='label'>Observación:</span>" +
+                escapeHtml(s.Observacion || "") +
+                "</div>" +
+                "</div>";
+        });
+
+        html += "</body></html>";
+
+        ventana.document.open();
+        ventana.document.write(html);
+        ventana.document.close();
     }
-
-
 
     // MOSTRAR navegacion por PASOs
     function mostrarPaso(numero) {
@@ -465,9 +708,7 @@
         mostrarError("errorNumeroCuenta", "");
         mostrarError("errorDatos", "");
 
-        if (paso === 3) {
-            actualizarResumen();
-        }
+        if (paso === 3) actualizarResumen();
     }
     // VALIDAR PASO ACTUAL
     function validarPaso() {
@@ -522,35 +763,35 @@
                                 .join(" ")
                                 .trim();
 
-                        return (
-                            '<button type="button" ' +
-                            'class="list-group-item list-group-item-action" ' +
-                            'data-numero="' +
-                            escapeHtml(numero) +
-                            '" ' +
-                            'data-nombre-completo="' +
-                            escapeHtml(alumno.NombreCompleto || "") +
-                            '" ' +
-                            'data-instituto="' +
-                            escapeHtml(alumno.Instituto || "") +
-                            '" ' +
-                            'data-semestre="' +
-                            escapeHtml(alumno.Semestre || "") +
-                            '" ' +
-                            'data-programa-educativo="' +
-                            escapeHtml(alumno.ProgramaEducativo || "") +
-                            '" ' +
-                            'data-ciclo-escolar="' +
-                            escapeHtml(alumno.CicloEscolar || "") +
-                            '" ' +
-                            ">" +
-                            "<strong>" +
-                            escapeHtml(numero) +
-                            "</strong>" +
-                            (nombreCompleto ? "<br><small>" + escapeHtml(nombreCompleto) + "</small>" : "") +
-                            (detalle ? '<br><small class="text-muted">' + escapeHtml(detalle) + "</small>" : "") +
-                            "</button>"
-                        );
+                            return (
+                                '<button type="button" ' +
+                                'class="list-group-item list-group-item-action" ' +
+                                'data-numero="' +
+                                escapeHtml(numero) +
+                                '" ' +
+                                'data-nombre-completo="' +
+                                escapeHtml(alumno.NombreCompleto || "") +
+                                '" ' +
+                                'data-instituto="' +
+                                escapeHtml(alumno.Instituto || "") +
+                                '" ' +
+                                'data-semestre="' +
+                                escapeHtml(alumno.Semestre || "") +
+                                '" ' +
+                                'data-programa-educativo="' +
+                                escapeHtml(alumno.ProgramaEducativo || "") +
+                                '" ' +
+                                'data-ciclo-escolar="' +
+                                escapeHtml(alumno.CicloEscolar || "") +
+                                '" ' +
+                                ">" +
+                                "<strong>" +
+                                escapeHtml(numero) +
+                                "</strong>" +
+                                (nombreCompleto ? "<br><small>" + escapeHtml(nombreCompleto) + "</small>" : "") +
+                                (detalle ? '<br><small class="text-muted">' + escapeHtml(detalle) + "</small>" : "") +
+                                "</button>"
+                            );
                         })
                         .join("") || '<div class="text-muted small">No se encontraron alumnos.</div>';
             })
@@ -561,12 +802,12 @@
 
     // SELECCIONAR ALUMNO
     function seleccionarAlumno(elemento) {
-        var cicloEscolar = elemento.dataset.cicloEscolar || ""; 
+        var cicloEscolar = elemento.dataset.cicloEscolar || "";
         var numero = elemento.dataset.numero || "";
-        var nombreCompleto = elemento.dataset.nombreCompleto || ""; 
+        var nombreCompleto = elemento.dataset.nombreCompleto || "";
         var instituto = elemento.dataset.instituto || "";
         var semestre = elemento.dataset.semestre || "";
-        var programaEducativo = elemento.dataset.programaEducativo || ""; 
+        var programaEducativo = elemento.dataset.programaEducativo || "";
 
         //Guardar datos
         document.getElementById("CicloEscolar").value = cicloEscolar;
@@ -619,11 +860,9 @@
         };
     }
 
-
     // ACTUALIZAR RESUMEN
     function actualizarResumen() {
         var datos = datosFormulario();
-
         var datoAdicional = datos.DatoAdicional === "S" ? "Sí" : "No";
         var firma = datos.TipoFirma === "S" ? "Digital (PDF)" : "Autógrafa";
         var calificaciones = datos.Calificaciones === "S" ? "Sí" : "No";
@@ -684,54 +923,39 @@
                 console.warn("No se pudieron cargar las observaciones:", error.message);
             });
     }
+
     function iniciarFormulario() {
         limpiarMensaje("mensajeFormulario");
-        // Leer ?id= de la URL
         var params = new URLSearchParams(window.location.search);
         var id = params.get("id");
 
         cargarObservaciones();
 
         // Eventos de pasos
-        var btnSig = document.getElementById("btnSiguiente");
-        if (btnSig)
-            btnSig.addEventListener("click", function () {
-                if (validarPaso()) mostrarPaso(Math.min(3, paso + 1));
-            });
+        document.getElementById("btnSiguiente")?.addEventListener("click", function () {
+            if (validarPaso()) mostrarPaso(Math.min(3, paso + 1));
+        });
+        document.getElementById("btnAnterior")?.addEventListener("click", function () {
+            mostrarPaso(Math.max(1, paso - 1));
+        });
+        document.getElementById("btnGuardar")?.addEventListener("click", guardarSolicitud);
+        document.getElementById("formSolicitud")?.addEventListener("submit", function (e) {
+            e.preventDefault();
+            guardarSolicitud();
+        });
+        document.getElementById("buscarNumeroCuenta")?.addEventListener("input", function () {
+            var texto = this.value.trim();
+            if (texto.length < 6) {
+                document.getElementById("resultadosNumeroCuenta").innerHTML = "";
+                return;
+            }
+            pintarNumeroCuenta(texto);
+        });
 
-        var btnAnt = document.getElementById("btnAnterior");
-        if (btnAnt)
-            btnAnt.addEventListener("click", function () {
-                mostrarPaso(Math.max(1, paso - 1));
-            });
-
-        var btnGuardar = document.getElementById("btnGuardar");
-        if (btnGuardar) btnGuardar.addEventListener("click", guardarSolicitud);
-
-        var form = document.getElementById("formSolicitud");
-        if (form)
-            form.addEventListener("submit", function (e) {
-                e.preventDefault();
-                guardarSolicitud();
-            });
-
-        var inputBuscar = document.getElementById("buscarNumeroCuenta");
-        if (inputBuscar)
-            inputBuscar.addEventListener("input", function () {
-                var texto = this.value.trim();
-                if (texto.length < 6) {
-                    document.getElementById("resultadosNumeroCuenta").innerHTML = "";
-                    return;
-                }
-                pintarNumeroCuenta(texto);
-            });
-
-        var resultados = document.getElementById("resultadosNumeroCuenta");
-        if (resultados)
-            resultados.addEventListener("click", function (evento) {
-                var boton = evento.target.closest("button");
-                if (boton && boton.dataset.numero) seleccionarAlumno(boton);
-            });
+        document.getElementById("resultadosNumeroCuenta")?.addEventListener("click", function (evento) {
+            var boton = evento.target.closest("button");
+            if (boton && boton.dataset.numero) seleccionarAlumno(boton);
+        });
 
         // Si viene ?id=, precargar datos
         if (id) {
@@ -757,7 +981,6 @@
                 }
 
                 document.getElementById("solicitudId").value = solicitud.id || "";
-
                 document.getElementById("CicloEscolar").value = solicitud.CicloEscolar || "";
                 document.getElementById("NumeroCuenta").value = solicitud.NumeroCuenta || "";
                 document.getElementById("NombreCompleto").value = solicitud.NombreCompleto || "";
@@ -792,7 +1015,7 @@
                 mostrarMensaje(
                     error.message || "Ocurrió un error al consultar la solicitud.",
                     "danger",
-                    "mensajeFormulario"
+                    "mensajeFormulario",
                 );
             });
     }
@@ -826,11 +1049,32 @@
             });
     }
 
-    //  INICIALIZACIÓN LISTADO
+    //  LISTADO
     function iniciarListado() {
         limpiarMensaje("mensajeSolicitud");
+
         document.getElementById("btnFiltrar")?.addEventListener("click", cargarSolicitudes);
+        // Mostrar/ocultar campos de rango personalizado
+        document.getElementById("filtroFecha")?.addEventListener("change", function () {
+            var esRango = this.value === "rango";
+            document.getElementById("wrapFechaDesde").classList.toggle("d-none", !esRango);
+            document.getElementById("wrapFechaHasta").classList.toggle("d-none", !esRango);
+        });
+
         document.getElementById("btnLimpiarFiltros")?.addEventListener("click", limpiarFiltros);
+        //seleccionar todos
+        document.getElementById("checkTodos")?.addEventListener("change", function () {
+            var marcado = this.checked;
+            document.querySelectorAll(".check-solicitud:not([disabled])").forEach(function (chk) {
+                chk.checked = marcado;
+                toggleSeleccion(chk.dataset.id, marcado);
+            });
+        });
+
+        //boton imprimir
+        document.getElementById("btnImprimirSeleccionadas")?.addEventListener("click", function () {
+            imprimirSeleccionadas();
+        });
 
         document.getElementById("tablaSolicitudes").addEventListener("click", function (evento) {
             var btnEditar = evento.target.closest(".btn-editar");
@@ -862,33 +1106,14 @@
                 return;
             }
         });
-
-        // botón "Aceptar" del modal
-        var btnConfirmar = document.getElementById("btnConfirmarCambiarEstatus");
-        if (btnConfirmar) {
-            btnConfirmar.addEventListener("click", confirmarCambiarEstatus);
-        }
-
-        // Enter dentro del select para confirmar
-        var selectNuevo = document.getElementById("selectNuevoEstatus");
-        if (selectNuevo) {
-            selectNuevo.addEventListener("keydown", function (e) {
-                if (e.key === "Enter") {
-                    e.preventDefault();
-                    confirmarCambiarEstatus();
-                }
-            });
-        }
     }
-    
 
-        //  ARRANQUE SEGÚN PANTALLA
-        document.addEventListener("DOMContentLoaded", function () {
-            if (esPantallaFormulario()) {
-                iniciarFormulario();
-            } else if (esPantallaListado()) {
-                iniciarListado();
-            }
+    //  ARRANQUE
+    document.addEventListener("DOMContentLoaded", function () {
+        if (esPantallaFormulario()) {
+            iniciarFormulario();
+        } else if (esPantallaListado()) {
+            iniciarListado();
+        }
     });
 })();
-

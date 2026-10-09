@@ -14,6 +14,7 @@ class clsConstanciaGenerarSolicitud
         'En elaboración',
         'En firma',
         'Terminado',
+        'Finalizado',
         'Cancelado'
     );
 
@@ -36,13 +37,12 @@ class clsConstanciaGenerarSolicitud
     //cambios de estatus
     public static function transicionesPermitidas(){
         return array(
-            'Solicitado'  => array('En proceso', 'Elaborado', 'Cancelado'),
-            'En proceso'  => array('Elaborado', 'En firma', 'Cancelado'),
-            'Elaborado'   => array('En firma', 'Terminado', 'Cancelado'),
-            'En firma'    => array('Firmado', 'Terminado', 'Cancelado'),
-            'Firmado'     => array('Terminado'),
-            'Terminado'   => array(),
-            'Cancelado'   => array(),
+            'Solicitado'     => array('En elaboración', 'Cancelado'),
+            'En elaboración' => array('En firma', 'Cancelado'),
+            'En firma'       => array('Terminado', 'Finalizado', 'Cancelado'),
+            'Terminado'      => array('Finalizado'),
+            'Finalizado'     => array(),
+            'Cancelado'      => array(),
         );
     }
     //Consultar numero de cuenta
@@ -153,17 +153,18 @@ class clsConstanciaGenerarSolicitud
         if (!isset($datos['NumeroCuenta']) || trim($datos['NumeroCuenta']) === '') {
             return array('ok' => false,'mensaje' => 'El número de cuenta es obligatorio.');
         }
-
-        foreach ($registros as $registro) {
-            if (
-                isset($registro['NumeroCuenta']) &&
-                $this->normalizar($registro['NumeroCuenta']) ===
-                $this->normalizar($datos['NumeroCuenta'])
-            ) {
-                return array(
-                    'ok' => false,
-                    'mensaje' => 'El número de cuenta ya tiene una solicitud registrada.'
-                );
+        $estatusActivos =array('Solicitud', 'En elaboracion', 'En firma' , 'Pago Recibido');
+        foreach ($registros as $registro){
+            $mismaCuenta = isset($registro['NumeroCuenta']) &&
+                $this->normalizar($registro['NumeroCuenta']) === $this->normalizar($datos['NumeroCuenta']);
+            if($mismaCuenta){
+                $estatusActual = isset($registro['Estatus']) ? $registro['Estatus'] : '';
+                if(in_array($estatusActual, $estatusActivos, true)){
+                    return array(
+                        'ok' => false,
+                        'mensaje' => 'El número de cuenta ya tiene una solicitud activa (estatus: ' . $estatusActual . ').'
+                    );
+                }
             }
         }
 
