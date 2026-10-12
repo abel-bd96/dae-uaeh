@@ -107,11 +107,8 @@
                     </div>
 
                     <div class="d-flex justify-content-between">
-                        <button type="button" class="btn btn-secondary"
-                            onclick="alert('Si la información mostrada es incorrecta o requiere algún dato adicional, comuníquese al correo validacionesdae@uaeh.edu.mx o al teléfono 771 71 72 000, ext. 48514, para solicitar su constancia')">
-                            Cancelar
-                        </button>
-                        <button id="EnvioNuevaConstancia" type="submit" class="btn btn-primary">Aceptar</button>
+                        <button type="button" class="btn btn-danger" onclick="alert('Si la información mostrada es incorrecta o requiere algún dato adicional, comuníquese al correo validacionesdae@uaeh.edu.mx o al teléfono 771 71 72 000, ext. 48514, para solicitar su constancia')"> Mi información es incorrecta </button>
+                        <button id="EnvioNuevaConstancia" type="submit" class="btn btn-primary"> Solicitar Constancia</button>
                     </div>
                 </form>
 

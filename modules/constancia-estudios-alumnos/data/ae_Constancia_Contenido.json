@@ -1,0 +1,31 @@
+[
+    {
+        "idConstanciaContenido": "1",
+        "idConstancia": "1",
+        "folio": "CE/01/2026",
+        "estado": "Pendiente de Pago",
+        "apellidoPaterno": "García",
+        "apellidoMaterno": "León",
+        "nombre": "Sergio",
+        "CURP": "GASL031114HHGRNEF6",
+        "numeroCuenta": "401129",
+        "programaEducativo": "Licenciatura en Ciencias Computacionales (2010)",
+        "unidadAcademica": "Instituto de Ciencias Básicas e Ingeniería",
+        "cctUnidadAcademica": "13MSU0017T",
+        "cctUniversidad": "13USU3018V",
+        "estatusAlumno": "Cursando",
+        "calidadAlumno": "Regular",
+        "tipoIngreso": "Examen",
+        "semestre": "8",
+        "duracionProgramaEducativo": "9 semestres",
+        "fechaIngreso": "2022/08/12",
+        "fechaEgreso": "null",
+        "cicloEscolarConstancia": "Julio-Diciembre 2026",
+        "periodoClases": "03/08/2026 - 02/12/2026",
+        "periodoVacacional": "03/12/2026 - 17/01/2026",
+        "promedioGeneral": "9.02",
+        "avanceProgramaEducativo": "97%",
+        "campoAdicional": "Título",
+        "informacionAdicional": "Desglose de información ejemplo"
+    }
+]
