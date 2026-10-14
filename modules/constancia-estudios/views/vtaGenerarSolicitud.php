@@ -37,9 +37,13 @@
                     <select class="form-select" id="filtroEstatus">
                         <option value="">Seleccionar</option>
                         <option value="Solicitado">Solicitado</option>
+                        <option value="Pagado">Pagado</option>
                         <option value="En elaboración">En elaboración</option>
                         <option value="En firma">En firma</option>
-                        <option value="Terminado">Terminado</option>
+                        <option value="Emitida">Emitida</option>
+                        <option value="Entregado">Entregado</option>
+                        <option value="Atendido">Atendido</option>
+                        <option value="Finalizado">Finalizado</option>
                         <option value="Cancelado">Cancelado</option>
                     </select>
                 </div>
@@ -144,7 +148,6 @@
                             <option value="En firma">En firma</option>
                             <option value="Terminado">Terminado</option>
                             <option value="Finalizado">Finalizado</option>
-                            <option value="Cancelado">Cancelado</option>
                         </select>
                     </div>
                 </div>

@@ -2,99 +2,117 @@
     "use strict";
 
     var endpoint = "../../modules/constancia-estudios/models/modConstanciaListaNegra.php";
-    var modoEdicion = false;
     var modal;
     var registrosCache = [];
-    var todosLosRegistros = [];
 
-    // ENVIAR DATOS AL PHP
+    // ---------------------------------------------------------------
+    // Utilidades HTTP
+    // ---------------------------------------------------------------
     function solicitar(datos) {
         var parametros = new URLSearchParams();
-
         Object.keys(datos).forEach(function (clave) {
-            parametros.append(clave, datos[clave]);
+            if (Array.isArray(datos[clave])) {
+                datos[clave].forEach(function (valor) {
+                    parametros.append(clave + "[]", valor);
+                });
+            } else {
+                parametros.append(clave, datos[clave]);
+            }
         });
-
-        return fetch(endpoint, {
-            method: "POST",
-            body: parametros,
-        }).then(function (respuesta) {
+        return fetch(endpoint, { method: "POST", body: parametros }).then(function (respuesta) {
             return respuesta.json().then(function (cuerpo) {
                 if (!respuesta.ok || !cuerpo.ok) {
                     throw new Error(cuerpo.mensaje || "No fue posible completar la operación.");
                 }
-
                 return cuerpo.datos;
             });
         });
     }
 
-    // CONSULTAR DATOS AL PHP
     function consultar(accion, texto) {
         var url = endpoint + "?accion=" + encodeURIComponent(accion) + "&texto=" + encodeURIComponent(texto || "");
-
         return fetch(url).then(function (respuesta) {
             return respuesta.json().then(function (cuerpo) {
                 if (!respuesta.ok || !cuerpo.ok) {
                     throw new Error(cuerpo.mensaje || "Error en la consulta");
                 }
-
                 return cuerpo.datos || [];
             });
         });
     }
 
-    // MOSTRAR MENSAJES
-    function mostrarMensaje(texto, tipo) {
-        var mensaje = document.getElementById("mensajeListaNegra");
-
-        mensaje.textContent = texto;
-        mensaje.className = "alert alert-" + tipo;
-    }
-
-    // ESCAPAR HTML
+    // Utilidades UI
     function escapeHtml(texto) {
         var div = document.createElement("div");
         div.textContent = texto == null ? "" : texto;
         return div.innerHTML;
     }
 
-    // BUSCADOR DE LA TABLA
-    function buscador() {
-        var texto = document.getElementById("input-search").value.toString().toLowerCase();
-        var tbody = document.getElementById("tablaListaNegra");
-        var filas = tbody.getElementsByTagName("tr");
-        for (var i = 0; i < filas.length; i++) {
-            var numeroCuenta = filas[i].cells[0].textContent.toString().toLowerCase();
-            filas[i].style.display = numeroCuenta.indexOf(texto) === -1 ? "none" : "";
+    function mostrarMensaje(texto, tipo) {
+        var mensaje = document.getElementById("mensajeListaNegra");
+        mensaje.textContent = texto;
+        mensaje.className = "alert alert-" + tipo;
+        mensaje.classList.remove("d-none");
+        // Autoocultar después de 4 segundos si es éxito
+        if (tipo === "success") {
+            setTimeout(function () {
+                mensaje.classList.add("d-none");
+            }, 4000);
         }
     }
 
-    // VALIDAR CUENTA
-    function validarCuenta(numeroCuenta) {
-        return solicitar({
-            accion: "validarCuenta",
-            NumeroCuenta: numeroCuenta,
-        });
+    function mostrarMensajeModal(texto, tipo) {
+        var mensaje = document.getElementById("mensajeModalListaNegra");
+        mensaje.textContent = texto;
+        mensaje.className = "alert alert-" + tipo;
+        mensaje.classList.remove("d-none");
     }
 
-    // MOSTRAR REGISTROS EN TABLA
+    function limpiarMensajeModal() {
+        var mensaje = document.getElementById("mensajeModalListaNegra");
+        mensaje.textContent = "";
+        mensaje.className = "alert d-none";
+    }
+
+    // Render de la tabla con Toggle Switch
     function renderTabla(registros) {
         var tbody = document.querySelector("#tablaListaNegra tbody");
-
         if (!registros || !registros.length) {
             tbody.innerHTML =
-                "<tr>" + '<td colspan="2" class="text-center text-muted py-4">' + "Sin registros." + "</td>" + "</tr>";
+                "<tr>" + '<td colspan="2" class="text-center text-muted py-4">Sin registros.</td>' + "</tr>";
             return;
         }
-
         tbody.innerHTML = registros
-            .map(function (registro) {
+            .map(function (r) {
+                var activo = String(r.Estatus).toUpperCase() === "S";
+                var etiqueta = activo ? "Bloqueado" : "Desbloqueado";
+                var claseEtiqueta = activo ? "text-danger" : "text-success";
+                var idSwitch = "switch_" + String(r.NumeroCuenta).replace(/[^a-zA-Z0-9]/g, "_");
+
                 return (
                     "<tr>" +
                     "<td>" +
-                    escapeHtml(registro.NumeroCuenta) + "</td>" + "<td>" + '<button type="button" ' + 'class="btn btn-sm btn-outline-primary btn-editar" ' + 'data-id="' +
-                    escapeHtml(registro.NumeroCuenta) + '">' + escapeHtml(registro.Estatus) + "</button>" +
+                    escapeHtml(r.NumeroCuenta) +
+                    "</td>" +
+                    "<td>" +
+                    '<div class="form-check form-switch d-flex align-items-center gap-2 mb-0">' +
+                    '<input class="form-check-input switch-estatus" type="checkbox" role="switch" ' +
+                    'id="' +
+                    idSwitch +
+                    '" ' +
+                    'data-cuenta="' +
+                    escapeHtml(r.NumeroCuenta) +
+                    '" ' +
+                    (activo ? "checked" : "") +
+                    ">" +
+                    '<label class="form-check-label ' +
+                    claseEtiqueta +
+                    '" for="' +
+                    idSwitch +
+                    '">' +
+                    etiqueta +
+                    "</label>" +
+                    "</div>" +
                     "</td>" +
                     "</tr>"
                 );
@@ -102,175 +120,169 @@
             .join("");
     }
 
-    // CARGAR REGISTROS
+    // Carga de registros
     function cargarRegistros() {
-        solicitar({
-            accion: "listar",
-        })
+        solicitar({ accion: "listar" })
             .then(function (registros) {
-                // Guardamos todos los registros
-                todosLosRegistros = registros || [];
-
-                // Solo mostrar los que tienen estatus S
-                registrosCache = todosLosRegistros.filter(function (registro) {
-                    return String(registro.Estatus).trim().toUpperCase() === "S";
-                });
-
+                registrosCache = registros || [];
                 renderTabla(registrosCache);
             })
-
-            .catch(function (error) {
-                mostrarMensaje(error.message, "danger");
+            .catch(function (e) {
+                mostrarMensaje(e.message, "danger");
             });
     }
 
-    // BUSCAR REGISTRO POR NÚMERO DE CUENTA
-    function buscarRegistro(numeroCuenta) {
-        return todosLosRegistros.find(function (registro) {
-            return String(registro.NumeroCuenta).trim() === String(numeroCuenta).trim();
-        });
-    }
-
-    // AUTOCOMPLETADO DE NÚMERO DE CUENTA
-    function pintarNumeroCuenta(texto) {
-        if (texto.length === 6) {
-            consultar("numeroCuenta", texto)
-                .then(function (lista) {
-                    document.getElementById("resultadosNumeroCuenta").innerHTML =
-                        lista
-                            .map(function (item) {
-                                var numero = String(item.NumeroCuenta);
-
-                                return (
-                                    '<button type="button" ' + 'class="list-group-item list-group-item-action" ' + 'data-nombre="' +
-                                    escapeHtml(numero) + '">' + escapeHtml(numero) + "</button>"
-                                );
-                            })
-                            .join("") ||
-                        '<div class="text-muted small">' + "No se encontró el número de cuenta." + "</div>";
-                })
-
-                .catch(function (error) {
-                    mostrarMensaje(error.message, "danger");
-                });
-        } else {
+    // Filtro local (buscador dentro de la página)
+    function filtrarTabla(texto) {
+        texto = (texto || "").trim().toLowerCase();
+        if (texto === "") {
+            renderTabla(registrosCache);
             return;
         }
+        var filtrados = registrosCache.filter(function (r) {
+            return String(r.NumeroCuenta).toLowerCase().indexOf(texto) !== -1;
+        });
+        renderTabla(filtrados);
     }
 
-    // ABRIR MODAL
-    function abrirModal(edicion, datos) {
-        modoEdicion = !!edicion;
-        document.getElementById("tituloModalListaNegra").textContent = edicion ? "Editar caso" : "Nuevo caso especial";
-        document.getElementById("subtituloModalListaNegra").textContent = "Paso 1 de 1";
+    // ---------------------------------------------------------------
+    // Autocompletado de número de cuenta (para el modal)
+    // ---------------------------------------------------------------
+    function pintarNumeroCuenta(texto) {
+        consultar("numeroCuenta", texto)
+            .then(function (lista) {
+                document.getElementById("resultadosNumeroCuenta").innerHTML =
+                    lista
+                        .map(function (item) {
+                            var numero = String(item.NumeroCuenta);
+                            return (
+                                '<button type="button" class="list-group-item list-group-item-action" ' +
+                                'data-nombre="' +
+                                escapeHtml(numero) +
+                                '">' +
+                                escapeHtml(numero) +
+                                (item.nombre ? " — " + escapeHtml(item.nombre) : "") +
+                                "</button>"
+                            );
+                        })
+                        .join("") || '<div class="text-muted small">No se encontró el número de cuenta.</div>';
+            })
+            .catch(function (e) {
+                mostrarMensaje(e.message, "danger");
+            });
+    }
+
+    // ---------------------------------------------------------------
+    // Modal: solo para NUEVOS registros
+    // ---------------------------------------------------------------
+    function abrirModalNuevo() {
         document.getElementById("formListaNegra").reset();
-
-        // Limpiar mensaje
-        var mensaje = document.getElementById("mensajeListaNegra");
-        mensaje.textContent = "";
-        mensaje.className = "alert d-none";
-
-        // Limpiar resultados
+        document.getElementById("NumeroCuenta").value = "";
+        document.getElementById("Estatus").checked = false;
+        document.getElementById("labelEstatus").textContent = "Desbloqueado";
+        document.getElementById("labelEstatus").className = "form-check-label text-success";
         document.getElementById("resultadosNumeroCuenta").innerHTML = "";
-        document.getElementById("resultadosEstatus").innerHTML = "";
-
-        // Si es edición, cargar datos
-        if (datos) {
-            document.getElementById("NumeroCuenta").value = datos.NumeroCuenta || "";
-            document.getElementById("Estatus").value = datos.Estatus || "";
-        }
-
-        document.getElementById("btnGuardar").classList.remove("d-none");
+        limpiarMensajeModal();
         modal.show();
     }
 
-        // INICIALIZAR PÁGINA
-        document.addEventListener("DOMContentLoaded", function () {
+    // ---------------------------------------------------------------
+    // Inicialización (ÚNICO DOMContentLoaded, al nivel del IIFE)
+    // ---------------------------------------------------------------
+    document.addEventListener("DOMContentLoaded", function () {
         modal = new bootstrap.Modal(document.getElementById("modalListaNegra"));
-
         cargarRegistros();
 
-        // EDITAR REGISTRO
-        document.querySelector("#tablaListaNegra tbody").addEventListener("click", function (e) {
-            var boton = e.target.closest(".btn-editar");
-            if (!boton) {
-                return;
-            }
+        // ---- Cambio de switch en la tabla (actualiza directo al backend) ----
+        document.querySelector("#tablaListaNegra tbody").addEventListener("change", function (e) {
+            var input = e.target.closest(".switch-estatus");
+            if (!input) return;
 
-            var numeroCuenta = boton.dataset.id;
-            var registro = buscarRegistro(numeroCuenta);
+            var numeroCuenta = input.dataset.cuenta;
+            var nuevoEstatus = input.checked ? "S" : "N";
 
-            if (registro) {
-                abrirModal(true, registro);
-            }
+            input.disabled = true;
+
+            solicitar({
+                accion: "actualizar",
+                NumeroCuenta: numeroCuenta,
+                Estatus: nuevoEstatus,
+            })
+                .then(function () {
+                    var reg = registrosCache.find(function (item) {
+                        return String(item.NumeroCuenta) === String(numeroCuenta);
+                    });
+                    if (reg) reg.Estatus = nuevoEstatus;
+
+                    renderTabla(registrosCache);
+                    mostrarMensaje("Estatus actualizado correctamente.", "success");
+                })
+                .catch(function (err) {
+                    input.checked = !input.checked;
+                    input.disabled = false;
+                    mostrarMensaje(err.message, "danger");
+                });
         });
 
-        // NUEVO REGISTRO
+        // ---- Botón Nuevo ----
         document.getElementById("btnNuevoListaNegra").addEventListener("click", function () {
-            abrirModal(false);
+            abrirModalNuevo();
         });
 
-        // AUTOCOMPLETADO
+        // ---- Buscador en vivo (ya no es prompt) ----
+        document.getElementById("buscarListaNegra").addEventListener("input", function () {
+            filtrarTabla(this.value);
+        });
+
+        document.getElementById("btnLimpiarBusqueda").addEventListener("click", function () {
+            document.getElementById("buscarListaNegra").value = "";
+            filtrarTabla("");
+        });
+
+        // ---- Switch de Estatus dentro del modal (etiqueta dinámica) ----
+        document.getElementById("Estatus").addEventListener("change", function () {
+            var label = document.getElementById("labelEstatus");
+            if (this.checked) {
+                label.textContent = "Bloqueado";
+                label.className = "form-check-label text-danger";
+            } else {
+                label.textContent = "Desbloqueado";
+                label.className = "form-check-label text-success";
+            }
+        });
+
+        // ---- Autocompletado en el modal ----
         document.getElementById("NumeroCuenta").addEventListener("input", function () {
             pintarNumeroCuenta(this.value);
         });
 
-        // SELECCIONAR NÚMERO DE CUENTA
         document.getElementById("resultadosNumeroCuenta").addEventListener("click", function (e) {
-            var boton = e.target.closest("button[data-nombre]");
-            if (!boton) {
-                return;
-            }
-
-            var numeroCuenta = boton.dataset.nombre;
-
-            validarCuenta(numeroCuenta)
-                .then(function (resultado) {
-                    // Ya existe en nuestra lista
-                    if (resultado.enLocal) {
-                        abrirModal(true, resultado.registro);
-                        return;
-                    }
-
-                    // Existe en SIAE pero todavía
-                    // no está en nuestra lista
-                    if (resultado.enSIAE) {
-                        document.getElementById("NumeroCuenta").value = numeroCuenta;
-                        document.getElementById("resultadosNumeroCuenta").innerHTML = "";
-                        return;
-                    }
-
-                    // No existe
-                    mostrarMensaje("El número de cuenta no existe", "danger");
-                })
-
-                .catch(function (error) {
-                    mostrarMensaje(error.message, "danger");
-                });
+            var btn = e.target.closest("button[data-nombre]");
+            if (!btn) return;
+            document.getElementById("NumeroCuenta").value = btn.dataset.nombre;
+            document.getElementById("resultadosNumeroCuenta").innerHTML = "";
         });
 
-        // GUARDAR / ACTUALIZAR
+        // ---- Submit del modal (solo guardar nuevos) ----
         document.getElementById("formListaNegra").addEventListener("submit", function (e) {
             e.preventDefault();
 
             var datos = {
-                accion: modoEdicion ? "actualizar" : "guardar",
+                accion: "guardar",
                 NumeroCuenta: document.getElementById("NumeroCuenta").value,
-                Estatus: document.getElementById("Estatus").value,
+                Estatus: document.getElementById("Estatus").checked ? "S" : "N",
             };
 
             solicitar(datos)
                 .then(function () {
-                    mostrarMensaje("Registro exitoso", "success");
+                    limpiarMensajeModal();
+                    modal.hide();
+                    mostrarMensaje("Registro guardado correctamente.", "success");
                     cargarRegistros();
                 })
-
-                .catch(function (error) {
-                    mostrarMensaje(error.message, "danger");
+                .catch(function (err) {
+                    mostrarMensajeModal(err.message, "danger");
                 });
         });
-
-        // BUSCADOR
-        document.getElementById("input-search").addEventListener("input", buscador);
     });
 })();
