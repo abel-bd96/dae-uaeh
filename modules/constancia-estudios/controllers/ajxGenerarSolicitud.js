@@ -6,12 +6,11 @@
     var modoEdicion = false;
     var todosLosRegistros = [];
     var idsSeleccionados = [];
+    var observaciones = [];
     var ESTATUS_FLUJO_A = ["Solicitado", "Pagado", "En elaboración", "Atendido", "Finalizado"];
     var ESTATUS_FLUJO_B = ["En elaboración", "En firma", "Emitida", "Entregado", "Finalizado"];
 
-    // ============================================================
     // ENVIAR DATOS AL PHP (POST)
-    // ============================================================
     function solicitar(datos) {
         var parametros = new URLSearchParams();
         var accion = datos.accion || "guardar";
@@ -47,9 +46,7 @@
         });
     }
 
-    // ============================================================
     // CONSULTAR DATOS (GET)
-    // ============================================================
     function consultar(accion, texto) {
         var url = endpoint + "?accion=" + encodeURIComponent(accion) + "&texto=" + encodeURIComponent(texto || "");
         return fetch(url).then(function (respuesta) {
@@ -68,9 +65,7 @@
         });
     }
 
-    // ============================================================
     // UTILIDADES
-    // ============================================================
     function escapeHtml(texto) {
         var div = document.createElement("div");
         div.textContent = texto || "";
@@ -109,7 +104,7 @@
         el.classList.toggle("d-block", !!texto);
         el.classList.toggle("d-none", !texto);
     }
-
+    //Pantallas
     function esPantallaListado() {
         return !!document.getElementById("tablaSolicitudes");
     }
@@ -118,9 +113,7 @@
         return !!document.getElementById("formSolicitud");
     }
 
-    // ============================================================
     // SELECCIÓN MÚLTIPLE
-    // ============================================================
     function actualizarContadorSeleccionadas() {
         var badge = document.getElementById("contadorSeleccionadas");
         var btn = document.getElementById("btnImprimirSeleccionadas");
@@ -155,9 +148,7 @@
         actualizarCheckTodos();
     }
 
-    // ============================================================
     // FILTROS
-    // ============================================================
     function leerFiltros() {
         return {
             numeroCuenta: (document.getElementById("filtroNumeroCuenta").value || "").toLowerCase().trim(),
@@ -165,6 +156,7 @@
             estatus: (document.getElementById("filtroEstatus").value || "").toLowerCase().trim(),
             ciclo: (document.getElementById("filtroCiclo").value || "").toLowerCase().trim(),
             datoAdicional: (document.getElementById("filtroDatoAdicional").value || "").trim(),
+            tipoFirma: (document.getElementById("filtroTipoFirma").value || "").trim(),
             fecha: (document.getElementById("filtroFecha").value || "").trim(),
             fechaDesde: (document.getElementById("filtroFechaDesde").value || "").trim(),
             fechaHasta: (document.getElementById("filtroFechaHasta").value || "").trim(),
@@ -192,12 +184,14 @@
                 .toLowerCase()
                 .trim();
             var da = String(s.DatoAdicional || "").trim();
+            var tf = String(s.TipoFirma || "").trim();
 
             if (f.ciclo && ciclo.indexOf(f.ciclo) === -1) return false;
             if (f.numeroCuenta && nc.indexOf(f.numeroCuenta) === -1) return false;
             if (f.nombre && nom.indexOf(f.nombre) === -1) return false;
             if (fEst && est !== fEst) return false;
             if (f.datoAdicional && da !== f.datoAdicional) return false;
+            if (f.tipoFirma && tf !== f.tipoFirma) return false;
 
             if (rango) {
                 var fecha = String(s.fechaRegistro || "").trim();
@@ -255,6 +249,7 @@
             "filtroEstatus",
             "filtroCiclo",
             "filtroDatoAdicional",
+            "filtroTipoFirma",
             "filtroFecha",
         ];
         for (var i = 0; i < ids.length; i++) {
@@ -264,9 +259,7 @@
         return false;
     }
 
-    // ============================================================
     // BOTONES SEGÚN ESTATUS
-    // ============================================================
     function generarBotones(s) {
         var id = escapeHtml(s.id || s.idSolicitud || "");
         var estatus = s.Estatus || s.EstatusSolicitud || "";
@@ -284,16 +277,6 @@
             return (
                 '<button type="button" class="btn btn-sm btn-outline-success" disabled>' +
                 '<i class="bi bi-check-circle"></i> Finalizada</button>'
-            );
-        }
-
-        // Editar (si no está emitida/entregada/finalizada)
-        if (!["Emitida", "Entregado", "Finalizado", "Cancelado"].includes(estatus)) {
-            botones.push(
-                '<button type="button" class="btn btn-sm btn-outline-primary btn-editar" data-id="' +
-                    id +
-                    '">' +
-                    '<i class="bi bi-pencil"></i> Editar</button>',
             );
         }
 
@@ -380,9 +363,7 @@
         return botones.join(" ");
     }
 
-    // ============================================================
     // TABLA
-    // ============================================================
     function pintarTabla(registros) {
         var tbody = document.querySelector("#tablaSolicitudes tbody");
         if (!tbody) return;
@@ -440,6 +421,9 @@
                     "<td>" +
                     escapeHtml(s.DatoAdicional || "") +
                     "</td>" +
+                    "<td>" +
+                    escapeHtml(s.TipoFirma === "S" ? "Digital (PDF)" : s.TipoFirma === "N" ? "Autógrafa" : "") +
+                    "</td>" +
                     '<td class="text-end">' +
                     generarBotones(s) +
                     "</td>" +
@@ -493,6 +477,7 @@
             "filtroNombre",
             "filtroEstatus",
             "filtroDatoAdicional",
+            "filtroTipoFirma",
             "filtroFecha",
             "filtroFechaDesde",
             "filtroFechaHasta",
@@ -517,9 +502,7 @@
         actualizarCheckTodos();
     }
 
-    // ============================================================
     // MODAL GENÉRICO
-    // ============================================================
     function abrirModal(opciones) {
         if (typeof bootstrap === "undefined" || typeof bootstrap.Modal === "undefined") {
             console.error("Bootstrap 5 no está cargado. Revisa el orden de tus <script>.");
@@ -579,9 +562,7 @@
         modalInstance.show();
     }
 
-    // ============================================================
     // ACCIONES — cada función definida UNA SOLA VEZ
-    // ============================================================
 
     // Flujo A - Paso 2: Pagar (con selección de tipo de firma)
     function pagarSolicitud(id) {
@@ -787,9 +768,7 @@
         window.location.href = "?vta=CrearSolicitud&id=" + encodeURIComponent(id);
     }
 
-    // ============================================================
     // IMPRIMIR SELECCIONADAS
-    // ============================================================
     function imprimirSeleccionadas() {
         if (!idsSeleccionados.length) {
             mostrarMensaje("No hay solicitudes seleccionadas.", "warning", "mensajeSolicitud");
@@ -890,33 +869,40 @@
         ventana.document.close();
     }
 
-    // ============================================================
     // NAVEGACIÓN POR PASOS (FORMULARIO)
-    // ============================================================
     function mostrarPaso(numero) {
+        if (modoEdicion && numero < 2) numero = 2;
+
         paso = numero;
         document.querySelectorAll(".paso-solicitud").forEach(function (seccion) {
             seccion.classList.toggle("d-none", Number(seccion.dataset.paso) !== paso);
         });
 
         var subtitulo = document.getElementById("subtituloFormularioSolicitud");
-        if (subtitulo) subtitulo.textContent = "Paso " + paso + " de 3";
-
+        if (subtitulo) {
+            subtitulo.textContent = modoEdicion ? "Paso " + (paso - 1) + " de 2" : "Paso" + paso + " de 3";
+        }
         var barra = document.getElementById("barraPaso");
-        if (barra) barra.style.width = (paso / 3) * 100 + "%";
-
+        if (barra) {
+            barra.style.width = modoEdicion ? ((paso - 1) / 2) * 100 + "%" : (paso / 3) * 100 + "%";
+        }
         var btnAnterior = document.getElementById("btnAnterior");
         var btnSiguiente = document.getElementById("btnSiguiente");
         var btnGuardar = document.getElementById("btnGuardar");
 
-        if (btnAnterior) btnAnterior.classList.toggle("invisible", paso === 1);
+        if (btnAnterior) {
+            btnAnterior.classList.toggle("invisible", paso === 1 || (modoEdicion && paso === 2));
+        }
         if (btnSiguiente) btnSiguiente.classList.toggle("d-none", paso === 3);
         if (btnGuardar) btnGuardar.classList.toggle("d-none", paso !== 3);
 
         mostrarError("errorNumeroCuenta", "");
         mostrarError("errorDatos", "");
 
-        if (paso === 3) actualizarResumen();
+        if (paso === 3) {
+            actualizarResumen();
+            actualizarVisibilidadDatosAdicionales();
+        }
     }
 
     function validarPaso() {
@@ -939,9 +925,7 @@
         return true;
     }
 
-    // ============================================================
     // BUSCAR NÚMERO DE CUENTA
-    // ============================================================
     function pintarNumeroCuenta(texto) {
         consultar("numeroCuenta", texto)
             .then(function (alumnos) {
@@ -1034,9 +1018,73 @@
         mostrarError("errorNumeroCuenta", "");
     }
 
-    // ============================================================
+    //agregar las observaciones
+    function renderObservaciones() {
+        var lista = document.getElementById("listaObservaciones");
+        if (!lista) return;
+        if (!observaciones.length) {
+            lista.innerHTML = '<li class="list-group-item text-muted small">Sin observaciones agregadas.</li>';
+            return;
+        }
+        lista.innerHTML = observaciones
+            .map(function (o, i) {
+                return (
+                    '<li class="list-group-item d-flex justify-content-between align-items-center">' +
+                    "<div><strong>" +
+                    escapeHtml(o.nombre) +
+                    ":</strong> " +
+                    escapeHtml(o.valor) +
+                    "</div>" +
+                    '<button type="button" class="btn btn-sm btn-outline-danger btn-eliminar-observacion" data-index="' +
+                    i +
+                    '"><i class="bi bi-trash"></i></button>' +
+                    "</li>"
+                );
+            })
+            .join("");
+    }
+    function actualizarVisibilidadDatosAdicionales() {
+        var wrap = document.getElementById("wrapDatosAdicionales");
+        if (!wrap) return;
+
+        var seleccionado = document.querySelector('input[name="DatoAdicional"]:checked');
+        var esSi = seleccionado && seleccionado.value === "S";
+
+        wrap.classList.toggle("d-none", !esSi);
+
+        // Si eligen "No", limpiamos lo que hubieran agregado
+        if (!esSi && observaciones.length) {
+            observaciones = [];
+            renderObservaciones();
+        }
+    }
+    function agregarObservacion() {
+        var nombreEl = document.getElementById("observacionNombre");
+        var valorEl = document.getElementById("observacionValor");
+        if (!nombreEl || !valorEl) return;
+
+        var nombre = (nombreEl.value || "").trim();
+        var valor = (valorEl.value || "").trim();
+        mostrarError("errorObservaciones", "");
+        if (!nombre) {
+            mostrarError("errorObservaciones", "Ingrese el nombre del campo.");
+            nombreEl.focus();
+            return;
+        }
+        if (!valor) {
+            mostrarError("errorObservaciones", "Ingrese la información del campo.");
+            valorEl.focus();
+            return;
+        }
+
+        observaciones.push({ nombre: nombre, valor: valor });
+        nombreEl.value = "";
+        valorEl.value = "";
+        nombreEl.focus();
+        renderObservaciones();
+    }
+
     // FORMULARIO
-    // ============================================================
     function datosFormulario() {
         var datoAdicional = document.querySelector('input[name="DatoAdicional"]:checked');
         var tipoFirma = document.querySelector('input[name="TipoFirma"]:checked');
@@ -1053,7 +1101,7 @@
             DatoAdicional: datoAdicional ? datoAdicional.value : "",
             TipoFirma: tipoFirma ? tipoFirma.value : "",
             Calificaciones: calificaciones ? calificaciones.value : "",
-            Observacion: document.getElementById("Observacion")?.value || "",
+            Observaciones: JSON.stringify(observaciones),
         };
     }
 
@@ -1067,8 +1115,19 @@
             .filter(Boolean)
             .join(" ")
             .trim();
+
         var resumen = document.getElementById("resumenSolicitud");
         if (!resumen) return;
+
+        var observacionesHtml = observaciones.length
+            ? "<ul class='mb-0'>" +
+              observaciones
+                  .map(function (o) {
+                      return "<li><strong>" + escapeHtml(o.nombre) + ":</strong> " + escapeHtml(o.valor) + "</li>";
+                  })
+                  .join("") +
+              "</ul>"
+            : "<em>Sin observaciones</em>";
 
         resumen.innerHTML =
             "<p><strong>Número de Cuenta:</strong> " +
@@ -1089,9 +1148,8 @@
             "<p><strong>Calificaciones:</strong> " +
             escapeHtml(calificaciones) +
             "</p>" +
-            "<p><strong>Observación:</strong> " +
-            escapeHtml(datos.Observacion) +
-            "</p>";
+            "<p class='mb-0'><strong>Observaciones:</strong></p>" +
+            observacionesHtml; 
     }
 
     function seleccionarRadio(nombre, valor) {
@@ -1101,30 +1159,10 @@
         });
     }
 
-    function cargarObservaciones() {
-        consultar("observacion")
-            .then(function (lista) {
-                var select = document.getElementById("Observacion");
-                if (!select) return;
-                select.innerHTML = '<option value="">Seleccione una observación</option>';
-                lista.forEach(function (o) {
-                    var opt = document.createElement("option");
-                    opt.value = o.Observacion;
-                    opt.textContent = o.Observacion;
-                    select.appendChild(opt);
-                });
-            })
-            .catch(function (error) {
-                console.warn("No se pudieron cargar las observaciones:", error.message);
-            });
-    }
-
     function iniciarFormulario() {
         limpiarMensaje("mensajeFormulario");
         var params = new URLSearchParams(window.location.search);
         var id = params.get("id");
-
-        cargarObservaciones();
 
         var btnSiguiente = document.getElementById("btnSiguiente");
         if (btnSiguiente) {
@@ -1166,6 +1204,40 @@
                 if (boton && boton.dataset.numero) seleccionarAlumno(boton);
             });
         }
+        // Escuchar cambios en "¿Desea datos adicionales?"
+        document.querySelectorAll('input[name="DatoAdicional"]').forEach(function (radio) {
+            radio.addEventListener("change", actualizarVisibilidadDatosAdicionales);
+        });
+
+        // Estado inicial
+        actualizarVisibilidadDatosAdicionales();
+        // Observaciones: agregar / eliminar / Enter
+        var btnAgregarObservacion = document.getElementById("btnAgregarObservacion");
+        if (btnAgregarObservacion) btnAgregarObservacion.addEventListener("click", agregarObservacion);
+
+        var inputObsNombre = document.getElementById("observacionNombre");
+        var inputObsValor = document.getElementById("observacionValor");
+        [inputObsNombre, inputObsValor].forEach(function (el) {
+            if (!el) return;
+            el.addEventListener("keydown", function (e) {
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                    agregarObservacion();
+                }
+            });
+        });
+
+        var listaObservaciones = document.getElementById("listaObservaciones");
+        if (listaObservaciones) {
+            listaObservaciones.addEventListener("click", function (e) {
+                var btn = e.target.closest(".btn-eliminar-observacion");
+                if (!btn) return;
+                observaciones.splice(Number(btn.dataset.index), 1);
+                renderObservaciones();
+            });
+        }
+
+        renderObservaciones();
 
         if (id) precargarSolicitud(id);
         else mostrarPaso(1);
@@ -1210,14 +1282,22 @@
                 seleccionarRadio("TipoFirma", solicitud.TipoFirma);
                 seleccionarRadio("Calificaciones", solicitud.Calificaciones);
 
-                var observacion = document.getElementById("Observacion");
-                if (observacion) observacion.value = solicitud.Observacion || "";
+                // Cargar observaciones
+                observaciones = [];
+                if (Array.isArray(solicitud.Observaciones)) {
+                    observaciones = solicitud.Observaciones.slice();
+                } else if (solicitud.Observacion) {
+                    // Compatibilidad con datos anteriores (string simple)
+                    observaciones = [{ nombre: "Observación", valor: solicitud.Observacion }];
+                }
+                renderObservaciones();
+                actualizarVisibilidadDatosAdicionales();
 
                 var titulo = document.getElementById("tituloFormularioSolicitud");
                 if (titulo) titulo.textContent = "Editar Solicitud de constancia";
 
                 actualizarResumen();
-                mostrarPaso(1);
+                mostrarPaso(2);
             })
             .catch(function (error) {
                 mostrarMensaje(
@@ -1257,9 +1337,7 @@
             });
     }
 
-    // ============================================================
     // LISTADO
-    // ============================================================
     function iniciarListado() {
         limpiarMensaje("mensajeSolicitud");
 
@@ -1320,9 +1398,7 @@
         }
     }
 
-    // ============================================================
     // ARRANQUE
-    // ============================================================
     document.addEventListener("DOMContentLoaded", function () {
         if (esPantallaFormulario()) iniciarFormulario();
         else if (esPantallaListado()) iniciarListado();

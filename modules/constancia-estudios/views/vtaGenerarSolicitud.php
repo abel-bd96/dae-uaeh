@@ -61,6 +61,14 @@
                         <option value="N">No especiales</option>
                     </select>
                 </div>
+                <div class="col-md-2">
+                    <label for="filtroTipoFirma" class="form-label">Tipo de firma</label>
+                    <select class="form-select" id="filtroTipoFirma">
+                        <option value="">Seleccionar</option>
+                        <option value="S">Digital (PDF)</option>
+                        <option value="N">Autógrafa</option>
+                    </select>
+                </div>
 
                 <div class="col-md-3">
                     <label for="filtroFecha" class="form-label">Fecha de solicitud</label>
@@ -114,12 +122,13 @@
                             <th>Nombre Completo</th>
                             <th>Estatus Solicitud</th>
                             <th>Dato Adicional</th>
+                            <th>Tipo de Firma</th>
                             <th class="text-end">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td colspan="8" class="text-center text-muted py-4">
+                            <td colspan="9" class="text-center text-muted py-4">
                                 Seleccione los filtros y presione <strong>Buscar</strong> para ver resultados
                             </td>
                         </tr>

@@ -32,9 +32,7 @@ class clsConstanciaGenerarSolicitud
         $this->rutaConfiguraciones = $directorioDatos . 'constancia_generar_solicitud.json';
     }
 
-    // ============================================================
     // CATÁLOGOS Y ESTATUS
-    // ============================================================
     public function estatusValidados(){
         return $this->listaEstatusValidos;
     }
@@ -53,9 +51,7 @@ class clsConstanciaGenerarSolicitud
         );
     }
 
-    // ============================================================
     // CONSULTAS DE ALUMNOS
-    // ============================================================
     public function consultarNumeroCuenta($texto = '') {
         $cuentas = $this->leer($this->rutaNumeroCuenta);
         $alumnos = $this->leer($this->rutaNombreAlumno);
@@ -125,9 +121,7 @@ class clsConstanciaGenerarSolicitud
         return $alumno;
     }
 
-    // ============================================================
     // CONSULTAS DE CATÁLOGOS Y SOLICITUDES
-    // ============================================================
     public function consultar($id){
         if ($id === null || trim((string)$id) === '') return null;
         $registros = $this->leer($this->rutaConfiguraciones);
@@ -155,15 +149,15 @@ class clsConstanciaGenerarSolicitud
         return $this->leer($this->rutaConfiguraciones);
     }
 
-    // ============================================================
     // GUARDAR / ACTUALIZAR
-    // ============================================================
     public function guardar($datos){
         $registros = $this->leer($this->rutaConfiguraciones);
 
         if (!isset($datos['NumeroCuenta']) || trim($datos['NumeroCuenta']) === '') {
             return array('ok' => false, 'mensaje' => 'El número de cuenta es obligatorio.');
         }
+        
+        $datos = $this->normalizarObservaciones($datos);
 
         $estatusActivos = array('Solicitado', 'Pagado', 'En elaboración', 'En firma', 'Emitida', 'Atendido');
 
@@ -209,7 +203,7 @@ class clsConstanciaGenerarSolicitud
         if (!isset($datos['id'])) {
             return array('ok' => false, 'mensaje' => 'No se recibió el identificador de la solicitud.');
         }
-
+        $datos = $this->normalizarObservaciones($datos);
         $registros = $this->leer($this->rutaConfiguraciones);
 
         foreach ($registros as $indice => $registro) {
@@ -282,9 +276,7 @@ class clsConstanciaGenerarSolicitud
         return array('ok' => false, 'mensaje' => 'No se encontró la solicitud.');
     }
 
-    // ============================================================
     // MÉTODOS DE TRANSICIÓN (cada uno definido UNA sola vez)
-    // ============================================================
 
     // Flujo A - Paso 2: Pagado (guarda tipo de firma)
     public function pagar($id, $tipoFirma){
@@ -359,7 +351,15 @@ class clsConstanciaGenerarSolicitud
             array('Atendido', 'Entregado')
         );
     }
-
+    private function normalizarObservaciones($datos) {
+    if (isset($datos['Observaciones']) && is_string($datos['Observaciones'])) {
+        $decoded = json_decode($datos['Observaciones'], true);
+        $datos['Observaciones'] = is_array($decoded) ? $decoded : array();
+    } elseif (!isset($datos['Observaciones'])) {
+        $datos['Observaciones'] = array();
+    }
+    return $datos;
+}
     // Cambiar estado manualmente (sin restricción de estatus origen)
     public function cambiarEstatus($id, $nuevoEstatus){
         if (!in_array($nuevoEstatus, $this->listaEstatusValidos, true)) {
@@ -373,9 +373,7 @@ class clsConstanciaGenerarSolicitud
         );
     }
 
-    // ============================================================
-    // CAMBIO DE ESTATUS INTERNO (con $datosExtra ✅)
-    // ============================================================
+    // CAMBIO DE ESTATUS INTERNO (con $datosExtra)
     private function cambiarEstatusInterno($id, $nuevoEstatus, $mensajeOk, $estatusPermitidos = null, $datosExtra = array()){
         if ($id === null || trim((string)$id) === '') {
             return array('ok' => false, 'mensaje' => 'No se recibió el identificador de la solicitud.');
@@ -446,9 +444,7 @@ class clsConstanciaGenerarSolicitud
         return null;
     }
 
-    // ============================================================
     // LECTURA / ESCRITURA JSON
-    // ============================================================
     private function leer($ruta)
     {
         if (!file_exists($ruta)) {
