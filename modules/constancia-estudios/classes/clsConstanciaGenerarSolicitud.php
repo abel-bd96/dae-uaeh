@@ -408,7 +408,7 @@ class clsConstanciaGenerarSolicitud
                 $registros[$indice]['Estatus'] = $nuevoEstatus;
                 $registros[$indice]['fechaActualizacion'] = date('Y-m-d');
 
-                // ✅ $datosExtra ya está declarado como parámetro
+                // $datosExtra 
                 if (is_array($datosExtra)) {
                     foreach ($datosExtra as $campo => $valor) {
                         $registros[$indice][$campo] = $valor;

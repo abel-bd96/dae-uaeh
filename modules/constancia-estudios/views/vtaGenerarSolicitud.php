@@ -42,7 +42,6 @@
                         <option value="En firma">En firma</option>
                         <option value="Emitida">Emitida</option>
                         <option value="Entregado">Entregado</option>
-                        <option value="Atendido">Atendido</option>
                         <option value="Finalizado">Finalizado</option>
                         <option value="Cancelado">Cancelado</option>
                     </select>
@@ -152,11 +151,9 @@
                     <div id="modalConfirmarSelectWrap" class="d-none">
                         <label for="modalConfirmarSelect" class="form-label">Seleccione el nuevo estatus</label>
                         <select class="form-select" id="modalConfirmarSelect">
-                            <option value="Solicitado">Solicitado</option>
-                            <option value="En elaboración">En elaboración</option>
                             <option value="En firma">En firma</option>
-                            <option value="Terminado">Terminado</option>
-                            <option value="Finalizado">Finalizado</option>
+                            <option value="Terminado">Emitido</option>
+                            <option value="Finalizado">Entregado</option>
                         </select>
                     </div>
                 </div>
