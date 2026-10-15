@@ -5,10 +5,6 @@
             <h1 class="h3 mb-0">Seguimiento de constancias</h1>
         </div>
         <div class="d-flex gap-2">
-            <button type="button" class="btn btn-success d-none" id="btnImprimirSeleccionadas">
-                <i class="bi bi-printer"></i> Imprimir seleccionadas
-                <span class="badge bg-light text-dark ms-1" id="contadorSeleccionadas">0</span>
-            </button>
             <a href="?vta=CrearSolicitud" class="btn btn-primary" id="btnNuevaSolicitud">
                 <i class="bi bi-plus-lg"></i> Crear Solicitud
             </a>
@@ -17,6 +13,22 @@
 
     <div id="mensajeSolicitud" class="alert d-none" role="alert"></div>
 
+    <div class="card shadow-sm border-0 mb-4 d-none" id="barraAccionesMasivas">
+    <div class="card-body d-flex flex-wrap align-items-center gap-2">
+        <span class="fw-bold me-2">
+            <i class="bi bi-check2-square"></i>
+            <span id="contadorAcciones">0</span> seleccionada(s)
+        </span>
+        <button type="button" class="btn btn-sm btn-outline-info"    data-accion-masiva="elaborar">     <i class="bi bi-gear"></i> Elaborar</button>
+        <button type="button" class="btn btn-sm btn-outline-warning" data-accion-masiva="mandarFirma">  <i class="bi bi-pen"></i> Mandar a firma</button>
+        <button type="button" class="btn btn-sm btn-outline-success" data-accion-masiva="emitir">       <i class="bi bi-file-earmark-check"></i> Emitida</button>
+        <button type="button" class="btn btn-sm btn-outline-success" data-accion-masiva="entregar">     <i class="bi bi-box-arrow-right"></i> Entregado</button>
+        <button type="button" class="btn btn-sm btn-outline-dark"    data-accion-masiva="finalizar">    <i class="bi bi-flag"></i> Finalizar</button>
+        <button type="button" class="btn btn-sm btn-outline-danger"  data-accion-masiva="cancelar">     <i class="bi bi-x-circle"></i> Cancelar</button>
+        <button type="button" class="btn btn-sm btn-outline-primary" data-accion-masiva="imprimir">     <i class="bi bi-printer"></i> Imprimir</button>
+        <button type="button" class="btn btn-sm btn-link ms-auto"    id="btnLimpiarSeleccion">Limpiar selección</button>
+    </div>
+</div>
         <!-- Filtros -->
     <div class="card shadow-sm border-0 mb-4">
         <div class="card-body">

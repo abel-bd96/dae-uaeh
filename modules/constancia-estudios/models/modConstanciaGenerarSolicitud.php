@@ -136,6 +136,17 @@ try {
         case 'datoAdicional':
             $respuesta = $consulta->consultarDatoAdicional();
             break;
+        case 'cambiarEstatusMasivo':
+            $ids          = isset($_POST['ids']) ? (array)$_POST['ids'] : array();
+            $nuevoEstatus = isset($_POST['estatus']) ? $_POST['estatus'] : '';
+            $resultado    = $consulta->cambiarEstatusMasivo($ids, $nuevoEstatus);
+            if (isset($resultado['ok']) && $resultado['ok'] === false) {
+                throw new Exception(
+                    isset($resultado['mensaje']) ? $resultado['mensaje'] : 'No fue posible actualizar los estatus.'
+                );
+            }
+            $respuesta = $resultado;
+            break;
         default:
             throw new Exception('La acción solicitada no es válida.');
     }

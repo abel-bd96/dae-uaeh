@@ -373,6 +373,73 @@ class clsConstanciaGenerarSolicitud
         );
     }
 
+    public function cambiarEstatusMasivo($ids, $nuevoEstatus) {
+    if (!is_array($ids) || empty($ids)) {
+        return array('ok' => false, 'mensaje' => 'No se recibieron solicitudes.');
+    }
+    if (!in_array($nuevoEstatus, $this->listaEstatusValidos, true)) {
+        return array('ok' => false, 'mensaje' => 'El estatus destino no es válido.');
+    }
+
+    // Normalizar los ids a strings para comparar siempre igual
+    $idsStr = array_map('strval', $ids);
+
+    $transiciones = self::transicionesPermitidas();
+    $registros    = $this->leer($this->rutaConfiguraciones);
+    $procesados   = array();
+    $omitidos     = array();
+
+    // Alias por si el front manda "Emitir" o "Emitido"
+    $aliasEmitida = array('Emitida', 'Emitido', 'Emitir');
+    $estatusFinal = in_array($nuevoEstatus, $aliasEmitida, true) ? 'Emitida' : $nuevoEstatus;
+
+    foreach ($registros as $indice => $registro) {
+        if (!isset($registro['id'])) continue;
+
+        $idStr = (string)$registro['id'];
+        if (!in_array($idStr, $idsStr, true)) continue;
+
+        $estatusActual = isset($registro['Estatus']) ? $registro['Estatus'] : '';
+        $permitidos    = isset($transiciones[$estatusActual]) ? $transiciones[$estatusActual] : array();
+
+        $esValido = in_array($estatusFinal, $permitidos, true);
+
+        if (!$esValido) {
+            $omitidos[] = array(
+                'id'      => $registro['id'],
+                'estatus' => $estatusActual,
+                'motivo'  => 'No se puede pasar de "' . $estatusActual . '" a "' . $estatusFinal . '".'
+            );
+            continue;
+        }
+
+        $registros[$indice]['Estatus']            = $estatusFinal;
+        $registros[$indice]['fechaActualizacion'] = date('Y-m-d');
+        $procesados[] = $registro['id'];
+    }
+
+    if (empty($procesados)) {
+        return array(
+            'ok'         => false,
+            'mensaje'    => 'Ninguna de las solicitudes seleccionadas puede pasar a "' . $estatusFinal . '".',
+            'procesados' => array(),
+            'omitidos'   => $omitidos
+        );
+    }
+
+    if (!$this->guardarJson($this->rutaConfiguraciones, $registros)) {
+        return array('ok' => false, 'mensaje' => 'No fue posible guardar los cambios.');
+    }
+
+    $total = count($procesados);
+    return array(
+        'ok'         => true,
+        'mensaje'    => $total . ' solicitud(es) actualizada(s) correctamente.',
+        'procesados' => $procesados,
+        'omitidos'   => $omitidos
+    );
+}
+
     // CAMBIO DE ESTATUS INTERNO (con $datosExtra)
     private function cambiarEstatusInterno($id, $nuevoEstatus, $mensajeOk, $estatusPermitidos = null, $datosExtra = array()){
         if ($id === null || trim((string)$id) === '') {

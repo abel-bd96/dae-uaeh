@@ -7,9 +7,15 @@
     var todosLosRegistros = [];
     var idsSeleccionados = [];
     var observaciones = [];
-    var ESTATUS_FLUJO_A = ["Solicitado", "Pagado", "En elaboración", "Atendido", "Finalizado"];
-    var ESTATUS_FLUJO_B = ["En elaboración", "En firma", "Emitida", "Entregado", "Finalizado"];
 
+    var ACCIONES_MASIVAS = {
+        elaborar: { estatus: "En elaboración", titulo: "Elaborar" },
+        mandarFirma: { estatus: "En firma", titulo: "Mandar a firma" },
+        emitir: { estatus: "Emitida", titulo: "Emitir" },
+        entregar: { estatus: "Entregado", titulo: "Entregar" },
+        finalizar: { estatus: "Finalizado", titulo: "Finalizar" },
+        cancelar: { estatus: "Cancelado", titulo: "Cancelar" },
+    };
     // ENVIAR DATOS AL PHP (POST)
     function solicitar(datos) {
         var parametros = new URLSearchParams();
@@ -127,6 +133,10 @@
                 btn.style.display = "none";
             }
         }
+        var barra = document.getElementById("barraAccionesMasivas");
+        var cont = document.getElementById("contadorAcciones");
+        if (barra) barra.classList.toggle("d-none", idsSeleccionados.length === 0);
+        if (cont) cont.textContent = idsSeleccionados.length;
     }
 
     function actualizarCheckTodos() {
@@ -146,6 +156,18 @@
 
         actualizarContadorSeleccionadas();
         actualizarCheckTodos();
+    }
+    function limpiarSeleccion() {
+        idsSeleccionados = [];
+        document.querySelectorAll(".check-solicitud").forEach(function (chk) {
+            chk.checked = false;
+        });
+        var checkTodos = document.getElementById("checkTodos");
+        if (checkTodos) {
+            checkTodos.checked = false;
+            checkTodos.indeterminate = false;
+        }
+        actualizarContadorSeleccionadas();
     }
 
     // FILTROS
@@ -446,9 +468,7 @@
                 "</td></tr>";
 
             todosLosRegistros = [];
-            idsSeleccionados = [];
-            actualizarContadorSeleccionadas();
-            actualizarCheckTodos();
+            limpiarSeleccion();
             return;
         }
 
@@ -483,7 +503,7 @@
         if (wrapHasta) wrapHasta.classList.add("d-none");
 
         todosLosRegistros = [];
-        idsSeleccionados = [];
+        limpiarSeleccion();
 
         document.querySelector("#tablaSolicitudes tbody").innerHTML =
             '<tr><td colspan="9" class="text-center text-muted py-4">' +
@@ -545,6 +565,9 @@
 
         btnOkNuevo.addEventListener("click", function () {
             var valor = opciones.tipo === "select" ? select.value : null;
+            if (document.activeElement && typeof document.activeElement.blur === "function") {
+                document.activeElement.blur();
+            }
             var modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
             modalInstance.hide();
             if (typeof opciones.onAceptar === "function") opciones.onAceptar(valor);
@@ -719,59 +742,60 @@
             },
         });
     }
-
-    // Cambiar estatus manual (con la lista COMPLETA)
-    function cambiarEstatusSolicitud(id, estatusActual) {
-        var TRANSICIONES = {
-            Solicitado: ["Pagado", "Cancelado"],
-            Pagado: ["En elaboración", "Cancelado"],
-            "En elaboración": ["En firma", "Atendido", "Cancelado"],
-            "En firma": ["Emitida", "Cancelado"],
-            Emitida: ["Entregado", "Cancelado"],
-            Entregado: ["Finalizado"],
-            Atendido: ["Finalizado"],
-            Finalizado: [],
-            Cancelado: [],
-        };
-
-        var opciones = TRANSICIONES[estatusActual] || [];
-        if (!opciones.length) {
-            mostrarMensaje(
-                "No hay transiciones disponibles desde el estatus actual (" + estatusActual + ").",
-                "warning",
-                "mensajeSolicitud",
-            );
-            return;
-        }
-
-        abrirModal({
-            titulo: "Cambiar estatus",
-            mensaje: "Estatus actual: " + estatusActual + ". Seleccione el nuevo estatus:",
-            tipo: "select",
-            opciones: opciones,
-            valorInicial: opciones[0],
-            btnTexto: "Cambiar estatus",
-            btnClass: "btn-primary",
-            onAceptar: function (nuevoEstatus) {
-                if (!nuevoEstatus) return;
-                solicitar({ accion: "cambiarEstatus", id: id, estatus: nuevoEstatus })
-                    .then(function () {
-                        mostrarMensaje("El estatus se actualizó correctamente.", "success", "mensajeSolicitud");
-                        cargarSolicitudes();
-                    })
-                    .catch(function (error) {
-                        mostrarMensaje(error.message, "danger", "mensajeSolicitud");
-                    });
-            },
-        });
-    }
-
-    // Editar
+     // Editar
     function editarSolicitud(id) {
         limpiarMensaje();
         window.location.href = "?vta=CrearSolicitud&id=" + encodeURIComponent(id);
     }
 
+    //acciones maxivas 
+    function ejecutarAccionMasiva(accion) {
+    if (!idsSeleccionados.length) {
+        mostrarMensaje("No hay solicitudes seleccionadas.", "warning", "mensajeSolicitud");
+        return;
+    }
+
+    // Imprimir no cambia estatus
+    if (accion === "imprimir") {
+        imprimirSeleccionadas();
+        return;
+    }
+
+    var cfg = ACCIONES_MASIVAS[accion];
+    if (!cfg) {
+        mostrarMensaje("Acción desconocida: " + accion, "danger", "mensajeSolicitud");
+        return;
+    }
+
+    abrirModal({
+        titulo: cfg.titulo + " seleccionadas",
+        mensaje:
+            "Se intentará pasar " + idsSeleccionados.length +
+            " solicitud(es) a \"" + cfg.estatus + "\". " +
+            "Las que no cumplan con la transición serán omitidas.",
+        btnTexto: "Sí, " + cfg.titulo.toLowerCase(),
+        btnClass: "btn-primary",
+        onAceptar: function () {
+            solicitar({
+                accion: "cambiarEstatusMasivo",
+                ids: idsSeleccionados,
+                estatus: cfg.estatus
+            })
+                .then(function (resultado) {
+                    var ok = resultado && resultado.procesados ? resultado.procesados.length : 0;
+                    var om = resultado && resultado.omitidos ? resultado.omitidos.length : 0;
+                    var msg = ok + " actualizada(s).";
+                    if (om > 0) msg += " " + om + " omitida(s).";
+                    mostrarMensaje(msg, om > 0 ? "warning" : "success", "mensajeSolicitud");
+                    limpiarSeleccion();
+                    cargarSolicitudes();
+                })
+                .catch(function (error) {
+                    mostrarMensaje(error.message, "danger", "mensajeSolicitud");
+                });
+        }
+    });
+}
     // IMPRIMIR SELECCIONADAS
     function imprimirSeleccionadas() {
         if (!idsSeleccionados.length) {
@@ -872,6 +896,53 @@
         ventana.document.write(html);
         ventana.document.close();
     }
+
+    // Cambiar estatus manual (con la lista COMPLETA)
+    function cambiarEstatusSolicitud(id, estatusActual) {
+        var TRANSICIONES = {
+            Solicitado: ["Pagado", "Cancelado"],
+            Pagado: ["En elaboración", "Cancelado"],
+            "En elaboración": ["En firma", "Atendido", "Cancelado"],
+            "En firma": ["Emitida", "Cancelado"],
+            Emitida: ["Entregado", "Cancelado"],
+            Entregado: ["Finalizado"],
+            Atendido: ["Finalizado"],
+            Finalizado: [],
+            Cancelado: [],
+        };
+
+        var opciones = TRANSICIONES[estatusActual] || [];
+        if (!opciones.length) {
+            mostrarMensaje(
+                "No hay transiciones disponibles desde el estatus actual (" + estatusActual + ").",
+                "warning",
+                "mensajeSolicitud",
+            );
+            return;
+        }
+
+        abrirModal({
+            titulo: "Cambiar estatus",
+            mensaje: "Estatus actual: " + estatusActual + ". Seleccione el nuevo estatus:",
+            tipo: "select",
+            opciones: opciones,
+            valorInicial: opciones[0],
+            btnTexto: "Cambiar estatus",
+            btnClass: "btn-primary",
+            onAceptar: function (nuevoEstatus) {
+                if (!nuevoEstatus) return;
+                solicitar({ accion: "cambiarEstatus", id: id, estatus: nuevoEstatus })
+                    .then(function () {
+                        mostrarMensaje("El estatus se actualizó correctamente.", "success", "mensajeSolicitud");
+                        cargarSolicitudes();
+                    })
+                    .catch(function (error) {
+                        mostrarMensaje(error.message, "danger", "mensajeSolicitud");
+                    });
+            },
+        });
+    }
+
 
     // NAVEGACIÓN POR PASOS (FORMULARIO)
     function mostrarPaso(numero) {
@@ -1047,21 +1118,21 @@
             })
             .join("");
     }
-    // function actualizarVisibilidadDatosAdicionales() {
-    //     var wrap = document.getElementById("wrapDatosAdicionales");
-    //     if (!wrap) return;
+    function actualizarVisibilidadDatosAdicionales() {
+        var wrap = document.getElementById("wrapDatosAdicionales");
+        if (!wrap) return;
 
-    //     var seleccionado = document.querySelector('input[name="DatoAdicional"]:checked');
-    //     var esSi = seleccionado && seleccionado.value === "S";
+        var seleccionado = document.querySelector('input[name="DatoAdicional"]:checked');
+        var esSi = seleccionado && seleccionado.value === "S";
 
-    //     wrap.classList.toggle("d-none", !esSi);
+        wrap.classList.toggle("d-none", !esSi);
 
-    //     // Si eligen "No", limpiamos lo que hubieran agregado
-    //     if (!esSi && observaciones.length) {
-    //         observaciones = [];
-    //         renderObservaciones();
-    //     }
-    // }
+        // Si eligen "No", limpiamos lo que hubieran agregado
+        if (!esSi && observaciones.length) {
+            observaciones = [];
+            renderObservaciones();
+        }
+    }
     function agregarObservacion() {
         var nombreEl = document.getElementById("observacionNombre");
         var valorEl = document.getElementById("observacionValor");
@@ -1153,7 +1224,7 @@
             escapeHtml(calificaciones) +
             "</p>" +
             "<p class='mb-0'><strong>Observaciones:</strong></p>" +
-            observacionesHtml; 
+            observacionesHtml;
     }
 
     function seleccionarRadio(nombre, valor) {
@@ -1213,8 +1284,6 @@
             radio.addEventListener("change", actualizarVisibilidadDatosAdicionales);
         });
 
-        
-        
         // Observaciones: agregar / eliminar / Enter
         var btnAgregarObservacion = document.getElementById("btnAgregarObservacion");
         if (btnAgregarObservacion) btnAgregarObservacion.addEventListener("click", agregarObservacion);
@@ -1372,9 +1441,26 @@
                 });
             });
         }
+        var barraMasiva = document.getElementById("barraAccionesMasivas");
+        if (barraMasiva) {
+            barraMasiva.addEventListener("click", function (evento) {
+                var btn = evento.target.closest("[data-accion-masiva]");
+                if (!btn) return;
+                ejecutarAccionMasiva(btn.dataset.accionMasiva);
+            });
+        }
+        // Barra de acciones masivas
+        var barraMasiva = document.getElementById("barraAccionesMasivas");
+        if (barraMasiva) {
+            barraMasiva.addEventListener("click", function (evento) {
+                var btn = evento.target.closest("[data-accion-masiva]");
+                if (!btn) return;
+                ejecutarAccionMasiva(btn.dataset.accionMasiva);
+            });
+        }
 
-        var btnImprimir = document.getElementById("btnImprimirSeleccionadas");
-        if (btnImprimir) btnImprimir.addEventListener("click", imprimirSeleccionadas);
+        var btnLimpiarSel = document.getElementById("btnLimpiarSeleccion");
+        if (btnLimpiarSel) btnLimpiarSel.addEventListener("click", limpiarSeleccion);
 
         var tabla = document.getElementById("tablaSolicitudes");
         if (tabla) {
@@ -1388,11 +1474,6 @@
                     [".btn-entregar", entregarSolicitud],
                     [".btn-atender", atenderSolicitud],
                     [".btn-finalizar", finalizarSolicitud],
-                    [".btn-cambiar-estatus",
-                        function (id, btn) {
-                            cambiarEstatusSolicitud(id, btn.dataset.estatus || "");
-                        },
-                    ],
                     [".btn-cancelar", cancelarSolicitud],
                 ];
                 for (var i = 0; i < acciones.length; i++) {
