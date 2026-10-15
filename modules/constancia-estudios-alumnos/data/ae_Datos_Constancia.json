@@ -1,38 +1,30 @@
 [
     {
-        "Folio": "09/2026D",
-        "FechaEmision": "En proceso...",
-        "Estado": "Pendiente de Pago",
-
-        "Nombre": "Sergio",
-        "ApellidoPaterno": "García",
-        "ApellidoMaterno": "León",
-        "CURP": "GASL031114HHGRNEF6",
-        "Cuenta": "401129",
-
-        "UnidadAcademica": "Instituto de Ciencias Básicas e Ingeniería",
-        "id_plan": "12",
-        "ProgramaEducativo": "Licenciatura en Ciencias Computacionales (2010)",
-        "CCTUA": "13MSU0017T",
-        "CCTUAEH": "13USU3018V",
-        "CondicionEscolar": "Cursando",
-        "Semestre": "8",
-        "DuracionPE": "9 semestres",
-        "TipoIngreso": "Examen",
-
-        "PeriodoEstudios": "03/08/2026 - 02/12/2026",
-        "PeriodoVacacional": "03/12/2026 - 17/01/2026",
-        "CalidadAlumno": "Regular",
-
-        "Promedio": "9.02",
-        "AvancePE": "97%",
-        "Calificaciones": {}
+        "Folio": "",
+        "FechaEmision": "",
+        "Nombre": "",
+        "ApellidoPaterno": "",
+        "ApellidoMaterno": "",
+        "CURP": "",
+        "Cuenta": "",
+        "UnidadAcademica": "",
+        "ProgramaEducativo": "",
+        "CCTUA": "",
+        "CCTUAEH": "",
+        "CondicionEscolar": "",
+        "Semestre": "",
+        "DuracionPE": "",
+        "TipoIngreso": "",
+        "PeriodoEstudios": "",
+        "PeriodoVacacional": "",
+        "CalidadAlumno": "",
+        "Promedio": "",
+        "AvancePE": "",
+        "Calificaciones": {} 
     },
     {
         "Folio": "02/2026D",
         "FechaEmision": "En proceso...",
-        "Estado": "Pendiente de Pago",
-
         "Nombre": "Sergio",
         "ApellidoPaterno": "García",
         "ApellidoMaterno": "León",
@@ -419,13 +411,11 @@
         "Folio": "03/2024D",
         "FechaEmision": "20 de febrero de 2024",
         "Estado": "Trámite Concluido",
-
         "Nombre": "Sergio",
         "ApellidoPaterno": "García",
         "ApellidoMaterno": "León",
         "CURP": "GASL031114HHGRNEF6",
         "Cuenta": "401129",
-
         "UnidadAcademica": "Instituto de Ciencias Básicas e Ingeniería",
         "id_plan": "12",
         "ProgramaEducativo": "Licenciatura en Ciencias Computacionales (2010)",
@@ -435,13 +425,11 @@
         "Semestre": "4",
         "DuracionPE": "9 semestres",
         "TipoIngreso": "Examen",
-
-        "PeriodoEstudios": "22/01/2024 - 24/05/2024",
-        "PeriodoVacacional": "25/05/2024 - 04/08/2024",
-        "CalidadAlumno": "Regular",
-
-        "Promedio": "9.08",
-        "AvancePE": "35%",
+        "PeriodoEstudios": "",
+        "PeriodoVacacional": "",
+        "CalidadAlumno": "",
+        "Promedio": "",
+        "AvancePE": "",
         "Calificaciones": {
             "Ciclo": "Enero-Junio 2024",
             "Materia": "CONVERSACIONES INTRODUCTORIAS. LENGUA EXTRANJERA",

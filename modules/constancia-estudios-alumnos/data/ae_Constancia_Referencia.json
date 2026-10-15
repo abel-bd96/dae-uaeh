@@ -1,0 +1,38 @@
+[
+    {
+        "idConstancia": "8",
+        "idSolicitud": "8",
+        "idKardex": "466618",
+        "anio": "2026",
+        "estatus": "Elaborada",
+        "fechaEmision": "null",
+        "fechaEntrega": "",
+        "fechaCaducidad": "",
+        "fechaLimiteDescarga": "",
+        "idFolio": "8"
+    },
+    {
+        "idConstancia": "2",
+        "idSolicitud": "2",
+        "idKardex": "466618",
+        "anio": "2025",
+        "estatus": "Emitida",
+        "fechaEmision": "Pendiente",
+        "fechaEntrega": "Pendiente",
+        "fechaCaducidad": "22/05/2024",
+        "fechaLimiteDescarga": "",
+        "idFolio": "7"
+    },
+    {
+        "idConstancia": "1",
+        "idSolicitud": "1",
+        "idKardex": "466618",
+        "anio": "2024",
+        "estatus": "Entregada",
+        "fechaEmision": "20/02/2024",
+        "fechaEntrega": "23/02/2024",
+        "fechaCaducidad": "04/08/2024",
+        "fechaLimiteDescarga": "N/A",
+        "idFolio": "1"
+    }
+]

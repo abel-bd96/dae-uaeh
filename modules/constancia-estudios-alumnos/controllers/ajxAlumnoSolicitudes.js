@@ -219,7 +219,7 @@
         }
 
         switch (estado) {
-            case "Pendiente de Pago":
+            case "Solicitada":
                 porcentaje = 20;
 
                 if (btnFormatoPago) {
@@ -227,7 +227,7 @@
                 }
                 break;
 
-            case "Pago Recibido":
+            case "Pagada":
                 porcentaje = 40;
                 break;
 
@@ -235,14 +235,14 @@
                 porcentaje = 60;
                 break;
 
-            case "Listo para Entrega":
+            case "Atendida":
                 porcentaje = 80;
                 barra.classList.remove("bg-primary");
                 barra.classList.add("bg-success");
                 //Ubicación Torre de Posgrado
                 break;
 
-            case "Trámite Concluido":
+            case "Finalizada":
                 porcentaje = 100;
                 barra.classList.remove("bg-primary");
                 barra.classList.add("bg-success");
@@ -251,7 +251,7 @@
                 deshabilitar btnConstanciaDigital*/
                 break;
 
-            case "Solicitud Cancelada":
+            case "Cancelada":
                 porcentaje = 100;
                 barra.classList.remove("bg-primary");
                 barra.classList.add("bg-danger");
@@ -282,45 +282,45 @@
             return;
         }
 
-        document.getElementById("subtituloModalSeguimientoConstancia").textContent = datos.Folio || "";
+        document.getElementById("subtituloModalSeguimientoConstancia").textContent = datos.folio || "";
 
-        document.getElementById("nombreAlumno").textContent = datos.Nombre || "";
+        document.getElementById("nombreAlumno").textContent = datos.nombre || "";
 
-        document.getElementById("unidadAcademica").textContent = datos.UnidadAcademica || "";
+        document.getElementById("unidadAcademica").textContent = datos.unidadAcademica || "";
 
-        document.getElementById("apellidoPaterno").textContent = datos.ApellidoPaterno || "";
+        document.getElementById("apellidoPaterno").textContent = datos.apellidoPaterno || "";
 
-        document.getElementById("programaEducativo").textContent = datos.ProgramaEducativo || "";
+        document.getElementById("programaEducativo").textContent = datos.programaEducativo || "";
 
-        document.getElementById("apellidoMaterno").textContent = datos.ApellidoMaterno || "";
+        document.getElementById("apellidoMaterno").textContent = datos.apellidoMaterno || "";
 
-        document.getElementById("cctUAEH").textContent = datos.CCTUAEH || "";
+        document.getElementById("cctUAEH").textContent = datos.cctUniversidad || "";
 
         document.getElementById("curp").textContent = datos.CURP || "";
 
-        document.getElementById("cctUA").textContent = datos.CCTUA || "";
+        document.getElementById("cctUA").textContent = datos.cctUnidadAcademica || "";
 
-        document.getElementById("numeroCuenta").textContent = datos.Cuenta || "";
+        document.getElementById("numeroCuenta").textContent = datos.numeroCuenta || "";
 
-        document.getElementById("tipoIngreso").textContent = datos.TipoIngreso || "";
+        document.getElementById("tipoIngreso").textContent = datos.tipoIngreso || "";
 
-        document.getElementById("condicion").textContent = datos.CondicionEscolar || "";
+        document.getElementById("condicion").textContent = datos.estatusAlumno || "";
 
-        document.getElementById("duracionPE").textContent = datos.DuracionPE || "";
+        document.getElementById("duracionPE").textContent = datos.duracionProgramaEducativo || "";
 
-        document.getElementById("calidadAlumno").textContent = datos.CalidadAlumno || "";
+        document.getElementById("calidadAlumno").textContent = datos.calidadAlumno || "";
 
-        document.getElementById("semestre").textContent = datos.Semestre || "";
+        document.getElementById("semestre").textContent = datos.semestre || "";
 
-        document.getElementById("promedio").textContent = datos.Promedio || "";
+        document.getElementById("promedio").textContent = datos.promedioGeneral || "";
 
-        document.getElementById("avancePE").textContent = datos.AvancePE || "";
+        document.getElementById("avancePE").textContent = datos.avanceProgramaEducativo || "";
 
-        document.getElementById("periodoEstudios").textContent = datos.PeriodoEstudios || "";
+        document.getElementById("periodoEstudios").textContent = datos.periodoClases || "";
 
-        document.getElementById("periodoVacacional").textContent = datos.PeriodoVacacional || "";
+        document.getElementById("periodoVacacional").textContent = datos.periodoVacacional || "";
 
-        corregirProgreso(datos.Estado, datos);
+        //corregirProgreso(datos.Estado, datos);
 
         modal.show();
     }

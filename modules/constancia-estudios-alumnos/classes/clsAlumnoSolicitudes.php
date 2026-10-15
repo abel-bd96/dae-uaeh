@@ -8,11 +8,11 @@ class clsAlumnoSolicitudes
     public function __construct()
     {
         $directorioDatos = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR;
-        $directorioDatosListaNegra = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'constancia-estudios' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR;
+        //$directorioDatosListaNegra = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'constancia-estudios' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR;
 
         $this->rutaHistorial = $directorioDatos . 'constancia_historial_solicitudes.json';
-        $this->rutaDatosConstancia = $directorioDatos . 'ae_Datos_Constancia.json';
-        $this->rutaBloqueo = $directorioDatos . 'solicitudes.lock';
+        $this->rutaDatosConstancia = $directorioDatos . 'ae_Constancia_Contenido.json';
+        //$this->rutaBloqueo = $directorioDatos . 'solicitudes.lock';
     }
 
     public function listar()
@@ -31,7 +31,7 @@ class clsAlumnoSolicitudes
             );
         }
 
-        if (isset($datos['Folio'])) {
+        if (isset($datos['folio'])) {
             $datos = [$datos];
         }
 
@@ -45,16 +45,16 @@ class clsAlumnoSolicitudes
                 trim((string) $registro['Cuenta']) !== ''
             ) {
                 return [
-                    'Nombre' => $registro['Nombre'] ?? '',
-                    'PrimerApellido' => $registro['PrimerApellido'] ?? '',
-                    'SegundoApellido' => $registro['SegundoApellido'] ?? '',
+                    'Nombre' => $registro['nombre'] ?? '',
+                    'ApellidoPaterno' => $registro['apellidoPaterno'] ?? '',
+                    'ApellidoMaterno' => $registro['apellidoMaterno'] ?? '',
                     'CURP' => $registro['CURP'] ?? '',
-                    'UnidadAcademica' => $registro['UnidadAcademica'] ?? '',
-                    'ProgramaEducativo' => $registro['ProgramaEducativo'] ?? '',
-                    'Cuenta' => $registro['Cuenta'] ?? '',
-                    'Semestre' => $registro['Semestre'] ?? '',
-                    'CalidadAlumno' => $registro['CalidadAlumno'] ?? '',
-                    'Promedio' => $registro['Promedio'] ?? ''
+                    'UnidadAcademica' => $registro['unidadAcademica'] ?? '',
+                    'ProgramaEducativo' => $registro['programaEducativo'] ?? '',
+                    'NumeroCuenta' => $registro['numeroCuenta'] ?? '',
+                    'Semestre' => $registro['semestre'] ?? '',
+                    'CalidadAlumno' => $registro['calidadAlumno'] ?? '',
+                    'PromedioGeneral' => $registro['promedioGeneral'] ?? ''
                 ];
             }
         }
@@ -73,7 +73,7 @@ class clsAlumnoSolicitudes
 
         $datos = $this->leer($this->rutaDatosConstancia);
 
-        if (isset($datos['Folio'])) {
+        if (isset($datos['folio'])) {
             $datos = [$datos];
         }
 
@@ -82,7 +82,7 @@ class clsAlumnoSolicitudes
                 continue;
             }
 
-            if (isset($registro['Folio']) && (string) $registro['Folio'] === $folio) {
+            if (isset($registro['folio']) && (string) $registro['folio'] === $folio) {
                 return $registro;
             }
         }
@@ -111,7 +111,7 @@ class clsAlumnoSolicitudes
         }
 
         if ($calificacionesNormalizadas === 'sí') {
-            $calificacionesNormalizadas = 'si';
+            $calificacionesNormalizadas = 'sí';
         }
 
         if (!in_array($calificacionesNormalizadas, ['si', 'no'], true)) {
@@ -472,6 +472,7 @@ class clsAlumnoSolicitudes
         );
     }
 
+    //Corregir
     private function obtenerCalificacionesPredefinidas()
     {
         return array(
