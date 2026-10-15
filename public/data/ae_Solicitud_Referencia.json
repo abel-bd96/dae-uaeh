@@ -5,11 +5,12 @@
         "idProgramaEducativo": "1505",
         "fechaSolicitud": "2026/10/21",
         "estatus": "Solicitada",
-        "tipoFirma": "A",
+        "tipoFirma": "Autógrafa",
         "cantidadConstancias": "1",
         "contieneCalificaciones": "N",
         "informacionAdicional": "N",
-        "idCicloEscolar": "22719"
+        "idCicloEscolar": "22719",
+        "cicloEscolar": "Julio-Diciembre 2026"
     },
     {
         "idSolicitud": "1",
@@ -17,10 +18,11 @@
         "idProgramaEducativo": "1505",
         "fechaSolicitud": "2024/02/04",
         "estatus": "Finalizada",
-        "tipoFirma": "A",
+        "tipoFirma": "Autógrafa",
         "cantidadConstancias": "1",
         "contieneCalificaciones": "N",
         "informacionAdicional": "N",
-        "idCicloEscolar": "21438"
+        "idCicloEscolar": "21438",
+        "cicloEscolar": "Enero-Junio 2024"
     }
 ]

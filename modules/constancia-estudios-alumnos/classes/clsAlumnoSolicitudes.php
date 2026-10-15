@@ -1,4 +1,5 @@
 <?php
+
 class clsAlumnoSolicitudes
 {
     private $rutaHistorial;
@@ -7,10 +8,10 @@ class clsAlumnoSolicitudes
 
     public function __construct()
     {
-        $directorioDatos = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR;
+        $directorioDatos = dirname(__DIR__, 3) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR;
         //$directorioDatosListaNegra = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'constancia-estudios' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR;
 
-        $this->rutaHistorial = $directorioDatos . 'constancia_historial_solicitudes.json';
+        $this->rutaHistorial = $directorioDatos . 'ae_Solicitud_Referencia.json';
         $this->rutaDatosConstancia = $directorioDatos . 'ae_Constancia_Contenido.json';
         //$this->rutaBloqueo = $directorioDatos . 'solicitudes.lock';
     }
@@ -745,3 +746,4 @@ class clsAlumnoSolicitudes
         return strtolower($texto);
     }
 }
+?>

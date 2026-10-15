@@ -65,7 +65,7 @@
             window.cargarRegistros();
         }
     }
-
+    /*
     function cargarDatosCorroborar() {
         solicitar({ accion: "mostrarDatosPersonales" })
             .then(function (datos) {
@@ -102,7 +102,8 @@
                     confirmButtonText: "Aceptar",
                 });
             });
-    }
+        }
+            */
 
     function guardarNuevaConstancia() {
         // Evita cambios simultáneos o que se produzcan errores
