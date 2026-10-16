@@ -8,6 +8,8 @@ class clsConstanciaGenerarSolicitud
     private $rutaDatoAdicional;
     private $rutaObservacion;
     private $rutaConfiguraciones;
+    private $rutaConstanciaContenido;
+    private $rutaFolio;
 
     private $listaEstatusValidos = array(
         'Solicitado',
@@ -22,7 +24,8 @@ class clsConstanciaGenerarSolicitud
     );
 
     public function __construct(){
-        $directorioDatos = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR;
+    $directorioDatos = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR;    
+    $directorioDatosExternos = dirname(__DIR__, 3) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR;
 
         $this->rutaNumeroCuenta = $directorioDatos . 'vta_siae_numero_cuenta.json';
         $this->rutaNombreAlumno = $directorioDatos . 'vta_siae_nombre_alumno.json';
@@ -30,6 +33,8 @@ class clsConstanciaGenerarSolicitud
         $this->rutaEstatusSolicitud = $directorioDatos . 'ae_estatus_solicitud.json';
         $this->rutaObservacion = $directorioDatos . 'ae_observacion.json';
         $this->rutaConfiguraciones = $directorioDatos . 'constancia_generar_solicitud.json';
+        $this->rutaConstanciaContenido = $directorioDatosExternos . 'ae_Constancia_Contenido.json';
+        $this->rutaFolio = $directorioDatosExternos . 'ae_Folio.json';
     }
 
     // CATÁLOGOS Y ESTATUS
@@ -56,23 +61,26 @@ class clsConstanciaGenerarSolicitud
         $cuentas = $this->leer($this->rutaNumeroCuenta);
         $alumnos = $this->leer($this->rutaNombreAlumno);
 
+        $mapaAlumnos = array();
+        foreach ($alumnos as $alumno){
+            $nc = isset($alumno['NumeroCuenta']) ? $this->normalizar($alumno['NumeroCuenta']) : '';
+            if ($nc !== '') $mapaAlumnos[$nc] = $alumno;
+        }
+
         $texto = $this->normalizar($texto);
         $resultado = array();
 
         foreach ($cuentas as $cuenta) {
             $numeroCuenta = isset($cuenta['NumeroCuenta']) ? $this->normalizar($cuenta['NumeroCuenta']) : '';
 
-            if ($texto !== '' && strpos($numeroCuenta, $texto) === false) {
-                continue;
-            }
+            if ($texto !== '' && strpos($numeroCuenta, $texto) === false) continue;
+        
 
-            foreach ($alumnos as $alumno) {
-                $numeroAlumno = isset($alumno['NumeroCuenta']) ? $this->normalizar($alumno['NumeroCuenta']) : '';
-
-                if ($numeroAlumno === $numeroCuenta) {
-                    foreach ($alumno as $campo => $valor) {
+                if (isset($mapaAlumnos[$numeroCuenta])) {
+                    foreach ($mapaAlumnos[$numeroCuenta] as $campo => $valor) {
                         $cuenta[$campo] = $valor;
                     }
+                }
                     if (empty($cuenta['NombreCompleto'])) {
                         $cuenta['NombreCompleto'] = trim(
                             (isset($cuenta['Nombre']) ? $cuenta['Nombre'] : '') . ' ' .
@@ -80,17 +88,10 @@ class clsConstanciaGenerarSolicitud
                             (isset($cuenta['ApellidoMaterno']) ? $cuenta['ApellidoMaterno'] : '')
                         );
                     }
-                    break;
+                    $resultado[] = $cuenta;
                 }
+                return $resultado;
             }
-
-            if (empty($cuenta['NombreCompleto'])) {
-                $cuenta['NombreCompleto'] = isset($cuenta['nombre']) ? $cuenta['nombre'] : '';
-            }
-            $resultado[] = $cuenta;
-        }
-        return $resultado;
-    }
 
     public function consultarAlumno($numeroCuenta) {
         $numeroCuenta = $this->normalizar($numeroCuenta);
@@ -146,7 +147,20 @@ class clsConstanciaGenerarSolicitud
     }
 
     public function listar(){
-        return $this->leer($this->rutaConfiguraciones);
+        $solicitudes = $this->leer($this->rutaConfiguraciones);
+        $contenidos = $this->leer($this->rutaConstanciaContenido);
+
+        $mapaContenidos = array();
+        foreach ($contenidos as $c){
+            if(isset($c['idSolicitud'])){
+                $mapaContenidos[(string)$c['idSolicitud']] = $c;
+            }
+        }
+        foreach($solicitudes as $i => $s){
+            $idSol = isset($s['id']) ? (string)$s['id'] : '';
+            $solicitudes[$i]['Contenido'] = isset($mapaContenidos[$idSol]) ? $mapaContenidos[$idSol] : null;
+        }
+        return $solicitudes;
     }
 
     // GUARDAR / ACTUALIZAR
@@ -185,12 +199,34 @@ class clsConstanciaGenerarSolicitud
         $datos['id'] = $ultimoId + 1;
         if (!isset($datos['fechaRegistro'])) $datos['fechaRegistro'] = date('Y-m-d');
         if (!isset($datos['Estatus'])) $datos['Estatus'] = 'Solicitado';
+        
+        //generar folio
+        $folioInfo = $this->generarFolio();
+        
+        $datos['idConstancia'] = $datos['id'];   
+        $datos['folio']        = $folioInfo['folio'];
+        $datos['idFolio']      = $folioInfo['idFolio'];
 
+        //guardar solicitud
         $registros[] = $datos;
 
         if (!$this->guardarJson($this->rutaConfiguraciones, $registros)) {
             return array('ok' => false, 'mensaje' => 'No fue posible guardar la solicitud.');
         }
+        //calcular el proximo id 
+        $contenidos = $this->leer($this->rutaConstanciaContenido);
+        $ultimoIdContenido = 0;
+        foreach($contenidos as $c){                                          // ← corregido
+            if(isset($c['idConstanciaContenido']) && (int)$c['idConstanciaContenido'] > $ultimoIdContenido){
+                $ultimoIdContenido = (int)$c['idConstanciaContenido'];
+            }
+        }
+        $nuevoIdContenido = $ultimoIdContenido + 1;
+
+        //construir y guardar 
+        $contenido = $this->construirContenido($nuevoIdContenido, $datos['id'], $datos, $folioInfo);
+        $contenidos[] = $contenido;
+        $this->guardarJson($this->rutaConstanciaContenido, $contenidos);
 
         return array(
             'ok' => true,
@@ -351,6 +387,98 @@ class clsConstanciaGenerarSolicitud
             array('Atendido', 'Entregado')
         );
     }
+    
+    private function generarFolio(){
+        $anio = date('Y');
+        $registros = $this->leer($this->rutaFolio);
+
+        //buscar el consecutivo 
+        $maxConsecutivo = 0;
+        $indiceAnio = -1;
+        foreach ($registros as $i => $reg){
+            if(isset($reg['anio']) && (string)$reg['anio'] === (string)$anio){
+                $indiceAnio = $i;
+                $ultimo = isset($reg['ultimoConsecutivo'])? (int)$reg['ultimoConsecutivo'] : 0;
+                if($ultimo > $maxConsecutivo) $maxConsecutivo = $ultimo;
+            }
+        }
+        $nuevoConsecutivo = $maxConsecutivo + 1;
+        $folio = 'CE/' . str_pad($nuevoConsecutivo, 2, '0', STR_PAD_LEFT) . '/' . $anio;
+
+        $registros[] = array(
+        'idFolio' => (string)$nuevoConsecutivo,
+        'folio'   => (string)$nuevoConsecutivo,
+        'anio'    => $anio,
+        'estatus' => 'usado'
+        );
+
+        $this->guardarJson($this->rutaFolio, $registros);
+
+        return array(
+            'idFolio'     => $nuevoConsecutivo,
+            'folio'       => $folio,
+            'anio'        => $anio,
+            'consecutivo' => $nuevoConsecutivo
+        );
+    }  
+    
+    public function consultarContenido($idSolicitud){
+        $contenidos = $this->leer($this->rutaConstanciaContenido);
+        foreach($contenidos as $c){
+            if(isset($c['idSolicitud']) && (string)$c['idSolicitud'] === (string)$idSolicitud){
+                return $c;
+            }
+        }
+        return null;
+    }
+
+    private function construirContenido($idConstanciaContenido, $idConstancia, $datos, $folioInfo){
+        // Observaciones -> campoAdicional / informacionAdicional
+    $campoAdicional      = '';
+    $informacionAdicional = '';
+    if (!empty($datos['Observaciones']) && is_array($datos['Observaciones'])) {
+        $primerPar = $datos['Observaciones'][0];
+        if (isset($primerPar['nombre']))  $campoAdicional      = $primerPar['nombre'];
+        if (isset($primerPar['valor']))   $informacionAdicional = $primerPar['valor'];
+    }
+    $alumno = $this->consultarAlumno($datos['NumeroCuenta']);
+
+    $apellidoPaterno = isset($alumno['ApellidoPaterno']) ? $alumno['ApellidoPaterno'] : '';
+    $apellidoMaterno = isset($alumno['ApellidoMaterno']) ? $alumno['ApellidoMaterno'] : '';
+    $nombre          = isset($alumno['Nombre']) ? $alumno['Nombre'] : '';
+
+        return array(
+            'idConstanciaContenido'   => $idConstanciaContenido,
+            'idConstancia'            => $idConstancia,
+            'idSolicitud'             => isset($datos['id']) ? $datos['id'] : null,
+            'folio'                   => $folioInfo['folio'],
+            'apellidoPaterno'         => $apellidoPaterno,
+            'apellidoMaterno'         => $apellidoMaterno,
+            'nombre'                  => $nombre,
+            'CURP'                    => isset($datos['CURP']) ? $datos['CURP'] : '',
+            'numeroCuenta'            => isset($datos['NumeroCuenta']) ? $datos['NumeroCuenta'] : '',
+            'programaEducativo'       => isset($datos['ProgramaEducativo']) ? $datos['ProgramaEducativo'] : '',
+            'unidadAcademica'         => isset($datos['Instituto']) ? $datos['Instituto'] : '',
+            'cctUnidadAcademica'      => '',
+            'cctUniversidad'          => '',
+            'estatusAlumno'           => 'Cursando',
+            'calidadAlumno'           => 'Regular',
+            'tipoIngreso'             => '',
+            'semestre'                => isset($datos['Semestre']) ? $datos['Semestre'] : '',
+            'duracionProgramaEducativo' => '',
+            'fechaIngreso'            => '',
+            'fechaEgreso'             => '',
+            'cicloEscolarConstancia'  => isset($datos['CicloEscolar']) ? $datos['CicloEscolar'] : '',
+            'periodoClases'           => '',
+            'periodoVacacional'       => '',
+            'promedioGeneral'         => '',
+            'avanceProgramaEducativo' => '',
+            'campoAdicional'          => $campoAdicional,
+            'informacionAdicional'    => $informacionAdicional,
+            'calificaciones'          => array()
+        );
+    }
+    
     private function normalizarObservaciones($datos) {
     if (isset($datos['Observaciones']) && is_string($datos['Observaciones'])) {
         $decoded = json_decode($datos['Observaciones'], true);

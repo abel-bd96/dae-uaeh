@@ -742,60 +742,63 @@
             },
         });
     }
-     // Editar
+    // Editar
     function editarSolicitud(id) {
         limpiarMensaje();
         window.location.href = "?vta=CrearSolicitud&id=" + encodeURIComponent(id);
     }
 
-    //acciones maxivas 
+    //acciones maxivas
     function ejecutarAccionMasiva(accion) {
-    if (!idsSeleccionados.length) {
-        mostrarMensaje("No hay solicitudes seleccionadas.", "warning", "mensajeSolicitud");
-        return;
-    }
-
-    // Imprimir no cambia estatus
-    if (accion === "imprimir") {
-        imprimirSeleccionadas();
-        return;
-    }
-
-    var cfg = ACCIONES_MASIVAS[accion];
-    if (!cfg) {
-        mostrarMensaje("Acción desconocida: " + accion, "danger", "mensajeSolicitud");
-        return;
-    }
-
-    abrirModal({
-        titulo: cfg.titulo + " seleccionadas",
-        mensaje:
-            "Se intentará pasar " + idsSeleccionados.length +
-            " solicitud(es) a \"" + cfg.estatus + "\". " +
-            "Las que no cumplan con la transición serán omitidas.",
-        btnTexto: "Sí, " + cfg.titulo.toLowerCase(),
-        btnClass: "btn-primary",
-        onAceptar: function () {
-            solicitar({
-                accion: "cambiarEstatusMasivo",
-                ids: idsSeleccionados,
-                estatus: cfg.estatus
-            })
-                .then(function (resultado) {
-                    var ok = resultado && resultado.procesados ? resultado.procesados.length : 0;
-                    var om = resultado && resultado.omitidos ? resultado.omitidos.length : 0;
-                    var msg = ok + " actualizada(s).";
-                    if (om > 0) msg += " " + om + " omitida(s).";
-                    mostrarMensaje(msg, om > 0 ? "warning" : "success", "mensajeSolicitud");
-                    limpiarSeleccion();
-                    cargarSolicitudes();
-                })
-                .catch(function (error) {
-                    mostrarMensaje(error.message, "danger", "mensajeSolicitud");
-                });
+        if (!idsSeleccionados.length) {
+            mostrarMensaje("No hay solicitudes seleccionadas.", "warning", "mensajeSolicitud");
+            return;
         }
-    });
-}
+
+        // Imprimir no cambia estatus
+        if (accion === "imprimir") {
+            imprimirSeleccionadas();
+            return;
+        }
+
+        var cfg = ACCIONES_MASIVAS[accion];
+        if (!cfg) {
+            mostrarMensaje("Acción desconocida: " + accion, "danger", "mensajeSolicitud");
+            return;
+        }
+
+        abrirModal({
+            titulo: cfg.titulo + " seleccionadas",
+            mensaje:
+                "Se intentará pasar " +
+                idsSeleccionados.length +
+                ' solicitud(es) a "' +
+                cfg.estatus +
+                '". ' +
+                "Las que no cumplan con la transición serán omitidas.",
+            btnTexto: "Sí, " + cfg.titulo.toLowerCase(),
+            btnClass: "btn-primary",
+            onAceptar: function () {
+                solicitar({
+                    accion: "cambiarEstatusMasivo",
+                    ids: idsSeleccionados,
+                    estatus: cfg.estatus,
+                })
+                    .then(function (resultado) {
+                        var ok = resultado && resultado.procesados ? resultado.procesados.length : 0;
+                        var om = resultado && resultado.omitidos ? resultado.omitidos.length : 0;
+                        var msg = ok + " actualizada(s).";
+                        if (om > 0) msg += " " + om + " omitida(s).";
+                        mostrarMensaje(msg, om > 0 ? "warning" : "success", "mensajeSolicitud");
+                        limpiarSeleccion();
+                        cargarSolicitudes();
+                    })
+                    .catch(function (error) {
+                        mostrarMensaje(error.message, "danger", "mensajeSolicitud");
+                    });
+            },
+        });
+    }
     // IMPRIMIR SELECCIONADAS
     function imprimirSeleccionadas() {
         if (!idsSeleccionados.length) {
@@ -942,7 +945,6 @@
             },
         });
     }
-
 
     // NAVEGACIÓN POR PASOS (FORMULARIO)
     function mostrarPaso(numero) {
@@ -1441,15 +1443,6 @@
                 });
             });
         }
-        var barraMasiva = document.getElementById("barraAccionesMasivas");
-        if (barraMasiva) {
-            barraMasiva.addEventListener("click", function (evento) {
-                var btn = evento.target.closest("[data-accion-masiva]");
-                if (!btn) return;
-                ejecutarAccionMasiva(btn.dataset.accionMasiva);
-            });
-        }
-        // Barra de acciones masivas
         var barraMasiva = document.getElementById("barraAccionesMasivas");
         if (barraMasiva) {
             barraMasiva.addEventListener("click", function (evento) {

@@ -172,5 +172,24 @@
         "fechaRegistro": "2026-10-15",
         "Estatus": "Cancelado",
         "fechaActualizacion": "2026-10-15"
+    },
+    {
+        "id": 10,
+        "CicloEscolar": "Julio-Diciembre 2026",
+        "NumeroCuenta": "250122",
+        "NombreCompleto": "Petronilo Anastacio ",
+        "Instituto": "ICEA",
+        "Semestre": "Segundo",
+        "ProgramaEducativo": "Ingeniería en Sistemas",
+        "DatoAdicional": "S",
+        "TipoFirma": "S",
+        "Calificaciones": "S",
+        "Observaciones": [],
+        "accion": "guardar",
+        "fechaRegistro": "2026-10-16",
+        "Estatus": "Solicitado",
+        "idConstancia": 10,
+        "folio": "CE/01/2026",
+        "idFolio": 1
     }
 ]

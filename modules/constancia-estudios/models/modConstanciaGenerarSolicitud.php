@@ -147,6 +147,13 @@ try {
             }
             $respuesta = $resultado;
             break;
+        case 'contenido':
+            $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
+            $respuesta = $consulta->consultarContenido($id);
+            if ($respuesta === null) {
+                throw new Exception('No se encontró el contenido de la constancia.');
+            }
+            break;
         default:
             throw new Exception('La acción solicitada no es válida.');
     }
