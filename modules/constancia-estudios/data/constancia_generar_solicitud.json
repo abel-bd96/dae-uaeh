@@ -1,6 +1,6 @@
 [
     {
-        "id": 1,
+        "id": "1",
         "NumeroCuenta": "250122",
         "Nombre": "Petronilo",
         "ApellidoPaterno": "",
@@ -12,10 +12,20 @@
         "DatoAdicional": "S",
         "TipoFirma": "S",
         "Calificaciones": "S",
-        "Observacion": "Caso especial",
-        "accion": "guardar",
+        "Observacion": "",
+        "accion": "actualizar",
         "fechaRegistro": "2026-10-02",
-        "Estatus": "Solicitado"
+        "Estatus": "Cancelado",
+        "CicloEscolar": "",
+        "NombreCompleto": "",
+        "Observaciones": [
+            {
+                "nombre": "Examen medico",
+                "valor": "o positivo"
+            }
+        ],
+        "fechaActualizacion": "2026-10-14",
+        "fechaCancelacion": "2026-10-14"
     },
     {
         "id": 2,
@@ -33,7 +43,8 @@
         "Observacion": "",
         "accion": "guardar",
         "fechaRegistro": "2026-10-02",
-        "Estatus": "Solicitado"
+        "Estatus": "Finalizado",
+        "fechaActualizacion": "2026-10-14"
     },
     {
         "id": 3,
@@ -46,11 +57,120 @@
         "ProgramaEducativo": "",
         "Periodo": "",
         "DatoAdicional": "N",
-        "TipoFirma": "N",
+        "TipoFirma": "S",
         "Calificaciones": "N",
         "Observacion": "",
         "accion": "guardar",
         "fechaRegistro": "2026-10-02",
-        "Estatus": "Solicitado"
+        "Estatus": "Finalizado",
+        "fechaActualizacion": "2026-10-14"
+    },
+    {
+        "id": 4,
+        "CicloEscolar": "Julio-Diciembre 2026",
+        "NumeroCuenta": "250122",
+        "NombreCompleto": "Petronilo Anastacio ",
+        "Instituto": "ICEA",
+        "Semestre": "Segundo",
+        "ProgramaEducativo": "Ingeniería en Sistemas",
+        "DatoAdicional": "S",
+        "TipoFirma": "S",
+        "Calificaciones": "S",
+        "Observaciones": [
+            {
+                "nombre": "juanfeu",
+                "valor": "vnzundrui"
+            }
+        ],
+        "accion": "guardar",
+        "fechaRegistro": "2026-10-14",
+        "Estatus": "Finalizado",
+        "fechaActualizacion": "2026-10-14"
+    },
+    {
+        "id": 5,
+        "CicloEscolar": "Julio-Diciembre 2026",
+        "NumeroCuenta": "250122",
+        "NombreCompleto": "Petronilo Anastacio ",
+        "Instituto": "ICEA",
+        "Semestre": "Segundo",
+        "ProgramaEducativo": "Ingeniería en Sistemas",
+        "DatoAdicional": "S",
+        "TipoFirma": "S",
+        "Calificaciones": "S",
+        "Observaciones": [],
+        "accion": "guardar",
+        "fechaRegistro": "2026-10-14",
+        "Estatus": "Cancelado",
+        "fechaActualizacion": "2026-10-15",
+        "fechaCancelacion": "2026-10-15"
+    },
+    {
+        "id": 6,
+        "CicloEscolar": "Julio-Diciembre 2026",
+        "NumeroCuenta": "255892",
+        "NombreCompleto": "Juan",
+        "Instituto": "ICEA",
+        "Semestre": "Segundo",
+        "ProgramaEducativo": "Ingeniería en Computación",
+        "DatoAdicional": "S",
+        "TipoFirma": "S",
+        "Calificaciones": "S",
+        "Observaciones": [],
+        "accion": "guardar",
+        "fechaRegistro": "2026-10-15",
+        "Estatus": "Finalizado",
+        "fechaActualizacion": "2026-10-15"
+    },
+    {
+        "id": 7,
+        "CicloEscolar": "Julio-Diciembre 2026",
+        "NumeroCuenta": "11223344",
+        "NombreCompleto": "Juan García Martínez",
+        "Instituto": "Instituto de Ciencias Agropecuarias",
+        "Semestre": "5",
+        "ProgramaEducativo": "Ingeniería Agroindustrial",
+        "DatoAdicional": "N",
+        "TipoFirma": "S",
+        "Calificaciones": "S",
+        "Observaciones": [],
+        "accion": "guardar",
+        "fechaRegistro": "2026-10-15",
+        "Estatus": "Finalizado",
+        "fechaActualizacion": "2026-10-15"
+    },
+    {
+        "id": 8,
+        "CicloEscolar": "Julio-Diciembre 2026",
+        "NumeroCuenta": "11223344",
+        "NombreCompleto": "Juan García Martínez",
+        "Instituto": "Instituto de Ciencias Agropecuarias",
+        "Semestre": "5",
+        "ProgramaEducativo": "Ingeniería Agroindustrial",
+        "DatoAdicional": "N",
+        "TipoFirma": "S",
+        "Calificaciones": "S",
+        "Observaciones": [],
+        "accion": "guardar",
+        "fechaRegistro": "2026-10-15",
+        "Estatus": "Finalizado",
+        "fechaActualizacion": "2026-10-15"
+    },
+    {
+        "id": 9,
+        "CicloEscolar": "Julio-Diciembre 2026",
+        "NumeroCuenta": "250122",
+        "NombreCompleto": "Petronilo Anastacio ",
+        "Instituto": "ICEA",
+        "Semestre": "Segundo",
+        "ProgramaEducativo": "Ingeniería en Sistemas",
+        "DatoAdicional": "S",
+        "TipoFirma": "S",
+        "Calificaciones": "S",
+        "Observaciones": [],
+        "accion": "guardar",
+        "fechaRegistro": "2026-10-15",
+        "Estatus": "Cancelado",
+        "fechaActualizacion": "2026-10-15"
     }
 ]
