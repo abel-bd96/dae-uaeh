@@ -190,7 +190,6 @@
             "avancePE",
             "periodoEstudios",
             "periodoVacacional",
-            "fechaEmision",
         ].forEach(function (id) {
             var elemento = document.getElementById(id);
 
@@ -206,7 +205,7 @@
         }
     }
 
-    function corregirProgreso(estado, datos) {
+    function corregirProgreso(estatus, datos) {
         var barra = document.getElementById("barraProgresoEstado");
         var btnFormatoPago = document.getElementById("btnFormatoPago");
 
@@ -220,7 +219,7 @@
             btnFormatoPago.classList.add("d-none");
         }
 
-        switch (estado) {
+        switch (estatus) {
             case "Solicitada":
                 porcentaje = 20;
 
@@ -233,7 +232,7 @@
                 porcentaje = 40;
                 break;
 
-            case "En Elaboración":
+            // case "En Elaboración":
                 porcentaje = 60;
                 break;
 
@@ -264,15 +263,9 @@
                 break;
         }
 
-        barra.textContent = estado || "Pendiente de Pago";
+        barra.textContent = estatus || "Solicitada";
         barra.style.width = porcentaje + "%";
         barra.setAttribute("aria-valuenow", String(porcentaje));
-
-        var fechaEmision = document.getElementById("fechaEmision");
-
-        if (fechaEmision && datos) {
-            fechaEmision.textContent = datos.FechaEmision || "";
-        }
     }
 
     function abrirModal(datos) {
@@ -280,7 +273,6 @@
 
         if (!datos) {
             mostrarMensaje("No se recibió información de la solicitud.", "error");
-            modal.show();
             return;
         }
 
@@ -294,19 +286,25 @@
 
         document.getElementById("programaEducativo").textContent = datos.programaEducativo || "";
 
+        document.getElementById("cicloEscolarConstancia").textContent = datos.cicloEscolarConstancia || "";
+
         document.getElementById("apellidoMaterno").textContent = datos.apellidoMaterno || "";
 
-        document.getElementById("cctUAEH").textContent = datos.cctUniversidad || "";
+        document.getElementById("cctUniversidad").textContent = datos.cctUniversidad || "";
 
         document.getElementById("curp").textContent = datos.CURP || "";
 
-        document.getElementById("cctUA").textContent = datos.cctUnidadAcademica || "";
+        document.getElementById("cctUnidadAcademica").textContent = datos.cctUnidadAcademica || "";
 
         document.getElementById("numeroCuenta").textContent = datos.numeroCuenta || "";
 
         document.getElementById("tipoIngreso").textContent = datos.tipoIngreso || "";
 
-        document.getElementById("condicion").textContent = datos.estatusAlumno || "";
+        document.getElementById("fechaIngreso").textContent = datos.fechaIngreso || "";
+
+        document.getElementById("fechaEgreso").textContent = datos.fechaEgreso || "";
+
+        document.getElementById("estatusAlumno").textContent = datos.estatusAlumno || "";
 
         document.getElementById("duracionPE").textContent = datos.duracionProgramaEducativo || "";
 
@@ -314,27 +312,27 @@
 
         document.getElementById("semestre").textContent = datos.semestre || "";
 
-        document.getElementById("promedio").textContent = datos.promedioGeneral || "";
+        document.getElementById("promedioGeneral").textContent = datos.promedioGeneral || "";
 
-        document.getElementById("avancePE").textContent = datos.avanceProgramaEducativo || "";
+        document.getElementById("avanceProgramaEducativo").textContent = datos.avanceProgramaEducativo || "";
 
-        document.getElementById("periodoEstudios").textContent = datos.periodoClases || "";
+        document.getElementById("periodoClases").textContent = datos.periodoClases || "";
 
         document.getElementById("periodoVacacional").textContent = datos.periodoVacacional || "";
 
-        //corregirProgreso(datos.Estado, datos);
+        corregirProgreso(datos.estatus, datos);
 
         modal.show();
     }
 
-    function cargarDetallePorFolio(folio) {
-        if (!folio) {
-            mostrarMensaje("No existe el folio de la solicitud.", "error");
+    function cargarDetallePorId(idSolicitud) {
+        if (!idSolicitud) {
+            mostrarMensaje("No existe la referencia a la solicitud.", "error");
             return;
         }
 
         consultar("consultar", {
-            folio: folio,
+            idSolicitud: idSolicitud,
         })
             .then(function (datos) {
                 abrirModal(datos);
@@ -344,14 +342,14 @@
             });
     }
 
-    function cancelarSolicitud(folio, estado) {
-        if (!folio) {
-            mostrarMensaje("No puedes cancelar una solicitud sin folio.", "error");
+    function cancelarSolicitud(idSolicitud, estatus) {
+        if (!idSolicitud) {
+            mostrarMensaje("No puedes cancelar esta solicitud.", "error");
             return;
         } // Si ya está pagada o emitida no se debería poder cancelar
-        if (estado !== "Pendiente de Pago") {
+        if (estatus !== "Solicitado") {
             mostrarMensaje(
-                "No puedes cancelar esta solicitud con estado: " + (estado || "Desconocido") + ".",
+                "No puedes cancelar esta solicitud con estado: " + (estatus || "Desconocido") + ".",
                 "warning",
                 setTimeout(function () {
                     //Para que no se quede ahí el mensaje de advertencia
@@ -430,12 +428,12 @@
             var botonSeguimiento = evento.target.closest('[name="SeguimientoCorroborar"]');
 
             if (botonSeguimiento) {
-                var folio = botonSeguimiento.getAttribute("data-id");
+                var idSolicitud = botonSeguimiento.getAttribute("data-id");
 
                 limpiarModal();
                 modal.show();
 
-                cargarDetallePorFolio(folio);
+                cargarDetallePorId(idSolicitud);
                 return;
             }
 

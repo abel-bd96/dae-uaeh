@@ -169,9 +169,6 @@
             if (!resultado.isConfirmed) {
                 return;
             }
-
-            // CORRECCIÓN CRÍTICA:
-            // Antes estaba: enviado = true;
             enviando = true;
 
             Swal.fire({
@@ -234,14 +231,13 @@
     }
 
     document.addEventListener("DOMContentLoaded", function () {
-        // Se necesita verificar que esté seleccionada
-        // alguna opción en ambos input
+        // Se necesita verificar que esté seleccionada alguna opción en ambos input
         document.querySelectorAll('input[name="tipoFirma"], input[name="calificaciones"]').forEach(function (radio) {
             radio.addEventListener("change", mostrarcontenedorTablaDatos);
         });
 
         mostrarcontenedorTablaDatos();
-        cargarDatosCorroborar();
+        //cargarDatosCorroborar();
 
         var formularioNuevaConstancia = document.getElementById("formNuevaConstancia");
 

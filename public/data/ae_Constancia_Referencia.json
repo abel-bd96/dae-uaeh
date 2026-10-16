@@ -15,13 +15,13 @@
         "idConstancia": "2",
         "idSolicitud": "2",
         "idKardex": "466618",
-        "anio": "2025",
-        "estatus": "Emitida",
-        "fechaEmision": "Pendiente",
-        "fechaEntrega": "Pendiente",
+        "anio": "2024",
+        "estatus": "Entregada",
+        "fechaEmision": "11/09/2024",
+        "fechaEntrega": "13/09/2024",
         "fechaCaducidad": "22/05/2024",
-        "fechaLimiteDescarga": "",
-        "idFolio": "7"
+        "fechaLimiteDescarga": "N/A",
+        "idFolio": "2"
     },
     {
         "idConstancia": "1",

@@ -103,10 +103,6 @@
 
                             <tbody>
                                 <tr>
-                                    <th scope="row" class="mark">Fecha de Emisión</th>
-                                    <td id="fechaEmision"> </td>
-                                </tr>
-                                <tr>
                                     <th scope="row" class="mark">Nombre</th>
                                     <td id="nombreAlumno"> </td>
                                 </tr>
@@ -131,12 +127,16 @@
                                     <td id="programaEducativo"> </td>
                                 </tr>
                                 <tr>
-                                    <th scope="row" class="mark">CCT UAEH</th>
-                                    <td id="cctUAEH"> </td>
+                                    <th scope="row" class="mark">Ciclo Escolar</th>
+                                    <td id="cicloEscolarConstancia"> </td>
                                 </tr>
                                 <tr>
-                                    <th scope="row" class="mark">CCT UA</th>
-                                    <td id="cctUA"> </td>
+                                    <th scope="row" class="mark">CCT UAEH</th>
+                                    <td id="cctUniversidad"> </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="mark">CCT Unidad Académica</th>
+                                    <td id="cctUnidadAcademica"> </td>
                                 </tr>
                                 <tr>
                                     <th scope="row" class="mark">Número de cuenta</th>
@@ -151,8 +151,16 @@
                                     <td id="tipoIngreso"> </td>
                                 </tr>
                                 <tr>
-                                    <th scope="row" class="mark">Condición Escolar</th>
-                                    <td id="condicion"> </td>
+                                    <th scope="row" class="mark">Fecha de Ingreso</th>
+                                    <td id="fechaIngreso"> </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="mark">Fecha de Egreso</th>
+                                    <td id="fechaEgreso"> </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="mark">Estatus Alumno (Condición Escolar)</th>
+                                    <td id="estatusAlumno"> </td>
                                 </tr>
                                 <tr>
                                     <th scope="row" class="mark">Duración del Programa Educativo</th>
@@ -163,16 +171,16 @@
                                     <td id="calidadAlumno"> </td>
                                 </tr>
                                 <tr>
-                                    <th scope="row" class="mark">Promedio</th>
-                                    <td id="promedio"> </td>
+                                    <th scope="row" class="mark">Promedio General</th>
+                                    <td id="promedioGeneral"> </td>
                                 </tr>
                                 <tr>
                                     <th scope="row" class="mark">Avance en el Programa Educativo</th>
-                                    <td id="avancePE"> </td>
+                                    <td id="avanceProgramaEducativo"> </td>
                                 </tr>
                                 <tr>
-                                    <th scope="row" class="mark">Periodo de Estudios</th>
-                                    <td id="periodoEstudios"> </td>
+                                    <th scope="row" class="mark">Periodo de Clases</th>
+                                    <td id="periodoClases"> </td>
                                 </tr>
                                 <tr>
                                     <th scope="row" class="mark">Periodo Vacacional</th>

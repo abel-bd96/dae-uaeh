@@ -20,20 +20,21 @@ try {
             $respuesta = $consulta->mostrarDatosPersonales();
             break;
 
-        //Acción que realiza búsquedas con base en el folio
+        //Acción que realiza búsquedas con base en el idConstancia (temporalmente compara id_Solicitud con id_Constancia)
         case 'consultar':
-
-            $folio = isset($_REQUEST['folio']) ? $_REQUEST['folio'] : '';
-            $respuesta = $consulta->consultarPorFolio($folio);
+            $idSolicitud = isset($_REQUEST['idSolicitud']) ? $_REQUEST['idSolicitud'] : '';
+            $respuesta = $consulta->consultarPorId($idSolicitud);
             break;
+
 
         //Acción que realiza cambios al cancelar solicitudes
+        /*
         case 'cancelar':
 
-            $folio = isset($_POST['folio']) ? $_POST['folio'] : '';
-            $respuesta = $consulta->cancelar($folio);
+            $identificador = isset($_POST['idSolicitud']) ? $_POST['idSolicitud'] : '';
+            $respuesta = $consulta->cancelar($identificador);
             break;
-
+*/
         //Acción que realiza cambios al guardar solicitudes nuevas
         case 'guardar':
 
@@ -67,3 +68,4 @@ try {
         JSON_UNESCAPED_UNICODE
     );
 }
+?>

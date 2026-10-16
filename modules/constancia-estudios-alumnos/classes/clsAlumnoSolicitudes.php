@@ -4,7 +4,7 @@ class clsAlumnoSolicitudes
 {
     private $rutaHistorial;
     private $rutaDatosConstancia;
-    private $rutaBloqueo;
+    //private $rutaBloqueo;
 
     public function __construct()
     {
@@ -22,7 +22,7 @@ class clsAlumnoSolicitudes
     }
 
 
-    public function mostrarDatosPersonales()
+    public function mostrarDatosPersonales() //pendiente
     {
         $datos = $this->leer($this->rutaDatosConstancia);
 
@@ -32,7 +32,7 @@ class clsAlumnoSolicitudes
             );
         }
 
-        if (isset($datos['folio'])) {
+        if (isset($datos['idConstancia'])) {
             $datos = [$datos];
         }
 
@@ -46,16 +46,16 @@ class clsAlumnoSolicitudes
                 trim((string) $registro['Cuenta']) !== ''
             ) {
                 return [
-                    'Nombre' => $registro['nombre'] ?? '',
-                    'ApellidoPaterno' => $registro['apellidoPaterno'] ?? '',
-                    'ApellidoMaterno' => $registro['apellidoMaterno'] ?? '',
+                    'nombre' => $registro['nombre'] ?? '',
+                    'apellidoPaterno' => $registro['apellidoPaterno'] ?? '',
+                    'apellidoMaterno' => $registro['apellidoMaterno'] ?? '',
                     'CURP' => $registro['CURP'] ?? '',
-                    'UnidadAcademica' => $registro['unidadAcademica'] ?? '',
-                    'ProgramaEducativo' => $registro['programaEducativo'] ?? '',
-                    'NumeroCuenta' => $registro['numeroCuenta'] ?? '',
-                    'Semestre' => $registro['semestre'] ?? '',
-                    'CalidadAlumno' => $registro['calidadAlumno'] ?? '',
-                    'PromedioGeneral' => $registro['promedioGeneral'] ?? ''
+                    'unidadAcademica' => $registro['unidadAcademica'] ?? '',
+                    'programaEducativo' => $registro['programaEducativo'] ?? '',
+                    'numeroCuenta' => $registro['numeroCuenta'] ?? '',
+                    'semestre' => $registro['semestre'] ?? '',
+                    'calidadAlumno' => $registro['calidadAlumno'] ?? '',
+                    'promedioGeneral' => $registro['promedioGeneral'] ?? ''
                 ];
             }
         }
@@ -65,16 +65,16 @@ class clsAlumnoSolicitudes
         );
     }
 
-    public function consultarPorFolio($folio)
+    public function consultarPorId($idSolicitud)
     {
-        $folio = trim((string) $folio);
-        if ($folio === '') {
-            throw new InvalidArgumentException('El folio de la solicitud es obligatorio.');
+        $idSolicitud = trim((string) $idSolicitud);
+        if ($idSolicitud === '') {
+            throw new InvalidArgumentException('La referencia a la Solicitud es obligatoria.');
         }
 
         $datos = $this->leer($this->rutaDatosConstancia);
 
-        if (isset($datos['folio'])) {
+        if (isset($datos['idConstancia'])) {
             $datos = [$datos];
         }
 
@@ -83,11 +83,12 @@ class clsAlumnoSolicitudes
                 continue;
             }
 
-            if (isset($registro['folio']) && (string) $registro['folio'] === $folio) {
+            //Se revisa y supone que idSolicitud y idConstancia sean iguales, obviando momentáneamente el desfase por Solicitudes no pagadas 
+            if (isset($registro['idConstancia']) && (string) $registro['idConstancia'] === $idSolicitud) {
                 return $registro;
             }
         }
-        throw new RuntimeException('No se encontró información para el folio solicitado.');
+        throw new RuntimeException('No se encontró información para la constancia solicitada.');
     }
 
 
@@ -119,8 +120,6 @@ class clsAlumnoSolicitudes
             throw new InvalidArgumentException('La opción de calificaciones seleccionada no es válida.');
         }
 
-        $bloqueo = $this->adquirirBloqueo();
-
         try {
             $historial = $this->leer($this->rutaHistorial);
             $datosConstancia = $this->leer($this->rutaDatosConstancia);
@@ -141,7 +140,7 @@ class clsAlumnoSolicitudes
 
             $fechaRegistro = date('d/m/Y');
 
-            $descripcion = 'Julio-Diciembre 2026. ' . $tipoFirma;
+            $descripcion = 'Julio-Diciembre ' . date("Y") . '. '. $tipoFirma;
 
             if ($calificacionesNormalizadas === 'no') {
                 // stdClass() genera JSONs con {} en vez de []
@@ -216,19 +215,16 @@ class clsAlumnoSolicitudes
                     $folio .
                     ' fue registrada correctamente.'
             ];
-        } finally {
-            $this->liberarBloqueo($bloqueo);
-        }
+        } catch(Exception $excepcion){}
     }
-    public function cancelar($folio)
+    /*
+    public function cancelar($identificador)
     {
-        $folio = trim((string) $folio);
+        $identificador = trim((string) $identificador);
 
-        if ($folio === '') {
+        if ($identificador === '') {
             throw new InvalidArgumentException('El folio de la solicitud es obligatorio.');
         }
-
-        $bloqueo = $this->adquirirBloqueo();
 
         try {
             $registros = $this->leer($this->rutaHistorial);
@@ -270,7 +266,7 @@ class clsAlumnoSolicitudes
                 if (
                     is_array($detalleConstancia) &&
                     isset($detalleConstancia['Folio']) &&
-                    (string) $detalleConstancia['Folio'] === $folio
+                    (string) $detalleConstancia['Folio'] === $identificador
                 ) {
                     $detalleConstancia['Estado'] = 'Solicitud Cancelada';
                 }
@@ -301,34 +297,9 @@ class clsAlumnoSolicitudes
                 'Folio' => $folio,
                 'mensaje' => 'La solicitud fue cancelada correctamente.'
             ];
-        } finally {
-            $this->liberarBloqueo($bloqueo);
-        }
+        } catch (Exception $excepcion){}
     }
-
-    private function adquirirBloqueo()
-    {
-        $bloqueo = fopen($this->rutaBloqueo, 'c');
-
-        if ($bloqueo === false || !flock($bloqueo, LOCK_EX)) {
-            if (is_resource($bloqueo)) {
-                fclose($bloqueo);
-            }
-
-            throw new RuntimeException('No fue posible bloquear las solicitudes para realizar la operación.');
-        }
-
-        return $bloqueo;
-    }
-
-    private function liberarBloqueo($bloqueo)
-    {
-        if (is_resource($bloqueo)) {
-            flock($bloqueo, LOCK_UN);
-            fclose($bloqueo);
-        }
-    }
-
+*/
     private function generarSiguienteFolio(
         $registrosHistorial,
         $registrosConstancia

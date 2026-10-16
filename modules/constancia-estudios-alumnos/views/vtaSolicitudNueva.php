@@ -16,7 +16,7 @@
                         <div class="row">
                             <label class="form-label fw-bold">Elige el tipo de firma:</label>
                         </div>
-                        <div class="form-check form-check-inline"">
+                        <div class="form-check form-check-inline">
                             <input class=" form-check-input" type="radio" name="tipoFirma" id="firmaDigital"
                             value="digital" required>
                             <label class="form-check-label" for="firmaDigital">
@@ -43,8 +43,8 @@
                                 Sí
                             </label>
                         </div>
-                        <div class="form-check form-check-inline"">
-                            <input class=" form-check-input" type="radio" name="calificaciones" id="calificacionesNo"
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="calificaciones" id="calificacionesNo"
                             value="no">
                             <label class="form-check-label" for="calificacionesNo">
                                 No

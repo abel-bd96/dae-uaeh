@@ -1,8 +1,14 @@
 [
     {
-        "idFolio": "9",
-        "folio": "9",
+        "idFolio": "8",
+        "folio": "8",
         "anio": "2026",
+        "estatus": "usado"
+    },
+    {
+        "idFolio": "2",
+        "folio": "2",
+        "anio": "2024",
         "estatus": "usado"
     },
     {
