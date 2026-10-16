@@ -7,21 +7,13 @@ class clsConstanciaGenerarSolicitud
     private $rutaEstatusSolicitud;
     private $rutaDatoAdicional;
     private $rutaObservacion;
-    private $rutaConfiguraciones;
-    private $rutaConstanciaContenido;
+    private $rutaSolicitud;
+    private $rutaConstancia;
+    private $rutaContenido;
     private $rutaFolio;
 
-    private $listaEstatusValidos = array(
-        'Solicitado',
-        'Pagado',
-        'En elaboración',
-        'En firma',
-        'Emitida',
-        'Entregado',
-        'Atendido',
-        'Finalizado',
-        'Cancelado'
-    );
+    private $listaEstatusSolicitud = array('Solicitado', 'Pagado', 'Cancelado');
+    private $listadoEstatusConstancia = array('En elaboración', 'En firma', 'Emitida', 'Entregado', 'Finalizado', 'Cancelado');
 
     public function __construct(){
     $directorioDatos = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR;    
@@ -32,28 +24,26 @@ class clsConstanciaGenerarSolicitud
         $this->rutaDatoAdicional = $directorioDatos . 'ae_dato_adicional.json';
         $this->rutaEstatusSolicitud = $directorioDatos . 'ae_estatus_solicitud.json';
         $this->rutaObservacion = $directorioDatos . 'ae_observacion.json';
-        $this->rutaConfiguraciones = $directorioDatos . 'constancia_generar_solicitud.json';
-        $this->rutaConstanciaContenido = $directorioDatosExternos . 'ae_Constancia_Contenido.json';
+        $this->rutaSolicitud = $directorioDatos . 'ae_Solicitud_Referencia.json';
+        $this->rutaConstancia = $directorioDatos . 'ae_Constancia_Referencia.json';
+        $this->rutaContenido = $directorioDatosExternos . 'ae_Constancia_Contenido.json';
         $this->rutaFolio = $directorioDatosExternos . 'ae_Folio.json';
     }
 
     // CATÁLOGOS Y ESTATUS
     public function estatusValidados(){
-        return $this->listaEstatusValidos;
+        return array_merge($this->listaEstatusValidos, $this->listaEstatusConstancia);
+    }
+    public function consultarDatoAdicional(){
+        return $this->leer($this->rutaDatoAdicional);
     }
 
-    public static function transicionesPermitidas(){
-        return array(
-            'Solicitado'     => array('Pagado', 'Cancelado'),
-            'Pagado'         => array('En elaboración', 'Cancelado'),
-            'En elaboración' => array('En firma', 'Atendido', 'Cancelado'),
-            'En firma'       => array('Emitida', 'Cancelado'),
-            'Emitida'        => array('Entregado', 'Cancelado'),
-            'Entregado'      => array('Finalizado'),
-            'Atendido'       => array('Finalizado'),
-            'Finalizado'     => array(),
-            'Cancelado'      => array(),
-        );
+    public function consultarEstatusSolicitud(){
+        return $this->leer($this->rutaEstatusSolicitud);
+    }
+
+    public function consultarObservacion(){
+        return $this->leer($this->rutaObservacion);
     }
 
     // CONSULTAS DE ALUMNOS
@@ -111,9 +101,7 @@ class clsConstanciaGenerarSolicitud
         foreach ($nombres as $registro) {
             $cuenta = isset($registro['NumeroCuenta']) ? $this->normalizar($registro['NumeroCuenta']) : '';
             if ($cuenta === $numeroCuenta) {
-                foreach ($registro as $campo => $valor) {
-                    $alumno[$campo] = $valor;
-                }
+                foreach ($registro as $campo => $valor) {$alumno[$campo] = $valor;}
                 break;
             }
         }
@@ -123,28 +111,20 @@ class clsConstanciaGenerarSolicitud
     }
 
     // CONSULTAS DE CATÁLOGOS Y SOLICITUDES
-    public function consultar($id){
-        if ($id === null || trim((string)$id) === '') return null;
-        $registros = $this->leer($this->rutaConfiguraciones);
-        foreach ($registros as $registro) {
-            if (isset($registro['id']) && (string)$registro['id'] === (string)$id) {
-                return $registro;
+    public function consultar($idSolicitud){
+        if ($idSolicitud === null || trim((string)$id) === '') return null;
+        $solicitudes = $this->leer($this->rutaSolicitud);
+        foreach ($solicitudes as $s) {
+            if (isset($s['idSolicitud']) && (string)$s['idSolicitud'] === (string)$idSolicitud) {
+            $s['Constancia'] 
+            $s['']    
+            return $registro;
             }
         }
         return null;
     }
 
-    public function consultarDatoAdicional(){
-        return $this->leer($this->rutaDatoAdicional);
-    }
-
-    public function consultarEstatusSolicitud(){
-        return $this->leer($this->rutaEstatusSolicitud);
-    }
-
-    public function consultarObservacion(){
-        return $this->leer($this->rutaObservacion);
-    }
+    
 
     public function listar(){
         $solicitudes = $this->leer($this->rutaConfiguraciones);
