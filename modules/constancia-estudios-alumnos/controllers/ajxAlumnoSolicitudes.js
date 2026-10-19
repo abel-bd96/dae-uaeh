@@ -206,6 +206,7 @@
     }
 
     function corregirProgreso(estatus, datos) {
+        
         var barra = document.getElementById("barraProgresoEstado");
         var btnFormatoPago = document.getElementById("btnFormatoPago");
 
@@ -232,7 +233,7 @@
                 porcentaje = 40;
                 break;
 
-            // case "En Elaboración":
+            case "En Elaboración":
                 porcentaje = 60;
                 break;
 

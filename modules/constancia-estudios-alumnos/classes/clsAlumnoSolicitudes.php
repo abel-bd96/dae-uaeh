@@ -72,23 +72,63 @@ class clsAlumnoSolicitudes
             throw new InvalidArgumentException('La referencia a la Solicitud es obligatoria.');
         }
 
-        $datos = $this->leer($this->rutaDatosConstancia);
+        //Consulta de datos referentes a la solicitud
+        $solicitudes = $this->leer($this->rutaHistorial);
 
-        if (isset($datos['idConstancia'])) {
-            $datos = [$datos];
+        if (isset($solicitudes['idSolicitud'])) {
+            $solicitudes = [$solicitudes];
         }
 
-        foreach ($datos as $registro) {
-            if (!is_array($registro)) {
+        $solicitudEncontrada = null;
+
+        foreach ($solicitudes as $solicitud) {
+            if (!is_array($solicitud)) {
+                continue;
+            }
+
+            if (
+                isset($solicitud['idSolicitud']) && (string) $solicitud['idSolicitud'] === $idSolicitud
+            ) {
+                $solicitudEncontrada = $solicitud;
+                break;
+            }
+        }
+
+        if ($solicitudEncontrada === null) {
+            throw new RuntimeException(
+                'No se encontró la solicitud indicada.'
+            );
+        }
+
+        //Consulta del contenido de la Constancia
+        $constancias = $this->leer($this->rutaDatosConstancia);
+
+        if (isset($constancias['idConstancia'])) {
+            $constancias = [$constancias];
+        }
+
+        $constanciaEncontrada = null;
+
+        foreach ($constancias as $constancia) {
+            if (!is_array($constancia)) {
                 continue;
             }
 
             //Se revisa y supone que idSolicitud y idConstancia sean iguales, obviando momentáneamente el desfase por Solicitudes no pagadas 
-            if (isset($registro['idConstancia']) && (string) $registro['idConstancia'] === $idSolicitud) {
-                return $registro;
+            if (isset($constancia['idConstancia']) && (string) $constancia['idConstancia'] === $idSolicitud) {
+                $constanciaEncontrada = $constancia;
+                break;
             }
         }
-        throw new RuntimeException('No se encontró información para la constancia solicitada.');
+        if ($constanciaEncontrada === null) {
+            throw new RuntimeException(
+                'No se encontraron los datos académicos de la constancia.'
+            );
+        }
+
+        //Vincular los datos de la solicitud a la constancia, para poder corregir el progreso en la barra de progreso
+        $constanciaEncontrada['estatus'] = $solicitudEncontrada['estatus'] ?? '';
+        return $constanciaEncontrada;
     }
 
 
