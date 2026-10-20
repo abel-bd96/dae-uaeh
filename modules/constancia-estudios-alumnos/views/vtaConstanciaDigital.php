@@ -22,7 +22,7 @@
 
         //Mensaje predeterminado mostrado al principio de cada constancia
         $txtMensajePredeterminado = '<div style="text-align: left"> A quien corresponda:</div> <br>
-                                    <p> Con fundamento en lo estipulado por la Universidad Autónoma del Estado de Hidalgo...
+                                    <p> Con fundamento en lo estipulado por la Universidad Autónoma del Estado de Hidalgo,
                                     Dra. Ojuky del Rocío Islas Maldonado hace constar la siguiente información:</p>';
         $pdf->writeHTMLCell(860, '', 96, 87, $txtMensajePredeterminado, 0, 0, false, true, 'J', false);
 

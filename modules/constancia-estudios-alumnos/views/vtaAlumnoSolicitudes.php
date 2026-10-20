@@ -192,9 +192,9 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" id="btnCancelar" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button" class="btn btn-success d-none" id="btnFormatoPago" data-bs-dismiss="modal">
+                    <a class="btn btn-success d-none" id="btnFormatoPago" href="http://localhost:8080/dae-uaeh/modules/constancia-estudios-alumnos/models/modFormatoPago.php" role="button" data-bs-dismiss="modal">
                         <i class="bi bi-cash-coin"></i> Descargar Formato de Pago
-                    </button>
+                    </a>
                     <button type="button" class="btn btn-success d-none" id="btnConstanciaDigital" data-bs-dismiss="modal">
                         <i class="bi bi-file-earmark-arrow-down-fill"></i> Descargar Constancia Digital
                     </button>
