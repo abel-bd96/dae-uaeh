@@ -177,4 +177,44 @@
             </div>
         </div>
     </div>
+        <!-- Modal para capturar Datos Adicionales al Elaborar -->
+    <div class="modal fade" id="modalDatosAdicionales" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-info text-white">
+                    <h5 class="modal-title"><i class="bi bi-pencil-square"></i> Datos Adicionales Requeridos</h5>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted small mb-3">
+                        La solicitud <strong id="daNumeroCuenta"></strong> requiere datos adicionales. 
+                        Por favor ingréselos para continuar con la elaboración.
+                    </p>
+                    <div id="mensajeModalDA" class="alert alert-warning d-none py-2" role="alert"></div>
+                    
+                    <input type="hidden" id="daSolicitudId">
+                    <input type="hidden" id="daAccionMasiva">
+                    <input type="hidden" id="daEstatusMasivo">
+
+                    <div id="listaCamposAdicionales" class="mb-3">
+                        <!-- Aquí se inyectarán los campos dinámicamente si quieres más de uno -->
+                        <div class="row g-2 mb-2 campo-adicional">
+                            <div class="col-md-5">
+                                <input type="text" class="form-control da-nombre" placeholder="Ej. Promedio">
+                            </div>
+                            <div class="col-md-7">
+                                <input type="text" class="form-control da-valor" placeholder="Ej. 9.5">
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-primary" id="btnAgregarCampoDA">
+                        <i class="bi bi-plus-lg"></i> Agregar otro campo
+                    </button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="btnGuardarDA">Guardar y Elaborar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </main>

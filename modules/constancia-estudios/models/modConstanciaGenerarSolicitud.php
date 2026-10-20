@@ -92,6 +92,13 @@ try {
                 throw new Exception('No se encontró el contenido de la constancia.');
             }
             break;
+        case 'actualizarObservaciones':
+            $id = isset($_POST['id']) ? $_POST['id'] : '';
+            $obs = isset($_POST['Observaciones']) ? $_POST['Observaciones'] : '[]';
+            $resultado = $consulta->actualizarObservaciones($id, $obs);
+            if (isset($resultado['ok']) && $resultado['ok'] === false) throw new Exception($resultado['mensaje']);
+            $respuesta = $resultado;
+            break;
         default:
             throw new Exception('La acción solicitada no es válida.');
     }

@@ -189,9 +189,22 @@ class clsConstanciaGenerarSolicitud
         }
         return $estatusInterno;
     }
+    public function actualizarObservaciones($idSolicitud, $observacionesJson) {
+        $solicitudes = $this->leer($this->rutaSolicitud);
+        $obs = json_decode($observacionesJson, true);
+        if (!is_array($obs)) $obs = array();
+
+        foreach ($solicitudes as $i => $s) {
+            if (isset($s['idSolicitud']) && (string)$s['idSolicitud'] === (string)$idSolicitud) {
+                $solicitudes[$i]['Observaciones'] = $obs;
+                $this->guardarJson($this->rutaSolicitud, $solicitudes);
+                return array('ok' => true, 'mensaje' => 'Observaciones guardadas.');
+            }
+        }
+        return array('ok' => false, 'mensaje' => 'No se encontró la solicitud.');
+    }
             
-    public function cambiarEstatusMasivo($datos)
-    {
+    public function cambiarEstatusMasivo($datos){
         // 1. Validar que lleguen los IDs
         if (!isset($datos['ids']) || empty($datos['ids'])) {
             throw new Exception('No se recibieron los registros a modificar.');
@@ -210,54 +223,38 @@ class clsConstanciaGenerarSolicitud
         // 3. Iterar sobre los IDs seleccionados
         foreach ($ids as $idSolicitud) {
             
-            // Si la acción es elaborar, usamos tu función real que genera folio
+            // Si es elaborar, usamos la función especial que genera el folio
             if ($nuevoEstatus === 'En elaboración') {
                 $resultado = $this->elaborar($idSolicitud);
-                
                 if (isset($resultado['ok']) && $resultado['ok'] === true) {
                     $procesados++;
                 } else {
-                    $omitidos++; // Si no estaba pagada, se omite
+                    $omitidos++;
                 }
-                continue; // Pasamos al siguiente ID
+                continue;
             }
 
-            // Para los demás estatus (Emitida, Entregado, etc.)
-            // Buscamos la solicitud y actualizamos su estatus directamente
-            $solicitudes = $this->leer($this->rutaSolicitud);
-            $encontrado = false;
-
-            foreach ($solicitudes as $i => $s) {
-                if ((string)$s['idSolicitud'] === (string)$idSolicitud) {
-                    $estatusActual = isset($s['estatus']) ? $s['estatus'] : '';
-                    
-                    // Validar que no esté cancelado o finalizado
-                    if (in_array($estatusActual, array('Finalizado', 'Cancelado'), true)) {
-                        $omitidos++;
-                        $encontrado = true;
-                        break;
-                    }
-
-                    $solicitudes[$i]['estatus'] = $nuevoEstatus;
-                    $solicitudes[$i]['fechaActualizacion'] = date('Y-m-d');
-                    $this->guardarJson($this->rutaSolicitud, $solicitudes);
-                    
-                    // Si se cambia a "Cancelado", también cancelamos su constancia
-                    if ($nuevoEstatus === 'Cancelado') {
-                        $this->cancelar($idSolicitud); 
-                    }
-
-                    $procesados++;
-                    $encontrado = true;
-                    break;
-                }
+            // Para los demás estatus, usamos las funciones específicas para que actualicen la Constancia
+            if ($nuevoEstatus === 'En firma') {
+                $resultado = $this->mandarFirma($idSolicitud);
+            } elseif ($nuevoEstatus === 'Emitida') {
+                $resultado = $this->emitir($idSolicitud);
+            } elseif ($nuevoEstatus === 'Entregado') {
+                $resultado = $this->entregar($idSolicitud);
+            } elseif ($nuevoEstatus === 'Cancelado') {
+                $resultado = $this->cancelar($idSolicitud);
+            } else {
+                // Por si se agrega otro estatus, actualizamos solo la solicitud
+                $resultado = $this->cambiarEstatusSolicitud($idSolicitud, $nuevoEstatus, 'Estatus actualizado.');
             }
 
-            if (!$encontrado) {
+            // Contabilizar si se actualizó o se omitió
+            if (isset($resultado['ok']) && $resultado['ok'] === true) {
+                $procesados++;
+            } else {
                 $omitidos++;
             }
         }
-
         return array(
             'procesados' => $procesados,
             'omitidos'   => $omitidos

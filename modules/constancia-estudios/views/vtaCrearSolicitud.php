@@ -118,29 +118,6 @@
                     <h2 class="h5 mb-3">3. Resumen y observación</h2>
 
                     <div id="resumenSolicitud" class="border rounded p-3 bg-light mb-3"></div>
-
-                    <div class="mb-3 d-none"  id="wrapDatosAdicionales">
-                        <label class="form-label fw-bold">Datos adicionales</label>
-                        <p class="text-muted small mb-2">Agregue los campos que desee incluir en la constancia
-                        </p>
-                    <div class="row g-2 align-items-end mb-2">
-                        <div class="col-md-4">
-                            <label for="observacionNombre" class="form-label small mb-1">Nombre del campo</label>
-                            <input type="text" class="form-control" id="observacionNombre" placeholder="Ej. Promedio General">
-                        </div>
-                        <div class="col-md-6">
-                            <label for="observacionValor" class="form-label small mb-1">Información del campo</label>
-                            <input type="text" class="form-control" id="observacionValor" placeholder="Ej. 9.5">
-                        </div>
-                        <div class="col-md-2">
-                            <button type="button" class="btn btn-outline-primary w-100" id="btnAgregarObservacion">
-                                <i class="bi bi-plus-lg"></i>Agregar
-                            </button>
-                        </div>
-                    </div>
-                    <ul class="list-group" id="listaObservaciones"></ul>
-                    <div id="errorObservaciones" class="text-danger small mt-2"></div>
-                    </div>
                 </div>
 
                 <!--  BOTONES DE NAVEGACIÓN       -->

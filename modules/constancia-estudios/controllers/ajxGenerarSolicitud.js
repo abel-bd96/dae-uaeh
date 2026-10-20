@@ -577,6 +577,19 @@
 
     // Flujo A y B - Paso 3/4: En elaboración
     function elaborarSolicitud(id) {
+        var solicitud = todosLosRegistros.find(function (s) {
+            return String(s.idSolicitud) === String(id);
+        });
+
+        // Verificamos si requiere datos adicionales (S) y si aún no los tiene guardados
+        if (
+            solicitud &&
+            solicitud.informacionAdicional === "S" &&
+            (!solicitud.Observaciones || solicitud.Observaciones.length === 0)
+        ) {
+            abrirModalDatosAdicionales(id, false, null);
+            return;
+        }
         abrirModal({
             titulo: "Elaborar solicitud",
             mensaje: "¿Marcar esta solicitud como 'En elaboración'?",
@@ -729,9 +742,21 @@
         }
 
         var cfg = ACCIONES_MASIVAS[accion];
-        if (!cfg) {
-            mostrarMensaje("Acción desconocida: " + accion, "danger", "mensajeSolicitud");
-            return;
+        if (!cfg) return;
+        if (accion === "elaborar") {
+            var requiereDatos = idsSeleccionados.find(function (id) {
+                var sol = todosLosRegistros.find(function (s) {
+                    return String(s.idSolicitud) === String(id);
+                });
+                return (
+                    sol && sol.informacionAdicional === "S" && (!sol.Observaciones || sol.Observaciones.length === 0)
+                );
+            });
+
+            if (requiereDatos) {
+                abrirModalDatosAdicionales(requiereDatos, true, accion);
+                return;
+            }
         }
 
         abrirModal({
@@ -1410,6 +1435,8 @@
             barraMasiva.addEventListener("click", function (evento) {
                 var btn = evento.target.closest("[data-accion-masiva]");
                 if (!btn) return;
+                var accion = btn.getAttribute("data-accion-masiva");
+                console.log("Ejecutando acción masiva:", accion, "para IDs:", idsSeleccionados);
                 ejecutarAccionMasiva(btn.dataset.accionMasiva);
             });
         }
@@ -1437,8 +1464,107 @@
                 }
             });
         }
+        var btnGuardarDA = document.getElementById("btnGuardarDA");
+        if (btnGuardarDA) btnGuardarDA.addEventListener("click", guardarDatosAdicionales);
+
+        var btnAgregarCampoDA = document.getElementById("btnAgregarCampoDA");
+        if (btnAgregarCampoDA) {
+            btnAgregarCampoDA.addEventListener("click", function() {
+                var html = '<div class="row g-2 mb-2 campo-adicional">' +
+                    '<div class="col-md-5"><input type="text" class="form-control da-nombre" placeholder="Ej. Promedio"></div>' +
+                    '<div class="col-md-7"><input type="text" class="form-control da-valor" placeholder="Ej. 9.5"></div>' +
+                    '</div>';
+                document.getElementById("listaCamposAdicionales").insertAdjacentHTML('beforeend', html);
+            });
+        }
+    }
+            // --- LÓGICA PARA EL MODAL DE DATOS ADICIONALES ---
+    function abrirModalDatosAdicionales(idSolicitud, esMasivo, accionMasiva) {
+        document.getElementById("daSolicitudId").value = idSolicitud;
+        document.getElementById("daAccionMasiva").value = esMasivo ? "1" : "0";
+        document.getElementById("daEstatusMasivo").value = accionMasiva || "";
+        var msjModal = document.getElementById("mensajeModalDA");
+        if (msjModal) {
+            msjModal.textContent = "";
+            msjModal.className = "alert alert-warning d-none";
+        }
+
+        
+        var sol = todosLosRegistros.find(function(s) { return String(s.idSolicitud) === String(idSolicitud); });
+        document.getElementById("daNumeroCuenta").textContent = sol ? sol.NumeroCuenta : "";
+
+        // Limpiar campos previos
+        document.querySelectorAll(".campo-adicional:not(:first-child)").forEach(function(el) { el.remove(); });
+        document.querySelector(".da-nombre").value = "";
+        document.querySelector(".da-valor").value = "";
+
+        var modal = new bootstrap.Modal(document.getElementById("modalDatosAdicionales"));
+        modal.show();
     }
 
+    function guardarDatosAdicionales() {
+        var id = document.getElementById("daSolicitudId").value;
+        var esMasivo = document.getElementById("daAccionMasiva").value === "1";
+        var msjModal = document.getElementById("mensajeModalDA");
+        
+        var observaciones = [];
+        document.querySelectorAll(".campo-adicional").forEach(function(campo) {
+            var nombre = campo.querySelector(".da-nombre").value.trim();
+            var valor = campo.querySelector(".da-valor").value.trim();
+            if (nombre && valor) {
+                observaciones.push({ nombre: nombre, valor: valor });
+            }
+        });
+        
+        if (observaciones.length === 0) {
+            msjModal.textContent = "Debe ingresar al menos un dato adicional.";
+            msjModal.className = "alert alert-warning py-2"; 
+            return;
+        }
+        msjModal.textContent = "";
+        msjModal.className = "alert alert-warning d-none";
+        
+        // Primero guardamos las observaciones en la solicitud
+        solicitar({
+            accion: "actualizarObservaciones",
+            id: id,
+            Observaciones: JSON.stringify(observaciones)
+        }).then(function() {
+            if (document.activeElement && typeof document.activeElement.blur === "function") {
+                document.activeElement.blur();
+            }
+            // Cerrar modal y recargar datos locales
+            bootstrap.Modal.getInstance(document.getElementById("modalDatosAdicionales")).hide();
+            
+            if (esMasivo) {
+                mostrarMensaje(
+                    "Datos adicionales guardados. Continuando con la elaboración masiva...",
+                    "success",
+                    "mensajeSolicitud",
+                );
+                setTimeout(function () {
+                    ejecutarAccionMasiva("elaborar");
+                }, 1000);
+            } else {
+                solicitar({ accion: "elaborar", id: id })
+                    .then(function () {
+                        mostrarMensaje(
+                            "Datos adicionales guardados y constancia elaborada correctamente.",
+                            "success",
+                            "mensajeSolicitud",
+                        );
+                        cargarSolicitudes();
+                    })
+                    .catch(function (error) {
+                        mostrarMensaje(error.message, "danger", "mensajeSolicitud");
+                    });
+            }
+        }).catch(function(error) {
+            msjModal.textContent = error.message;
+            msjModal.className = "alert alert-danger py-2";
+        });
+    }
+    
     // ARRANQUE
     document.addEventListener("DOMContentLoaded", function () {
         if (esPantallaFormulario()) iniciarFormulario();
