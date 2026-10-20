@@ -1,0 +1,64 @@
+[
+    {
+        "idConstancia": 1,
+        "idSolicitud": 1,
+        "idKardex": "",
+        "anio": "2026",
+        "estatus": "Cancelado",
+        "fechaEmision": "2026-10-20",
+        "fechaEntrega": "2026-10-20",
+        "fechaCaducidad": "",
+        "fechaLimiteDescarga": "",
+        "idFolio": 1,
+        "fechaActualizacion": "2026-10-20"
+    },
+    {
+        "idConstancia": 2,
+        "idSolicitud": 2,
+        "idKardex": "",
+        "anio": "2026",
+        "estatus": "Emitida",
+        "fechaEmision": "2026-10-20",
+        "fechaEntrega": "",
+        "fechaCaducidad": "",
+        "fechaLimiteDescarga": "",
+        "idFolio": 2
+    },
+    {
+        "idConstancia": 3,
+        "idSolicitud": 4,
+        "idKardex": "",
+        "anio": "2026",
+        "estatus": "Entregado",
+        "fechaEmision": "2026-10-20",
+        "fechaEntrega": "2026-10-20",
+        "fechaCaducidad": "",
+        "fechaLimiteDescarga": "",
+        "idFolio": 3,
+        "fechaActualizacion": "2026-10-20"
+    },
+    {
+        "idConstancia": 4,
+        "idSolicitud": 7,
+        "idKardex": "",
+        "anio": "2026",
+        "estatus": "En elaboración",
+        "fechaEmision": "",
+        "fechaEntrega": "",
+        "fechaCaducidad": "",
+        "fechaLimiteDescarga": "",
+        "idFolio": 4
+    },
+    {
+        "idConstancia": 5,
+        "idSolicitud": 6,
+        "idKardex": "",
+        "anio": "2026",
+        "estatus": "En elaboración",
+        "fechaEmision": "",
+        "fechaEntrega": "",
+        "fechaCaducidad": "",
+        "fechaLimiteDescarga": "",
+        "idFolio": 5
+    }
+]

@@ -1,38 +1,21 @@
 [
     {
-        "idConstancia": "8",
-        "idSolicitud": "8",
-        "idKardex": "466618",
-        "anio": "2026",
-        "estatus": "Elaborada",
-        "fechaEmision": "null",
-        "fechaEntrega": "",
-        "fechaCaducidad": "",
-        "fechaLimiteDescarga": "",
-        "idFolio": "8"
-    },
-    {
-        "idConstancia": "2",
-        "idSolicitud": "2",
-        "idKardex": "466618",
-        "anio": "2025",
-        "estatus": "Emitida",
-        "fechaEmision": "Pendiente",
-        "fechaEntrega": "Pendiente",
-        "fechaCaducidad": "22/05/2024",
-        "fechaLimiteDescarga": "",
-        "idFolio": "7"
-    },
-    {
-        "idConstancia": "1",
-        "idSolicitud": "1",
-        "idKardex": "466618",
-        "anio": "2024",
-        "estatus": "Entregada",
-        "fechaEmision": "20/02/2024",
-        "fechaEntrega": "23/02/2024",
-        "fechaCaducidad": "04/08/2024",
-        "fechaLimiteDescarga": "N/A",
-        "idFolio": "1"
+        "idSolicitud": 1,
+        "idKardex": "",
+        "idProgramaEducativo": "",
+        "fechaSolicitud": "2026-10-19",
+        "estatus": "Solicitado",
+        "tipoFirma": "S",
+        "cantidadConstancias": "1",
+        "contieneCalificaciones": "S",
+        "informacionAdicional": "N",
+        "idCicloEscolar": "",
+        "NumeroCuenta": "250122",
+        "NombreCompleto": "Petronilo Anastacio",
+        "CicloEscolar": "Julio-Diciembre 2026",
+        "Instituto": "ICEA",
+        "Semestre": "Segundo",
+        "ProgramaEducativo": "Ingeniería en Sistemas",
+        "Observaciones": []
     }
 ]

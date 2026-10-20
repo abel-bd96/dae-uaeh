@@ -123,23 +123,24 @@
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0" id="tablaSolicitudes">
                     <thead class="table-light">
-                        <tr>
-                            <th style="width: 40px;">
-                                <input type="checkbox" class="form-check-input" id="checkTodos" title="Seleccionar todos">
-                            </th>
-                            <th>Fecha Solicitud</th>
-                            <th>Ciclo Escolar</th>
-                            <th>Número de Cuenta</th>
-                            <th>Nombre Completo</th>
-                            <th>Estatus Solicitud</th>
-                            <th>Dato Adicional</th>
-                            <th>Tipo de Firma</th>
-                            <th class="text-end">Acciones</th>
-                        </tr>
-                    </thead>
+                    <tr>
+                        <th style="width: 40px;">
+                        <input type="checkbox" class="form-check-input" id="checkTodos" title="Seleccionar todos">
+                        </th>
+                        <th>Folio</th>
+                        <th>Fecha Solicitud</th>
+                        <th>Ciclo Escolar</th>
+                        <th>Número de Cuenta</th>
+                        <th>Nombre Completo</th>
+                        <th>Estatus Solicitud</th>
+                        <th>Dato Adicional</th>
+                        <th>Tipo de Firma</th>
+                        <th class="text-end">Acciones</th>
+                    </tr>
+                </thead>
                     <tbody>
                         <tr>
-                            <td colspan="9" class="text-center text-muted py-4">
+                            <td colspan="10" class="text-center text-muted py-4">
                                 Seleccione los filtros y presione <strong>Buscar</strong> para ver resultados
                             </td>
                         </tr>

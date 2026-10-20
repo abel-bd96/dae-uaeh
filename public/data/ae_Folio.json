@@ -1,26 +1,32 @@
 [
     {
-        "idFolio": "8",
-        "folio": "8",
+        "idFolio": 1,
+        "folio": "CE/01/2026",
         "anio": "2026",
-        "estatus": "usado"
+        "ultimoConsecutivo": 1
     },
     {
-        "idFolio": "2",
-        "folio": "2",
-        "anio": "2024",
-        "estatus": "usado"
-    },
-    {
-        "idFolio": "1",
-        "folio": "1",
-        "anio": "2024",
-        "estatus": "usado"
-    },
-    {
-        "idFolio": "1",
-        "folio": "1",
+        "idFolio": 2,
+        "folio": "CE/02/2026",
         "anio": "2026",
-        "estatus": "usado"
+        "ultimoConsecutivo": 2
+    },
+    {
+        "idFolio": 3,
+        "folio": "CE/03/2026",
+        "anio": "2026",
+        "ultimoConsecutivo": 3
+    },
+    {
+        "idFolio": 4,
+        "folio": "CE/04/2026",
+        "anio": "2026",
+        "ultimoConsecutivo": 4
+    },
+    {
+        "idFolio": 5,
+        "folio": "CE/05/2026",
+        "anio": "2026",
+        "ultimoConsecutivo": 5
     }
 ]

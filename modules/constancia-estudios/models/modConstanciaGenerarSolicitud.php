@@ -30,102 +30,42 @@ try {
 
             if (isset($resultado['ok']) && $resultado['ok'] === false) {
                 throw new Exception(
-                    isset($resultado['mensaje']) ? $resultado['mensaje'] : 'No fue posible completar la solicitud'
-                );
+                    isset($resultado['mensaje']) ? $resultado['mensaje'] : 'No fue posible completar la solicitud');
             }
             $respuesta = isset($resultado['datos']) ? $resultado['datos']: $resultado;
             break;
-        case 'cancelar':
-            $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
-            $resultado = $consulta->cancelar($id);
-            if (isset($resultado['ok']) && $resultado['ok'] === false
-            ) { throw new Exception(
-                    isset($resultado['mensaje'])
-                        ? $resultado['mensaje']
-                        : 'No fue posible cancelar la solicitud.' );
-            }
-            $respuesta = isset($resultado['datos']) ? $resultado['datos'] : $resultado;
-            break;
         case 'pagar':
-            $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
-            $tipoFirma = isset($_REQUEST['tipoFirma']) ? $_REQUEST['tipoFirma'] : '';
-            $resultado = $consulta->pagar($id, $tipoFirma);
-            if (isset($resultado['ok']) && $resultado['ok'] === false) {
-                throw new Exception(isset($resultado['mensaje']) ? $resultado['mensaje'] : 'No fue posible registrar el pago.');
-            }
-            $respuesta = isset($resultado['datos']) ? $resultado['datos'] : $resultado;
+            $resultado = $consulta->pagar($_REQUEST['id']);
+            if (isset($resultado['ok']) && $resultado['ok'] === false) throw new Exception($resultado['mensaje']);
+            $respuesta = $resultado;
             break;
         case 'elaborar':
-            $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
-            $resultado = $consulta->elaborar($id);
-            if (isset($resultado['ok']) && $resultado['ok'] === false) {
-                throw new Exception(isset($resultado['mensaje']) ? $resultado['mensaje'] : 'No fue posible elaborar la solicitud.');
-            }
-            $respuesta = isset($resultado['datos']) ? $resultado['datos'] : $resultado;
+            $resultado = $consulta->elaborar($_REQUEST['id']);
+            if (isset($resultado['ok']) && $resultado['ok'] === false) throw new Exception($resultado['mensaje']);
+            $respuesta = $resultado;
             break;
-
         case 'mandarFirma':
-            $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
-            $resultado = $consulta->mandarFirma($id);
-            if (isset($resultado['ok']) && $resultado['ok'] === false) {
-                throw new Exception(
-                    isset($resultado['mensaje']) ? $resultado['mensaje'] : 'No fue posible mandar a firma la solicitud.'
-                );
-            }
-            $respuesta = isset($resultado['datos']) ? $resultado['datos'] : $resultado;
+            $resultado = $consulta->mandarFirma($_REQUEST['id']);
+            if (isset($resultado['ok']) && $resultado['ok'] === false) throw new Exception($resultado['mensaje']);
+            $respuesta = $resultado;
             break;
         case 'emitir':
-            $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
-            $resultado = $consulta->emitir($id);
-            if (isset($resultado['ok']) && $resultado['ok'] === false) {
-                throw new Exception(isset($resultado['mensaje']) ? $resultado['mensaje'] : 'No fue posible emitir la constancia.');
-            }
-            $respuesta = isset($resultado['datos']) ? $resultado['datos'] : $resultado;
+            $resultado = $consulta->emitir($_REQUEST['id']);
+            if (isset($resultado['ok']) && $resultado['ok'] === false) throw new Exception($resultado['mensaje']);
+            $respuesta = $resultado;
             break;
-
         case 'entregar':
-            $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
-            $resultado = $consulta->entregar($id);
-            if (isset($resultado['ok']) && $resultado['ok'] === false) {
-                throw new Exception(isset($resultado['mensaje']) ? $resultado['mensaje'] : 'No fue posible marcar como entregado.');
-            }
-            $respuesta = isset($resultado['datos']) ? $resultado['datos'] : $resultado;
+            $resultado = $consulta->entregar($_REQUEST['id']);
+            if (isset($resultado['ok']) && $resultado['ok'] === false) throw new Exception($resultado['mensaje']);
+            $respuesta = $resultado;
             break;
-
-        case 'atender':
-            $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
-            $resultado = $consulta->atender($id);
-            if (isset($resultado['ok']) && $resultado['ok'] === false) {
-                throw new Exception(isset($resultado['mensaje']) ? $resultado['mensaje'] : 'No fue posible marcar como atendido.');
-            }
-            $respuesta = isset($resultado['datos']) ? $resultado['datos'] : $resultado;
+        case 'cancelar':
+            $resultado = $consulta->cancelar($_REQUEST['id']);
+            if (isset($resultado['ok']) && $resultado['ok'] === false) throw new Exception($resultado['mensaje']);
+            $respuesta = $resultado;
             break;
-
-        case 'finalizar':
-            $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
-            $resultado = $consulta->finalizar($id);
-            if (isset($resultado['ok']) && $resultado['ok'] === false) {
-                throw new Exception(isset($resultado['mensaje']) ? $resultado['mensaje'] : 'No fue posible finalizar la solicitud.');
-            }
-            $respuesta = isset($resultado['datos']) ? $resultado['datos'] : $resultado;
-            break;
-        case 'cambiarEstatus':
-            $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
-            $nuevoEstatus = isset($_REQUEST['estatus']) ? $_REQUEST['estatus'] : '';
-            $resultado = $consulta->cambiarEstatus($id, $nuevoEstatus);
-            if (isset($resultado['ok']) && $resultado['ok'] === false) {
-                throw new Exception(
-                    isset($resultado['mensaje']) ? $resultado['mensaje'] : 'No fue posible cambiar el estatus.'
-                );
-            }
-            $respuesta = isset($resultado['datos']) ? $resultado['datos'] : $resultado;
-            break;
-
         case 'estatusValidos':
             $respuesta = $consulta->estatusValidos();
-            break;
-        case 'transiciones':
-            $respuesta = $consulta->transicionesPermitidas();
             break;
         case 'observacion':
             $respuesta = $consulta->consultarObservacion();
@@ -137,9 +77,7 @@ try {
             $respuesta = $consulta->consultarDatoAdicional();
             break;
         case 'cambiarEstatusMasivo':
-            $ids          = isset($_POST['ids']) ? (array)$_POST['ids'] : array();
-            $nuevoEstatus = isset($_POST['estatus']) ? $_POST['estatus'] : '';
-            $resultado    = $consulta->cambiarEstatusMasivo($ids, $nuevoEstatus);
+            $resultado = $consulta->cambiarEstatusMasivo($_POST);
             if (isset($resultado['ok']) && $resultado['ok'] === false) {
                 throw new Exception(
                     isset($resultado['mensaje']) ? $resultado['mensaje'] : 'No fue posible actualizar los estatus.'

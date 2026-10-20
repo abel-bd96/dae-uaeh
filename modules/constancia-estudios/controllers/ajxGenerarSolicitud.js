@@ -22,16 +22,16 @@
         var accion = datos.accion || "guardar";
 
         Object.keys(datos).forEach(function (clave) {
-            if (clave === "accion") return;
-            var valor = datos[clave];
-            if (Array.isArray(valor)) {
-                valor.forEach(function (v) {
-                    parametros.append(clave + "[]", v);
-                });
-            } else {
-                parametros.append(clave, valor == null ? "" : valor);
-            }
-        });
+            var valor = datos[clave]; 
+            if (valor && typeof valor === 'object' && typeof valor.length === 'number' && !Array.isArray(valor)) {
+        valor = Array.prototype.slice.call(valor);
+    }
+        if (Array.isArray(valor)) {
+            valor.forEach(function (v) { parametros.append(clave + '[]', v); });
+        } else if (valor !== undefined && valor !== null) {
+            parametros.append(clave, valor);
+        }
+    });
         parametros.append("accion", accion);
 
         return fetch(endpoint, { method: "POST", body: parametros }).then(function (respuesta) {
@@ -199,14 +199,16 @@
             var nom = String(s.NombreCompleto || "")
                 .toLowerCase()
                 .trim();
-            var est = String(s.Estatus || s.EstatusSolicitud || "")
+
+            // Estatus y otros campos del nuevo backend
+            var est = String(s.EstatusInterno || s.estatus || "")
                 .toLowerCase()
                 .trim();
             var fEst = String(f.estatus || "")
                 .toLowerCase()
                 .trim();
-            var da = String(s.DatoAdicional || "").trim();
-            var tf = String(s.TipoFirma || "").trim();
+            var da = String(s.informacionAdicional || "").trim();
+            var tf = String(s.tipoFirma || "").trim();
 
             if (f.ciclo && ciclo.indexOf(f.ciclo) === -1) return false;
             if (f.numeroCuenta && nc.indexOf(f.numeroCuenta) === -1) return false;
@@ -216,7 +218,7 @@
             if (f.tipoFirma && tf !== f.tipoFirma) return false;
 
             if (rango) {
-                var fecha = String(s.fechaRegistro || "").trim();
+                var fecha = String(s.fechaSolicitud || "").trim();
                 if (!fecha) return false;
                 if (rango.desde && fecha < rango.desde) return false;
                 if (rango.hasta && fecha > rango.hasta) return false;
@@ -283,94 +285,58 @@
 
     // BOTONES SEGÚN ESTATUS
     function generarBotones(s) {
-        var id = escapeHtml(s.id || s.idSolicitud || "");
-        var estatus = s.Estatus || s.EstatusSolicitud || "";
+        var id = escapeHtml(s.idSolicitud || s.id || "");
+        var estatus = s.EstatusInterno || s.Estatus || s.estatus || "";
         var botones = [];
 
-        // Estados terminales
         if (estatus === "Cancelado") {
-            return (
-                '<button type="button" class="btn btn-sm btn-outline-secondary" disabled>' +
-                '<i class="bi bi-x-circle"></i> Cancelada</button>'
-            );
+            return '<button type="button" class="btn btn-sm btn-outline-secondary" disabled><i class="bi bi-x-circle"></i> Cancelada</button>';
         }
-
         if (estatus === "Finalizado") {
-            return (
-                '<button type="button" class="btn btn-sm btn-outline-success" disabled>' +
-                '<i class="bi bi-check-circle"></i> Finalizada</button>'
-            );
+            return '<button type="button" class="btn btn-sm btn-outline-success" disabled><i class="bi bi-check-circle"></i> Finalizada</button>';
         }
 
-        // --- Flujo A ---
         if (estatus === "Solicitado") {
             botones.push(
                 '<button type="button" class="btn btn-sm btn-outline-success btn-pagar" data-id="' +
                     id +
-                    '">' +
-                    '<i class="bi bi-cash-coin"></i> Pagado</button>',
+                    '"><i class="bi bi-cash-coin"></i> Pagado</button>',
             );
         }
-
         if (estatus === "Pagado") {
             botones.push(
                 '<button type="button" class="btn btn-sm btn-outline-info btn-elaborar" data-id="' +
                     id +
-                    '">' +
-                    '<i class="bi bi-gear"></i> Elaborar</button>',
+                    '"><i class="bi bi-gear"></i> Elaborar</button>',
             );
         }
-
-        // --- Flujo B ---
         if (estatus === "En elaboración") {
             botones.push(
                 '<button type="button" class="btn btn-sm btn-outline-warning btn-mandar-firma" data-id="' +
                     id +
-                    '">' +
-                    '<i class="bi bi-pen"></i> Mandar a firma</button>',
-            );
-            botones.push(
-                '<button type="button" class="btn btn-sm btn-outline-secondary btn-atender" data-id="' +
-                    id +
-                    '">' +
-                    '<i class="bi bi-person-check"></i> Atendido</button>',
+                    '"><i class="bi bi-pen"></i> Mandar a firma</button>',
             );
         }
-
         if (estatus === "En firma") {
             botones.push(
                 '<button type="button" class="btn btn-sm btn-outline-success btn-emitir" data-id="' +
                     id +
-                    '">' +
-                    '<i class="bi bi-file-earmark-check"></i> Emitida</button>',
+                    '"><i class="bi bi-file-earmark-check"></i> Emitida</button>',
             );
         }
-
         if (estatus === "Emitida") {
             botones.push(
                 '<button type="button" class="btn btn-sm btn-outline-success btn-entregar" data-id="' +
                     id +
-                    '">' +
-                    '<i class="bi bi-box-arrow-right"></i> Entregado</button>',
+                    '"><i class="bi bi-box-arrow-right"></i> Entregado</button>',
             );
         }
 
-        if (estatus === "Atendido" || estatus === "Entregado") {
-            botones.push(
-                '<button type="button" class="btn btn-sm btn-outline-dark btn-finalizar" data-id="' +
-                    id +
-                    '">' +
-                    '<i class="bi bi-flag"></i> Finalizar</button>',
-            );
-        }
-
-        // Cancelar
-        if (!["Entregado", "Finalizado"].includes(estatus)) {
+        if (!["Finalizado", "Cancelado"].includes(estatus)) {
             botones.push(
                 '<button type="button" class="btn btn-sm btn-outline-danger btn-cancelar" data-id="' +
                     id +
-                    '">' +
-                    '<i class="bi bi-x-circle"></i> Cancelar</button>',
+                    '"><i class="bi bi-x-circle"></i> Cancelar</button>',
             );
         }
 
@@ -384,7 +350,7 @@
 
         if (!registros.length) {
             tbody.innerHTML =
-                '<tr><td colspan="9" class="text-center text-muted py-4">' +
+                '<tr><td colspan="10" class="text-center text-muted py-4">' +
                 "No se encontraron solicitudes con los filtros aplicados." +
                 "</td></tr>";
             actualizarContadorSeleccionadas();
@@ -394,21 +360,26 @@
 
         tbody.innerHTML = registros
             .map(function (s) {
-                var id = String(s.id || s.idSolicitud || "");
-                var nombre =
-                    s.NombreCompleto ||
-                    [s.Nombre, s.ApellidoPaterno, s.ApellidoMaterno].filter(Boolean).join(" ") ||
-                    s.nombre ||
-                    "(Sin nombre)";
+                // 1. ID principal
+                var id = String(s.idSolicitud || s.id || "");
 
-                var ciclo = s.CicloEscolar || s.Periodo || s.ciclo || "(Sin ciclo)";
-                var estatus = s.Estatus || s.EstatusSolicitud || "";
+                // 2. Datos base
+                var nombre = s.NombreCompleto || "(Sin nombre)";
+                var ciclo = s.CicloEscolar || "(Sin ciclo)";
+                var estatus = s.EstatusInterno || s.Estatus || s.estatus || "";
+                var folio = s.Folio || "";
+
+                // 3. Variables mapeadas del nuevo JSON
+                var firma = s.tipoFirma === "S" ? "Digital (PDF)" : s.tipoFirma === "N" ? "Autógrafa" : "";
+                var datoAdicional = s.informacionAdicional || "";
+                var fecha = s.fechaSolicitud || s.fechaRegistro || "";
 
                 var checkDisabled = estatus === "Cancelado" ? "disabled" : "";
                 var checkChecked = idsSeleccionados.indexOf(id) !== -1 ? "checked" : "";
 
                 return (
                     "<tr>" +
+                    // Checkbox
                     '<td><input type="checkbox" class="form-check-input check-solicitud" ' +
                     'data-id="' +
                     escapeHtml(id) +
@@ -417,8 +388,12 @@
                     " " +
                     checkDisabled +
                     "></td>" +
+                    // Datos
                     "<td>" +
-                    escapeHtml(s.fechaRegistro || "") +
+                    escapeHtml(folio) +
+                    "</td>" +
+                    "<td>" +
+                    escapeHtml(fecha) +
                     "</td>" +
                     "<td>" +
                     escapeHtml(ciclo) +
@@ -433,11 +408,12 @@
                     escapeHtml(estatus) +
                     "</td>" +
                     "<td>" +
-                    escapeHtml(s.DatoAdicional || "") +
+                    escapeHtml(datoAdicional) +
                     "</td>" +
                     "<td>" +
-                    escapeHtml(s.TipoFirma === "S" ? "Digital (PDF)" : s.TipoFirma === "N" ? "Autógrafa" : "") +
+                    escapeHtml(firma) +
                     "</td>" +
+                    // Botones
                     '<td class="text-end">' +
                     generarBotones(s) +
                     "</td>" +
@@ -579,21 +555,17 @@
 
     // ACCIONES — cada función definida UNA SOLA VEZ
 
-    // Flujo A - Paso 2: Pagar (con selección de tipo de firma)
+    // Flujo A - Paso 2
     function pagarSolicitud(id) {
         abrirModal({
             titulo: "Registrar pago",
-            mensaje: "Seleccione el tipo de firma para esta constancia:",
-            tipo: "select",
-            opciones: ["Digital (PDF)", "Autógrafa"],
-            valorInicial: "Digital (PDF)",
-            btnTexto: "Confirmar pago",
+            mensaje: "¿Confirmar el pago de esta solicitud?",
+            btnTexto: "Sí, pagado",
             btnClass: "btn-success",
-            onAceptar: function (tipoFirmaSeleccionado) {
-                var tipoFirma = tipoFirmaSeleccionado === "Digital (PDF)" ? "S" : "N";
-                solicitar({ accion: "pagar", id: id, tipoFirma: tipoFirma })
+            onAceptar: function () {
+                solicitar({ accion: "pagar", id: id })
                     .then(function () {
-                        mostrarMensaje("Pago registrado correctamente.", "success", "mensajeSolicitud");
+                        mostrarMensaje("Pago registrado.", "success", "mensajeSolicitud");
                         cargarSolicitudes();
                     })
                     .catch(function (error) {
@@ -742,11 +714,6 @@
             },
         });
     }
-    // Editar
-    function editarSolicitud(id) {
-        limpiarMensaje();
-        window.location.href = "?vta=CrearSolicitud&id=" + encodeURIComponent(id);
-    }
 
     //acciones maxivas
     function ejecutarAccionMasiva(accion) {
@@ -769,13 +736,8 @@
 
         abrirModal({
             titulo: cfg.titulo + " seleccionadas",
-            mensaje:
-                "Se intentará pasar " +
-                idsSeleccionados.length +
-                ' solicitud(es) a "' +
-                cfg.estatus +
-                '". ' +
-                "Las que no cumplan con la transición serán omitidas.",
+            mensaje: "Se intentará pasar " + idsSeleccionados.length + ' solicitud(es) a "' +
+                cfg.estatus + '". ' + "Las que no cumplan con la transición serán omitidas.",
             btnTexto: "Sí, " + cfg.titulo.toLowerCase(),
             btnClass: "btn-primary",
             onAceptar: function () {
@@ -785,8 +747,8 @@
                     estatus: cfg.estatus,
                 })
                     .then(function (resultado) {
-                        var ok = resultado && resultado.procesados ? resultado.procesados.length : 0;
-                        var om = resultado && resultado.omitidos ? resultado.omitidos.length : 0;
+                        var ok = resultado && resultado.procesados ? resultado.procesados : 0;
+                        var om = resultado && resultado.omitidos ? resultado.omitidos : 0;
                         var msg = ok + " actualizada(s).";
                         if (om > 0) msg += " " + om + " omitida(s).";
                         mostrarMensaje(msg, om > 0 ? "warning" : "success", "mensajeSolicitud");
@@ -1459,14 +1421,11 @@
         if (tabla) {
             tabla.addEventListener("click", function (evento) {
                 var acciones = [
-                    [".btn-editar", editarSolicitud],
                     [".btn-pagar", pagarSolicitud],
                     [".btn-elaborar", elaborarSolicitud],
                     [".btn-mandar-firma", mandarFirmaSolicitud],
                     [".btn-emitir", emitirSolicitud],
                     [".btn-entregar", entregarSolicitud],
-                    [".btn-atender", atenderSolicitud],
-                    [".btn-finalizar", finalizarSolicitud],
                     [".btn-cancelar", cancelarSolicitud],
                 ];
                 for (var i = 0; i < acciones.length; i++) {
