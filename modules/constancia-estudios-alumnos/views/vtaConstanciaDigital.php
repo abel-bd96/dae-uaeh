@@ -1,5 +1,5 @@
 <?php
-    $data = file_get_contents('.../public/data/ae_Constancia_Contenido.json');
+    $data = file_get_contents(dirname(__DIR__, 3) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'ae_Constancia_Contenido.json');
 
     $constancia = json_decode($data, true);
 
@@ -8,8 +8,15 @@
 
         //Tipografía de Título
         $pdf->SetFont('helvetica', 'B', 12);
+        $pdf->SetMargins(2, 2, 2);
 
         $pdf->AddPage('P', array(215.9, 279.4));
+
+        $logoUAEH = dirname(__DIR__, 3) . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'logo_uaeh.png';
+
+        if (file_exists($logoUAEH)) {
+            $pdf->Image($logoUAEH, 10, 10, 80, 0, 'PNG'); //0 produce un alto automático
+        }
 
         $txtTituloConstancia = '<div style="text-align: center"> Constancia de Estudios</div>';            
         $pdf->writeHTMLCell(100, '', 96, 50, $txtTituloConstancia, 0, 0, false, true, 'C', false);
@@ -17,14 +24,14 @@
         //Tipografía contenido
         $pdf->SetFont('helvetica', '', 10);
 
-        $txtfolio = '<div style="text-align: left"> Folio: CE/' . $constancias['folio'] . '/' . $constancias['anio'] . '</div>';
+        $txtfolio = '<div style="text-align: left"> Folio: CE/' . $constancias['folio'] . '/' . date("Y") . '</div>';
         $pdf->writeHTMLCell(100, '', 18, 80, $txtfolio, 0, 1, false, true, 'L', false);
 
         //Mensaje predeterminado mostrado al principio de cada constancia
         $txtMensajePredeterminado = '<div style="text-align: left"> A quien corresponda:</div> <br>
                                     <p> Con fundamento en lo estipulado por la Universidad Autónoma del Estado de Hidalgo,
                                     Dra. Ojuky del Rocío Islas Maldonado hace constar la siguiente información:</p>';
-        $pdf->writeHTMLCell(860, '', 96, 87, $txtMensajePredeterminado, 0, 0, false, true, 'J', false);
+        $pdf->writeHTMLCell(860, '', 60, 87, $txtMensajePredeterminado, 0, 0, false, true, 'J', false);
 
         $txtApellidoPaterno = '<div style="text-align: justify"> Apellido Paterno: ' . $constancias['apellidoPaterno'] . '</div>';
         $pdf->writeHTMLCell(130, '', 60, 94, $txtApellidoPaterno, 0, 1, false, true, 'J', false);

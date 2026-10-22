@@ -9,9 +9,10 @@ if (!is_file($rutaTCPDF)) {
 require_once $rutaTCPDF;
 
 $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-$pdfNombre = "Formato de Pago";
 
-require('../views/vtaFormatoPago.php');
+$pdfNombre = "Formato-de-Pago";
+
+require(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'vtaFormatoPago.php');
 
 $pdf->SetCreator(PDF_CREATOR);
 $pdf->SetTitle($pdfNombre);
@@ -22,5 +23,5 @@ $pdf->SetPrintFooter(false);
 $pdf->setDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 $pdf->SetAutoPageBreak(TRUE, 1);
 
-$pdf->Output('Formato de Pago.pdf', 'D')
+$pdf->Output('Formato-de-Pago.pdf', 'D')
 ?>

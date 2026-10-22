@@ -209,6 +209,7 @@
         
         var barra = document.getElementById("barraProgresoEstado");
         var btnFormatoPago = document.getElementById("btnFormatoPago");
+        var btnConstanciaDigital = document.getElementById("btnConstanciaDigital");
 
         if (!barra) {
             return;
@@ -216,8 +217,10 @@
 
         var porcentaje = 20;
 
-        if (btnFormatoPago) {
+        //Vuelve a ocultar los botones al modificarse el estatus
+        if (btnFormatoPago && btnConstanciaDigital) {
             btnFormatoPago.classList.add("d-none");
+            btnConstanciaDigital.classList.add("d-none");
         }
 
         switch (estatus) {
@@ -231,10 +234,12 @@
 
             case "Pagada":
                 porcentaje = 40;
+
                 break;
 
             case "En Elaboración":
                 porcentaje = 60;
+
                 break;
 
             case "Atendida":
@@ -242,6 +247,9 @@
                 barra.classList.remove("bg-primary");
                 barra.classList.add("bg-success");
                 //Ubicación Torre de Posgrado
+                if (btnConstanciaDigital) {
+                    btnConstanciaDigital.classList.remove("d-none");
+                }
                 break;
 
             case "Finalizada":
