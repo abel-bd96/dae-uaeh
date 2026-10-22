@@ -126,7 +126,7 @@
                         <i class="bi bi-arrow-left"></i> Anterior
                     </button>
                     <div>
-                        <button type="button" class="btn btn-primary" id="btnSiguiente">
+                        <button type="button" class="btn btn-primary" id="btnSiguiente" onclick="return false;">
                             Siguiente <i class="bi bi-arrow-right"></i>
                         </button>
                         <button type="button" class="btn btn-success d-none" id="btnGuardar">
