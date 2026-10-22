@@ -1,10 +1,10 @@
 <?php
-    $data = file_get_contents(dirname(__DIR__, 3) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'ae_Constancia_Contenido.json');
+$data = file_get_contents(dirname(__DIR__, 3) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'ae_Constancia_Contenido.json');
 
-    $constancia = json_decode($data, true);
+$constancia = json_decode($data, true);
 
-    if(!empty($constancia)){
-        foreach ($constancia as $constancias) {
+if (!empty($constancia)) {
+    foreach ($constancia as $constancias) {
 
         //Tipografía de Título
         $pdf->SetFont('helvetica', 'B', 12);
@@ -18,7 +18,7 @@
             $pdf->Image($logoUAEH, 10, 10, 80, 0, 'PNG'); //0 produce un alto automático
         }
 
-        $txtTituloConstancia = '<div style="text-align: center"> Constancia de Estudios</div>';            
+        $txtTituloConstancia = '<div style="text-align: center"> Constancia de Estudios</div>';
         $pdf->writeHTMLCell(100, '', 60, 20, $txtTituloConstancia, 0, 0, false, true, 'C', false);
 
         //Tipografía contenido
@@ -42,7 +42,7 @@
 
         $txtCURP = '<div style="text-align: justify"> CURP: ' . $constancias['CURP'] . '</div>';
         $pdf->writeHTMLCell(130, '', 10, 96, $txtCURP, 0, 1, false, true, 'J', false);
-        
+
         $txtNumeroCuenta = '<div style="text-align: left"> Número de Cuenta: ' . $constancias['numeroCuenta'] . '</div>';
         $pdf->writeHTMLCell(100, '', 10, 102, $txtNumeroCuenta, 0, 1, false, true, 'L', false);
 
@@ -61,10 +61,10 @@
         //Puede ser Cursando || Inscrito
         $txtEstatusAlumno = '<div style="text-align: justify"> Estatus del Alumno: ' . $constancias['estatusAlumno'] . '</div>';
         $pdf->writeHTMLCell(130, '', 10, 132, $txtEstatusAlumno, 0, 1, false, true, 'J', false);
-        
+
         $txtCalidadAlumno = '<div style="text-align: justify"> Calidad del Alumno: ' . $constancias['calidadAlumno'] . '</div>';
         $pdf->writeHTMLCell(150, '', 10, 138, $txtCalidadAlumno, 0, 1, false, true, 'J', false);
-        
+
         $txtTipoIngreso = '<div style="text-align: justify"> Tipo de Ingreso: ' . $constancias['tipoIngreso'] . '</div>';
         $pdf->writeHTMLCell(130, '', 10, 144, $txtTipoIngreso, 0, 1, false, true, 'J', false);
 
@@ -108,7 +108,7 @@
 
         //Tipografía de Título
         $pdf->SetFont('helvetica', 'B', 12);
-        
+
         //Reverso para Calificaciones
         $pdf->AddPage('P', array(215.9, 279.4));
 
@@ -120,6 +120,5 @@
         $txtCalificaciones = '<div style="text-align: justify"> </div>';
         $pdf->writeHTMLCell(180, '', 96, 175, $txtFirmaDigital, 1, 0, false, true, 'J', false);
         */
-        }
     }
-?>
+}

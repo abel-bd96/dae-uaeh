@@ -24,4 +24,3 @@ $pdf->setDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 $pdf->SetAutoPageBreak(TRUE, 1);
 
 $pdf->Output('Formato-de-Pago.pdf', 'D')
-?>

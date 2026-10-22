@@ -196,7 +196,7 @@
                     <a class="btn btn-primary d-none" id="btnFormatoPago" href="http://localhost:8080/dae-uaeh/modules/constancia-estudios-alumnos/models/modFormatoPago.php" target="_blank" rel="noopener noreferrer" role="button">
                         <i class="bi bi-cash-coin"></i> Descargar Formato de Pago
                     </a>
-                    <a class="btn btn-success" id="btnConstanciaDigital" href="http://localhost:8080/dae-uaeh/modules/constancia-estudios-alumnos/models/modConstanciaDigital.php" target="_blank" rel="noopener noreferrer" role="button">
+                    <a class="btn btn-success d-none" id="btnConstanciaDigital" href="http://localhost:8080/dae-uaeh/modules/constancia-estudios-alumnos/models/modConstanciaDigital.php" target="_blank" rel="noopener noreferrer" role="button">
                         <i class="bi bi-file-earmark-arrow-down-fill"></i> Descargar Constancia Digital
                     </a>
                 </div>

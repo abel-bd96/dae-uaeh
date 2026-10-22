@@ -206,7 +206,6 @@
     }
 
     function corregirProgreso(estatus, datos) {
-        
         var barra = document.getElementById("barraProgresoEstado");
         var btnFormatoPago = document.getElementById("btnFormatoPago");
         var btnConstanciaDigital = document.getElementById("btnConstanciaDigital");
@@ -256,9 +255,9 @@
                 porcentaje = 100;
                 barra.classList.remove("bg-primary");
                 barra.classList.add("bg-success");
-                /*Revisar campos de ae_ciclo.json (dependiendo del id_kardex):
-                fechaSolicitudConstanciaTermino && fechaPeriodoVacacionalTermino cuál es mayor + 14 días, 23 horas y 59 minutos
-                deshabilitar btnConstanciaDigital*/
+                //Al cambiar estatus, btnConstanciaDigital se oculta forma predeterminada
+                /*Revisar campos de ae_ciclo.json (dependiendo del id_kardex): fechaSolicitudConstanciaTermino && fechaPeriodoVacacionalTermino cuál es mayor + 14 días, 23 horas y 59 minutos
+                 */
                 break;
 
             case "Cancelada":
@@ -356,7 +355,7 @@
             mostrarMensaje("No puedes cancelar esta solicitud.", "error");
             return;
         } // Si ya está pagada o emitida no se debería poder cancelar
-        if (estatus !== "Solicitado") {
+        if (estatus !== "Solicitada") {
             mostrarMensaje(
                 "No puedes cancelar esta solicitud con estado: " + (estatus || "Desconocido") + ".",
                 "warning",
@@ -365,16 +364,12 @@
                     mensaje.classList.add("d-none");
                 }, 5000),
             );
-
             return;
         }
 
         Swal.fire({
             title: "¿Cancelar solicitud?",
-            html:
-                "¿Estás seguro de cancelar esta solicitud de Constancia?<br><br>" +
-                "<strong>Folio:</strong> " +
-                escapeHtml(folio),
+            html: "¿Estás seguro de cancelar esta solicitud de Constancia?<br><br>",
             icon: "warning",
             showCancelButton: true,
             confirmButtonText: "Sí, cancelar",
@@ -397,7 +392,7 @@
                 },
             });
 
-            solicitar({ accion: "cancelar", folio: folio })
+            solicitar({ accion: "cancelar", idSolicitud: idSolicitud })
                 .then(function (respuesta) {
                     cargarRegistros();
                     Swal.fire({

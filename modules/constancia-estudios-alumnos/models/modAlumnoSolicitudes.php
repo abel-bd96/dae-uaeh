@@ -11,7 +11,7 @@ try {
     switch ($accion) {
         //Acciones que despliegan datos dentro de tablas
         case 'listar':
-            
+
             $respuesta = $consulta->listar();
             break;
 
@@ -27,14 +27,13 @@ try {
             break;
 
 
-        //Acción que realiza cambios al cancelar solicitudes
-        /*
+        //Acción que realiza cambios al cancelar solicitudes        
         case 'cancelar':
 
             $identificador = isset($_POST['idSolicitud']) ? $_POST['idSolicitud'] : '';
             $respuesta = $consulta->cancelar($identificador);
             break;
-*/
+
         //Acción que realiza cambios al guardar solicitudes nuevas
         case 'guardar':
 
@@ -68,4 +67,3 @@ try {
         JSON_UNESCAPED_UNICODE
     );
 }
-?>

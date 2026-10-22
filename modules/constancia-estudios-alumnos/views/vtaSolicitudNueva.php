@@ -18,7 +18,7 @@
                         </div>
                         <div class="form-check form-check-inline">
                             <input class=" form-check-input" type="radio" name="tipoFirma" id="firmaDigital"
-                            value="digital" required>
+                                value="digital" required>
                             <label class="form-check-label" for="firmaDigital">
                                 <i class="bi bi-card-text"></i> Digital
                             </label>
@@ -45,7 +45,7 @@
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="calificaciones" id="calificacionesNo"
-                            value="no">
+                                value="no">
                             <label class="form-check-label" for="calificacionesNo">
                                 No
                             </label>

@@ -22,7 +22,7 @@ class clsAlumnoSolicitudes
     }
 
 
-    public function mostrarDatosPersonales() //pendiente
+    public function mostrarDatosPersonales()
     {
         $datos = $this->leer($this->rutaDatosConstancia);
 
@@ -132,7 +132,7 @@ class clsAlumnoSolicitudes
     }
 
 
-    public function guardar($tipoFirma, $calificaciones)
+    public function guardar($tipoFirma, $calificaciones) //pendiente
     {
         $tipoFirma = trim((string) $tipoFirma);
         $calificaciones = trim((string) $calificaciones);
@@ -172,15 +172,17 @@ class clsAlumnoSolicitudes
                 $datosConstancia = [];
             }
 
+            /*
             $folio = $this->generarSiguienteFolio(
                 $historial,
                 $datosConstancia
             );
+            */
 
 
             $fechaRegistro = date('d/m/Y');
 
-            $descripcion = 'Julio-Diciembre ' . date("Y") . '. '. $tipoFirma;
+            $descripcion = 'Julio-Diciembre ' . date("Y") . '. ' . $tipoFirma;
 
             if ($calificacionesNormalizadas === 'no') {
                 // stdClass() genera JSONs con {} en vez de []
@@ -191,16 +193,16 @@ class clsAlumnoSolicitudes
             }
 
             $nuevoHistorial = [
-                'Folio' => $folio,
+                //'Id' => $idSolicitud,
                 'FechaRegistro' => $fechaRegistro,
                 'Descripción' => $descripcion,
-                'Estado' => 'Pendiente de Pago'
+                'Estado' => 'Solicitada'
             ];
 
             $nuevaConstancia = $this->obtenerDatosAlumnoBase($datosConstancia);
-            $nuevaConstancia['Folio'] = $folio;
+            //$nuevaConstancia['Folio'] = $folio;
             $nuevaConstancia['FechaEmision'] = 'En proceso...';
-            $nuevaConstancia['Estado'] = 'Pendiente de Pago';
+            $nuevaConstancia['Estado'] = 'Solicitada';
             $nuevaConstancia['Calificaciones'] = $calificacionesJson;
 
             // Se necesitan copias para restaurar los datos si falla alguna edición.
@@ -247,83 +249,63 @@ class clsAlumnoSolicitudes
             }
 
             return [
-                'Folio' => $folio,
+                //'Folio' => $folio,
                 'FechaRegistro' => $fechaRegistro,
                 'Estado' => 'Pendiente de Pago',
-                'mensaje' =>
-                'La solicitud ' .
-                    $folio .
-                    ' fue registrada correctamente.'
+                //'mensaje' => 'La solicitud ' . $folio . ' fue registrada correctamente.'
             ];
-        } catch(Exception $excepcion){}
+        } catch (Exception $excepcion) {
+        }
     }
-    /*
+
     public function cancelar($identificador)
     {
         $identificador = trim((string) $identificador);
 
         if ($identificador === '') {
-            throw new InvalidArgumentException('El folio de la solicitud es obligatorio.');
+            throw new InvalidArgumentException('La referencia a la solicitud es obligatoria.');
         }
 
         try {
             $registros = $this->leer($this->rutaHistorial);
-            $detalleConstancias = $this->leer($this->rutaDatosConstancia);
 
             if (!is_array($registros)) {
                 throw new RuntimeException('El historial de solicitudes no tiene un formato válido.');
             }
 
-            if (!is_array($detalleConstancias)) {
-                throw new RuntimeException('Los datos de la solicitud no tienen un formato válido.');
-            }
-
+            //Inicialización de variables usadas para el manejo de solicitud a cancelar
             $encontrado = false;
             $historialActualizado = [];
-            $detalleActualizado = [];
 
             foreach ($registros as $registro) {
                 if (
                     is_array($registro) &&
-                    isset($registro['Folio']) &&
-                    (string) $registro['Folio'] === $folio
+                    isset($registro['idSolicitud']) &&
+                    (string) $registro['idSolicitud'] === $identificador
                 ) {
                     $encontrado = true;
 
-                    if (!isset($registro['Estado']) || $registro['Estado'] !== 'Pendiente de Pago') {
+                    if (!isset($registro['estatus']) || $registro['estatus'] !== 'Solicitada') {
                         throw new RuntimeException(
                             'La solicitud no puede cancelarse porque su estado actual es: ' .
-                                ($registro['Estado'] ?? 'Desconocido') . '.'
+                                ($registro['estatus'] ?? 'Desconocido') . '.'
                         );
                     }
 
-                    $registro['Estado'] = 'Solicitud Cancelada';
+                    $registro['estatus'] = 'Cancelada';
                 }
                 $historialActualizado[] = $registro;
             }
 
-            foreach ($detalleConstancias as $detalleConstancia) {
-                if (
-                    is_array($detalleConstancia) &&
-                    isset($detalleConstancia['Folio']) &&
-                    (string) $detalleConstancia['Folio'] === $identificador
-                ) {
-                    $detalleConstancia['Estado'] = 'Solicitud Cancelada';
-                }
-                $detalleActualizado[] = $detalleConstancia;
-            }
-
             if (!$encontrado) {
-                throw new RuntimeException('No se encontró la solicitud con el folio indicado.');
+                throw new RuntimeException('No se encontró la solicitud referenciada.');
             }
 
             try {
                 $this->escribir($this->rutaHistorial, array_values($historialActualizado));
-                $this->escribir($this->rutaDatosConstancia, array_values($detalleActualizado));
             } catch (Exception $excepcion) {
                 try {
                     $this->escribir($this->rutaHistorial, $registros);
-                    $this->escribir($this->rutaDatosConstancia, $detalleConstancias);
                 } catch (Exception $rollbackExcepcion) {
                     // Conservar el error original.
                 }
@@ -334,31 +316,27 @@ class clsAlumnoSolicitudes
             }
 
             return [
-                'Folio' => $folio,
                 'mensaje' => 'La solicitud fue cancelada correctamente.'
             ];
-        } catch (Exception $excepcion){}
+        } catch (Exception $excepcion) {
+        }
     }
-*/
+
+    /* pendiente
     private function generarSiguienteFolio(
         $registrosHistorial,
         $registrosConstancia
     ) {
         $numeroMayor = 0;
 
-        /*
-         * ==========================================================
-         * REVISAR HISTORIAL
-         * ==========================================================
-         */
+
         foreach (
             $registrosHistorial
             as $registro
         ) {
 
             if (
-                !is_array($registro) ||
-                !isset($registro['Folio'])
+                !is_array($registro) || !isset($registro['Folio'])
             ) {
                 continue;
             }
@@ -367,11 +345,6 @@ class clsAlumnoSolicitudes
                 (string) $registro['Folio']
             );
 
-            /*
-             * Solamente considerar folios con formato:
-             *
-             * NN/2026D
-             */
             if (
                 preg_match(
                     '/^(\d+)\/2026D$/',
@@ -389,19 +362,14 @@ class clsAlumnoSolicitudes
             }
         }
 
-        /*
-         * ==========================================================
-         * REVISAR DATOS DE CONSTANCIA
-         * ==========================================================
-         */
+
         foreach (
             $registrosConstancia
             as $registro
         ) {
 
             if (
-                !is_array($registro) ||
-                !isset($registro['Folio'])
+                !is_array($registro) || !isset($registro['Folio'])
             ) {
                 continue;
             }
@@ -427,22 +395,8 @@ class clsAlumnoSolicitudes
             }
         }
 
-        /*
-         * Incrementar el número mayor encontrado.
-         */
-        $siguienteNumero =
-            $numeroMayor + 1;
+        $siguienteNumero = $numeroMayor + 1;
 
-        /*
-         * Mantener dos dígitos:
-         *
-         * 01
-         * 02
-         * ...
-         * 09
-         * 10
-         * 11
-         */
         return str_pad(
             (string) $siguienteNumero,
             2,
@@ -450,6 +404,7 @@ class clsAlumnoSolicitudes
             STR_PAD_LEFT
         ) . '/2026D';
     }
+    */
 
     /**
      * Regresa las calificaciones predefinidas.
@@ -757,4 +712,3 @@ class clsAlumnoSolicitudes
         return strtolower($texto);
     }
 }
-?>
