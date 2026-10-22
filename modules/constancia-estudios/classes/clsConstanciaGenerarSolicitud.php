@@ -31,9 +31,7 @@ class clsConstanciaGenerarSolicitud
         error_log("RUTA SOLICITUD: " . $this->rutaSolicitud);
     }
 
-    // ============================================================
     // CATÁLOGOS
-    // ============================================================
     public function estatusValidados() {
         return array_merge($this->listaEstatusSolicitud, $this->listaEstatusConstancia);
     }
@@ -42,9 +40,7 @@ class clsConstanciaGenerarSolicitud
     public function consultarEstatusSolicitud() { return $this->leer($this->rutaEstatusSolicitud); }
     public function consultarObservacion()      { return $this->leer($this->rutaObservacion); }
 
-    // ============================================================
     // CONSULTAS DE ALUMNOS
-    // ============================================================
     public function consultarNumeroCuenta($texto = '') {
         $cuentas = $this->leer($this->rutaNumeroCuenta);
         $alumnos = $this->leer($this->rutaNombreAlumno);
@@ -101,9 +97,7 @@ class clsConstanciaGenerarSolicitud
         return empty($alumno) ? null : $alumno;
     }
 
-    // ============================================================
     // CONSULTAS DE SOLICITUDES Y CONSTANCIAS
-    // ============================================================
     public function consultar($idSolicitud) {
         if ($idSolicitud === null || trim((string)$idSolicitud) === '') return null;
         $solicitudes = $this->leer($this->rutaSolicitud);
@@ -137,9 +131,7 @@ class clsConstanciaGenerarSolicitud
         return null;
     }
 
-    // ============================================================
     // LISTAR — Join de Solicitud + Constancia + Contenido
-    // ============================================================
     public function listar() {
         $solicitudes = $this->leer($this->rutaSolicitud);
         $constancias = $this->leer($this->rutaConstancia);
@@ -260,9 +252,7 @@ class clsConstanciaGenerarSolicitud
             'omitidos'   => $omitidos
         );
     }
-    // ============================================================
     // GUARDAR (crear solicitud nueva)
-    // ============================================================
     public function guardar($datos) {
         if (!isset($datos['NumeroCuenta']) || trim($datos['NumeroCuenta']) === '') {
             return array('ok' => false, 'mensaje' => 'El número de cuenta es obligatorio.');
@@ -305,7 +295,7 @@ class clsConstanciaGenerarSolicitud
             'Instituto'                => isset($datos['Instituto']) ? $datos['Instituto'] : '',
             'Semestre'                 => isset($datos['Semestre']) ? $datos['Semestre'] : '',
             'ProgramaEducativo'        => isset($datos['ProgramaEducativo']) ? $datos['ProgramaEducativo'] : '',
-            'Observaciones'            => isset($datos['Observaciones']) ? $datos['Observaciones'] : array(),
+            'Observaciones'            => isset($datos['Observaciones']) ? (is_string($datos['Observaciones']) ? json_decode($datos['Observaciones'], true) : $datos['Observaciones']) : array(),
         );
         $solicitudes[] = $solicitud;
 
@@ -316,9 +306,7 @@ class clsConstanciaGenerarSolicitud
         return array('ok' => true, 'mensaje' => 'La solicitud se guardó correctamente.', 'datos' => $solicitud);
     }
 
-    // ============================================================
     // ACTUALIZAR
-    // ============================================================
     public function actualizar($datos) {
         if (!isset($datos['id'])) {
             return array('ok' => false, 'mensaje' => 'No se recibió el identificador de la solicitud.');
@@ -346,16 +334,12 @@ class clsConstanciaGenerarSolicitud
         return array('ok' => false, 'mensaje' => 'No se encontró la solicitud.');
     }
 
-    // ============================================================
     // PAGAR
-    // ============================================================
     public function pagar($id) {
         return $this->cambiarEstatusSolicitud($id, 'Pagado', 'La solicitud se marcó como pagada.');
     }
 
-    // ============================================================
     // ELABORAR
-    // ============================================================
     public function elaborar($id) {
         $solicitudes = $this->leer($this->rutaSolicitud);
 
@@ -397,7 +381,7 @@ class clsConstanciaGenerarSolicitud
         );
         $constancias[] = $constancia;
 
-        // 3) Crear Contenido
+        // Crear Contenido
         $contenidos = $this->leer($this->rutaContenido);
         $ultimoIdCont = 0;
         foreach ($contenidos as $c) {
@@ -410,15 +394,15 @@ class clsConstanciaGenerarSolicitud
         $contenido = $this->construirContenido($idContenido, $idConstancia, $solicitud, $folioInfo);
         $contenidos[] = $contenido;
 
-        // 4) Actualizar la Solicitud
+        // Actualizar la Solicitud
         $solicitudes[$indice]['idConstancia'] = $idConstancia;
 
-        // 5) Guardar todo
+        // Guardar todo
         $this->guardarJson($this->rutaConstancia, $constancias);
         $this->guardarJson($this->rutaContenido, $contenidos);
         $this->guardarJson($this->rutaSolicitud, $solicitudes);
 
-        // 6) Si es digital, cadena automática: En firma → Emitida
+        // Si es digital, cadena automática: En firma → Emitida
         $tipoFirma = isset($solicitud['tipoFirma']) ? $solicitud['tipoFirma'] : '';
         $esDigital = ($tipoFirma === 'S');
 
@@ -456,9 +440,7 @@ class clsConstanciaGenerarSolicitud
         return $this->cambiarEstatusConstancia($id, 'Entregado', 'La constancia se entregó.', array('fechaEntrega' => date('Y-m-d')));
     }
 
-    // ============================================================
     // CANCELAR
-    // ============================================================
     public function cancelar($id) {
         $solicitudes = $this->leer($this->rutaSolicitud);
         foreach ($solicitudes as $i => $s) {
@@ -484,9 +466,7 @@ class clsConstanciaGenerarSolicitud
         return array('ok' => false, 'mensaje' => 'No se encontró la solicitud.');
     }
 
-    // ============================================================
     // HELPERS INTERNOS
-    // ============================================================
     private function cambiarEstatusSolicitud($id, $nuevoEstatus, $mensaje) {
         $solicitudes = $this->leer($this->rutaSolicitud);
         foreach ($solicitudes as $i => $s) {
@@ -598,9 +578,7 @@ class clsConstanciaGenerarSolicitud
         return $datos;
     }
 
-    // ============================================================
     // LECTURA / ESCRITURA JSON
-    // ============================================================
     private function leer($ruta) {
         if (!file_exists($ruta)) return array();
         $contenido = file_get_contents($ruta);

@@ -99,6 +99,23 @@ try {
             if (isset($resultado['ok']) && $resultado['ok'] === false) throw new Exception($resultado['mensaje']);
             $respuesta = $resultado;
             break;
+        case 'validarSolicitudActiva':
+            $numeroCuenta = isset($_REQUEST['texto']) ? $_REQUEST['texto'] : '';
+            $solicitudes = $consulta->listar(); 
+            $tieneActiva = false;
+            $estatusActivos = array('Solicitado', 'Pagado');
+            
+            foreach ($solicitudes as $s) {
+                $nc = isset($s['NumeroCuenta']) ? trim((string)$s['NumeroCuenta']) : '';
+                $est = isset($s['EstatusInterno']) ? $s['EstatusInterno'] : '';
+
+                if ($nc === $numeroCuenta && in_array($est, $estatusActivos, true)) {
+                    $tieneActiva = true;
+                    break;
+                }
+            }
+            $respuesta = array('tieneActiva' => $tieneActiva);
+            break;
         default:
             throw new Exception('La acción solicitada no es válida.');
     }

@@ -22,16 +22,18 @@
         var accion = datos.accion || "guardar";
 
         Object.keys(datos).forEach(function (clave) {
-            var valor = datos[clave]; 
-            if (valor && typeof valor === 'object' && typeof valor.length === 'number' && !Array.isArray(valor)) {
-        valor = Array.prototype.slice.call(valor);
-    }
-        if (Array.isArray(valor)) {
-            valor.forEach(function (v) { parametros.append(clave + '[]', v); });
-        } else if (valor !== undefined && valor !== null) {
-            parametros.append(clave, valor);
-        }
-    });
+            var valor = datos[clave];
+            if (valor && typeof valor === "object" && typeof valor.length === "number" && !Array.isArray(valor)) {
+                valor = Array.prototype.slice.call(valor);
+            }
+            if (Array.isArray(valor)) {
+                valor.forEach(function (v) {
+                    parametros.append(clave + "[]", v);
+                });
+            } else if (valor !== undefined && valor !== null) {
+                parametros.append(clave, valor);
+            }
+        });
         parametros.append("accion", accion);
 
         return fetch(endpoint, { method: "POST", body: parametros }).then(function (respuesta) {
@@ -324,15 +326,22 @@
                     '"><i class="bi bi-file-earmark-check"></i> Emitida</button>',
             );
         }
-        if (estatus === "Emitida") {
+        if (estatus === "Emitida" || estatus === "Entregado") {
             botones.push(
-                '<button type="button" class="btn btn-sm btn-outline-success btn-entregar" data-id="' +
+                '<button type="button" class="btn btn-sm btn-outline-primary btn-imprimir" data-id="' +
                     id +
-                    '"><i class="bi bi-box-arrow-right"></i> Entregado</button>',
+                    '"><i class="bi bi-pinter"></i> PDF</button>',
             );
         }
 
-        if (!["Finalizado", "Cancelado"].includes(estatus)) {
+        if (estatus === "Entregado") {
+            botones.push(
+                '<button type="button" class="btn btn-sm btn-success" disabled><i class="bi bi-box-arrow-right"></i> Entregado</button>',
+            );
+            return botones.join(" "); // Retornamos inmediatamente para que NO se agregue el botón de Cancelar
+        }
+
+        if (!["Finalizado", "Cancelado", "Entregado"].includes(estatus)) {
             botones.push(
                 '<button type="button" class="btn btn-sm btn-outline-danger btn-cancelar" data-id="' +
                     id +
@@ -735,12 +744,6 @@
             return;
         }
 
-        // Imprimir no cambia estatus
-        if (accion === "imprimir") {
-            imprimirSeleccionadas();
-            return;
-        }
-
         var cfg = ACCIONES_MASIVAS[accion];
         if (!cfg) return;
         if (accion === "elaborar") {
@@ -761,8 +764,13 @@
 
         abrirModal({
             titulo: cfg.titulo + " seleccionadas",
-            mensaje: "Se intentará pasar " + idsSeleccionados.length + ' solicitud(es) a "' +
-                cfg.estatus + '". ' + "Las que no cumplan con la transición serán omitidas.",
+            mensaje:
+                "Se intentará pasar " +
+                idsSeleccionados.length +
+                ' solicitud(es) a "' +
+                cfg.estatus +
+                '". ' +
+                "Las que no cumplan con la transición serán omitidas.",
             btnTexto: "Sí, " + cfg.titulo.toLowerCase(),
             btnClass: "btn-primary",
             onAceptar: function () {
@@ -785,106 +793,6 @@
                     });
             },
         });
-    }
-    // IMPRIMIR SELECCIONADAS
-    function imprimirSeleccionadas() {
-        if (!idsSeleccionados.length) {
-            mostrarMensaje("No hay solicitudes seleccionadas.", "warning", "mensajeSolicitud");
-            return;
-        }
-        var seleccionadas = todosLosRegistros.filter(function (s) {
-            return idsSeleccionados.indexOf(String(s.id || s.idSolicitud)) !== -1;
-        });
-
-        if (!seleccionadas.length) {
-            mostrarMensaje("No se encontraron los registros seleccionados.", "danger", "mensajeSolicitud");
-            return;
-        }
-
-        var ventana = window.open("", "_blank");
-        if (!ventana) {
-            mostrarMensaje("Permite las ventanas emergentes para imprimir.", "danger", "mensajeSolicitud");
-            return;
-        }
-
-        var html =
-            "" +
-            "<!DOCTYPE html>" +
-            "<html lang='es'>" +
-            "<head>" +
-            "<meta charset='UTF-8'>" +
-            "<title>Constancias seleccionadas</title>" +
-            "<style>" +
-            "  body { font-family: Arial, sans-serif; padding: 20px; }" +
-            "  .constancia { page-break-after: always; padding: 40px 20px; border-bottom: 1px dashed #999; }" +
-            "  .constancia:last-child { page-break-after: auto; border-bottom: none; }" +
-            "  h2 { margin-top: 0; }" +
-            "  .fila { margin: 8px 0; }" +
-            "  .label { font-weight: bold; display: inline-block; width: 180px; }" +
-            "  @media print { .no-print { display: none; } }" +
-            "</style>" +
-            "</head>" +
-            "<body>" +
-            "<div class='no-print' style='margin-bottom:20px;'>" +
-            "  <button onclick='window.print()' style='padding:10px 20px; font-size:16px; cursor:pointer;'>" +
-            "    🖨️ Imprimir" +
-            "  </button>" +
-            "  <span style='margin-left:15px; color:#666;'>" +
-            "    " +
-            seleccionadas.length +
-            " constancia(s) lista(s) para imprimir." +
-            "  </span>" +
-            "</div>";
-
-        seleccionadas.forEach(function (s) {
-            var nombre =
-                s.NombreCompleto ||
-                [s.Nombre, s.ApellidoPaterno, s.ApellidoMaterno].filter(Boolean).join(" ") ||
-                s.nombre ||
-                "";
-
-            html +=
-                "" +
-                "<div class='constancia'>" +
-                "  <h2>Constancia de Estudios</h2>" +
-                "  <div class='fila'><span class='label'>Número de Cuenta:</span>" +
-                escapeHtml(s.NumeroCuenta || "") +
-                "</div>" +
-                "  <div class='fila'><span class='label'>Nombre del Alumno:</span>" +
-                escapeHtml(nombre) +
-                "</div>" +
-                "  <div class='fila'><span class='label'>Ciclo Escolar:</span>" +
-                escapeHtml(s.CicloEscolar || "") +
-                "</div>" +
-                "  <div class='fila'><span class='label'>Instituto:</span>" +
-                escapeHtml(s.Instituto || "") +
-                "</div>" +
-                "  <div class='fila'><span class='label'>Semestre:</span>" +
-                escapeHtml(s.Semestre || "") +
-                "</div>" +
-                "  <div class='fila'><span class='label'>Programa Educativo:</span>" +
-                escapeHtml(s.ProgramaEducativo || "") +
-                "</div>" +
-                "  <div class='fila'><span class='label'>Datos Adicionales:</span>" +
-                escapeHtml(s.DatoAdicional === "S" ? "Sí" : "No") +
-                "</div>" +
-                "  <div class='fila'><span class='label'>Tipo de Firma:</span>" +
-                escapeHtml(s.TipoFirma === "S" ? "Digital (PDF)" : "Autógrafa") +
-                "</div>" +
-                "  <div class='fila'><span class='label'>Calificaciones:</span>" +
-                escapeHtml(s.Calificaciones === "S" ? "Sí" : "No") +
-                "</div>" +
-                "  <div class='fila'><span class='label'>Observación:</span>" +
-                escapeHtml(s.Observacion || "") +
-                "</div>" +
-                "</div>";
-        });
-
-        html += "</body></html>";
-
-        ventana.document.open();
-        ventana.document.write(html);
-        ventana.document.close();
     }
 
     // Cambiar estatus manual (con la lista COMPLETA)
@@ -951,7 +859,6 @@
             barra.style.width = modoEdicion ? ((paso - 1) / 2) * 100 + "%" : (paso / 3) * 100 + "%";
         }
         var btnAnterior = document.getElementById("btnAnterior");
-        var btnSiguiente = document.getElementById("btnSiguiente");
         var btnGuardar = document.getElementById("btnGuardar");
 
         if (btnAnterior) {
@@ -988,8 +895,6 @@
         }
         return true;
     }
-
-    // BUSCAR NÚMERO DE CUENTA
     function pintarNumeroCuenta(texto) {
         consultar("numeroCuenta", texto)
             .then(function (alumnos) {
@@ -1230,10 +1135,49 @@
 
         var btnSiguiente = document.getElementById("btnSiguiente");
         if (btnSiguiente) {
-            btnSiguiente.addEventListener("click", function () {
-                if (validarPaso()) mostrarPaso(Math.min(3, paso + 1));
+            btnSiguiente.addEventListener("click", function (e) {
+                e.preventDefault();
+                limpiarMensaje("mensajeFormulario");
+                mostrarError("errorNumeroCuenta", "");
+
+                if (paso === 1) {
+                    var numero = document.getElementById("NumeroCuenta").value.trim();
+                    if (numero === "") {
+                        mostrarError("errorNumeroCuenta", "Seleccione un alumno primero");
+                        return;
+                    }
+                    btnSiguiente.disabled = true;
+                    var textoOriginal = btnSiguiente.innerHTML;
+                    btnSiguiente.innerHTML =
+                        'Validando... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+                    consultar("validarSolicitudActiva", numero)
+                        .then(function (res) {
+                            btnSiguiente.disabled = false;
+                            btnSiguiente.innerHTML = textoOriginal;
+                            if (res && res.tieneActiva === true) {
+                                mostrarError("errorNumeroCuenta", "El alumno ya tiene una cuenta solicitud activa.");
+                                mostrarMensaje(
+                                    "El alumno cuenta con una solicitud activa",
+                                    "danger",
+                                    "mensajeFormulario",
+                                );
+                                return;
+                            }
+                            mostrarPaso(2);
+                        })
+                        .catch(function (error) {
+                            btnSiguiente.disabled = false;
+                            btnSiguiente.innerHTML = textoOriginal;
+                            mostrarMensaje("Error al validar: " + error.message, "danger", "mensajeFormulario");
+                        });
+                } else if (paso === 2) {
+                    if (validarPaso()) {
+                        mostrarPaso(3);
+                    }
+                }
             });
         }
+
         var btnAnterior = document.getElementById("btnAnterior");
         if (btnAnterior) {
             btnAnterior.addEventListener("click", function () {
@@ -1242,6 +1186,7 @@
         }
         var btnGuardar = document.getElementById("btnGuardar");
         if (btnGuardar) btnGuardar.addEventListener("click", guardarSolicitud);
+
         var form = document.getElementById("formSolicitud");
         if (form) {
             form.addEventListener("submit", function (e) {
@@ -1249,6 +1194,7 @@
                 guardarSolicitud();
             });
         }
+
         var buscar = document.getElementById("buscarNumeroCuenta");
         if (buscar) {
             buscar.addEventListener("input", function () {
@@ -1261,6 +1207,7 @@
                 pintarNumeroCuenta(texto);
             });
         }
+
         var resultados = document.getElementById("resultadosNumeroCuenta");
         if (resultados) {
             resultados.addEventListener("click", function (evento) {
@@ -1268,12 +1215,11 @@
                 if (boton && boton.dataset.numero) seleccionarAlumno(boton);
             });
         }
-        // Escuchar cambios en "¿Desea datos adicionales?"
+
         document.querySelectorAll('input[name="DatoAdicional"]').forEach(function (radio) {
             radio.addEventListener("change", actualizarVisibilidadDatosAdicionales);
         });
 
-        // Observaciones: agregar / eliminar / Enter
         var btnAgregarObservacion = document.getElementById("btnAgregarObservacion");
         if (btnAgregarObservacion) btnAgregarObservacion.addEventListener("click", agregarObservacion);
 
@@ -1429,16 +1375,37 @@
                     toggleSeleccion(chk.dataset.id, marcado);
                 });
             });
-        }
-        var barraMasiva = document.getElementById("barraAccionesMasivas");
-        if (barraMasiva) {
-            barraMasiva.addEventListener("click", function (evento) {
-                var btn = evento.target.closest("[data-accion-masiva]");
-                if (!btn) return;
-                var accion = btn.getAttribute("data-accion-masiva");
-                console.log("Ejecutando acción masiva:", accion, "para IDs:", idsSeleccionados);
-                ejecutarAccionMasiva(btn.dataset.accionMasiva);
-            });
+
+            var barraMasiva = document.getElementById("barraAccionesMasivas");
+            if (barraMasiva) {
+                barraMasiva.addEventListener("click", function (evento) {
+                    var btn = evento.target.closest("[data-accion-masiva]");
+                    if (!btn) return;
+                    var accion = btn.getAttribute("data-accion-masiva");
+
+                    if (accion === "imprimir") {
+                        if (idsSeleccionados.length === 0) {
+                            mostrarMensaje("Selecciona al menos una constancia.", "warning", "mensajeSolicitud");
+                            return;
+                        }
+                        if (idsSeleccionados.length > 1) {
+                            mostrarMensaje(
+                                "Por el momento, solo puedes imprimir una constancia a la vez.",
+                                "warning",
+                                "mensajeSolicitud",
+                            );
+                            return;
+                        }
+                        var idSolicitud = idsSeleccionados[0];
+                        var urlPDF = "?vta=ConstanciaDigital$idSolicitud=" + idSolicitud;
+
+                        window.open(urlPDF, "_blank");
+                        return;
+                    }
+
+                    ejecutarAccionMasiva(accion);
+                });
+            }
         }
 
         var btnLimpiarSel = document.getElementById("btnLimpiarSeleccion");
@@ -1461,6 +1428,14 @@
                         acciones[i][1](btn.dataset.id);
                         return;
                     }
+                    var btnImprimir = evento.target.closest(".btn-imprimir");
+                    if (btnImprimir) {
+                        var idSolicitud = btnImprimir.dataset.id;
+                        var urlPDF = "vta=ConstanciaDigital&idSolicitud=" + idSolicitud;
+
+                        window.open(urlPDF, "_blank");
+                        return;
+                    }
                 }
             });
         }
@@ -1469,16 +1444,17 @@
 
         var btnAgregarCampoDA = document.getElementById("btnAgregarCampoDA");
         if (btnAgregarCampoDA) {
-            btnAgregarCampoDA.addEventListener("click", function() {
-                var html = '<div class="row g-2 mb-2 campo-adicional">' +
+            btnAgregarCampoDA.addEventListener("click", function () {
+                var html =
+                    '<div class="row g-2 mb-2 campo-adicional">' +
                     '<div class="col-md-5"><input type="text" class="form-control da-nombre" placeholder="Ej. Promedio"></div>' +
                     '<div class="col-md-7"><input type="text" class="form-control da-valor" placeholder="Ej. 9.5"></div>' +
-                    '</div>';
-                document.getElementById("listaCamposAdicionales").insertAdjacentHTML('beforeend', html);
+                    "</div>";
+                document.getElementById("listaCamposAdicionales").insertAdjacentHTML("beforeend", html);
             });
         }
     }
-            // --- LÓGICA PARA EL MODAL DE DATOS ADICIONALES ---
+    // --- LÓGICA PARA EL MODAL DE DATOS ADICIONALES ---
     function abrirModalDatosAdicionales(idSolicitud, esMasivo, accionMasiva) {
         document.getElementById("daSolicitudId").value = idSolicitud;
         document.getElementById("daAccionMasiva").value = esMasivo ? "1" : "0";
@@ -1489,12 +1465,15 @@
             msjModal.className = "alert alert-warning d-none";
         }
 
-        
-        var sol = todosLosRegistros.find(function(s) { return String(s.idSolicitud) === String(idSolicitud); });
+        var sol = todosLosRegistros.find(function (s) {
+            return String(s.idSolicitud) === String(idSolicitud);
+        });
         document.getElementById("daNumeroCuenta").textContent = sol ? sol.NumeroCuenta : "";
 
         // Limpiar campos previos
-        document.querySelectorAll(".campo-adicional:not(:first-child)").forEach(function(el) { el.remove(); });
+        document.querySelectorAll(".campo-adicional:not(:first-child)").forEach(function (el) {
+            el.remove();
+        });
         document.querySelector(".da-nombre").value = "";
         document.querySelector(".da-valor").value = "";
 
@@ -1506,65 +1485,67 @@
         var id = document.getElementById("daSolicitudId").value;
         var esMasivo = document.getElementById("daAccionMasiva").value === "1";
         var msjModal = document.getElementById("mensajeModalDA");
-        
+
         var observaciones = [];
-        document.querySelectorAll(".campo-adicional").forEach(function(campo) {
+        document.querySelectorAll(".campo-adicional").forEach(function (campo) {
             var nombre = campo.querySelector(".da-nombre").value.trim();
             var valor = campo.querySelector(".da-valor").value.trim();
             if (nombre && valor) {
                 observaciones.push({ nombre: nombre, valor: valor });
             }
         });
-        
+
         if (observaciones.length === 0) {
             msjModal.textContent = "Debe ingresar al menos un dato adicional.";
-            msjModal.className = "alert alert-warning py-2"; 
+            msjModal.className = "alert alert-warning py-2";
             return;
         }
         msjModal.textContent = "";
         msjModal.className = "alert alert-warning d-none";
-        
+
         // Primero guardamos las observaciones en la solicitud
         solicitar({
             accion: "actualizarObservaciones",
             id: id,
-            Observaciones: JSON.stringify(observaciones)
-        }).then(function() {
-            if (document.activeElement && typeof document.activeElement.blur === "function") {
-                document.activeElement.blur();
-            }
-            // Cerrar modal y recargar datos locales
-            bootstrap.Modal.getInstance(document.getElementById("modalDatosAdicionales")).hide();
-            
-            if (esMasivo) {
-                mostrarMensaje(
-                    "Datos adicionales guardados. Continuando con la elaboración masiva...",
-                    "success",
-                    "mensajeSolicitud",
-                );
-                setTimeout(function () {
-                    ejecutarAccionMasiva("elaborar");
-                }, 1000);
-            } else {
-                solicitar({ accion: "elaborar", id: id })
-                    .then(function () {
-                        mostrarMensaje(
-                            "Datos adicionales guardados y constancia elaborada correctamente.",
-                            "success",
-                            "mensajeSolicitud",
-                        );
-                        cargarSolicitudes();
-                    })
-                    .catch(function (error) {
-                        mostrarMensaje(error.message, "danger", "mensajeSolicitud");
-                    });
-            }
-        }).catch(function(error) {
-            msjModal.textContent = error.message;
-            msjModal.className = "alert alert-danger py-2";
-        });
+            Observaciones: JSON.stringify(observaciones),
+        })
+            .then(function () {
+                if (document.activeElement && typeof document.activeElement.blur === "function") {
+                    document.activeElement.blur();
+                }
+                // Cerrar modal y recargar datos locales
+                bootstrap.Modal.getInstance(document.getElementById("modalDatosAdicionales")).hide();
+
+                if (esMasivo) {
+                    mostrarMensaje(
+                        "Datos adicionales guardados. Continuando con la elaboración masiva...",
+                        "success",
+                        "mensajeSolicitud",
+                    );
+                    setTimeout(function () {
+                        ejecutarAccionMasiva("elaborar");
+                    }, 1000);
+                } else {
+                    solicitar({ accion: "elaborar", id: id })
+                        .then(function () {
+                            mostrarMensaje(
+                                "Datos adicionales guardados y constancia elaborada correctamente.",
+                                "success",
+                                "mensajeSolicitud",
+                            );
+                            cargarSolicitudes();
+                        })
+                        .catch(function (error) {
+                            mostrarMensaje(error.message, "danger", "mensajeSolicitud");
+                        });
+                }
+            })
+            .catch(function (error) {
+                msjModal.textContent = error.message;
+                msjModal.className = "alert alert-danger py-2";
+            });
     }
-    
+
     // ARRANQUE
     document.addEventListener("DOMContentLoaded", function () {
         if (esPantallaFormulario()) iniciarFormulario();
