@@ -2,7 +2,7 @@
     {
         "idConstanciaContenido": "9",
         "idConstancia": "9",
-        "folio": "CE/01/2026",
+        "folio": "CE/01",
         "apellidoPaterno": "García",
         "apellidoMaterno": "León",
         "nombre": "Sergio",
@@ -31,7 +31,7 @@
     {
         "idConstanciaContenido": "2",
         "idConstancia": "2",
-        "folio": "CE/02/2024",
+        "folio": "CE/02",
         "apellidoPaterno": "García",
         "apellidoMaterno": "León",
         "nombre": "Sergio",
@@ -60,7 +60,7 @@
     {
         "idConstanciaContenido": "1",
         "idConstancia": "1",
-        "folio": "CE/01/2024",
+        "folio": "CE/01",
         "apellidoPaterno": "García",
         "apellidoMaterno": "León",
         "nombre": "Sergio",
