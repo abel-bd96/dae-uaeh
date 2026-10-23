@@ -1,0 +1,41 @@
+[
+    {
+        "idSolicitud": "9",
+        "idKardex": "466618",
+        "idProgramaEducativo": "1505",
+        "fechaSolicitud": "2026-10-21",
+        "estatus": "Solicitada",
+        "tipoFirma": "Autógrafa",
+        "cantidadConstancias": "1",
+        "contieneCalificaciones": "N",
+        "informacionAdicional": "N",
+        "idCicloEscolar": "22719",
+        "cicloEscolar": "Julio-Diciembre 2026"
+    },
+    {
+        "idSolicitud": "2",
+        "idKardex": "466618",
+        "idProgramaEducativo": "1505",
+        "fechaSolicitud": "2024-09-04",
+        "estatus": "Finalizada",
+        "tipoFirma": "Autógrafa",
+        "cantidadConstancias": "1",
+        "contieneCalificaciones": "N",
+        "informacionAdicional": "N",
+        "idCicloEscolar": "21648",
+        "cicloEscolar": "Julio-Diciembre 2024"
+    },
+    {
+        "idSolicitud": "1",
+        "idKardex": "466618",
+        "idProgramaEducativo": "1505",
+        "fechaSolicitud": "2024-02-04",
+        "estatus": "Finalizada",
+        "tipoFirma": "Autógrafa",
+        "cantidadConstancias": "1",
+        "contieneCalificaciones": "N",
+        "informacionAdicional": "N",
+        "idCicloEscolar": "21438",
+        "cicloEscolar": "Enero-Junio 2024"
+    }
+]

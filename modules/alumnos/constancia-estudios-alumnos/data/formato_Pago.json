@@ -1,0 +1,11 @@
+[
+    {
+        "idPago": "9",
+        "idSolicitud": "9",
+        "nombreCompletoAlumno": "Sergio García León",
+        "programaEducativo": "Licenciatura en Ciencias Computacionales",
+        "cicloEscolar": "JD 2026",
+        "monto": "$ 150",
+        "fechaLimitePago": "2026/10/21"
+    }
+]
