@@ -325,13 +325,13 @@
         pasosActivos = [1, 2, 3, 4];
 
         if (!texto) {
-            resultados.innerHTML = '<div class="text-muted small">Escribe el nombre completo del ciclo.</div>';
+            resultados.innerHTML = '<div class="text-muted small fs-5">Escribe el nombre completo del ciclo.</div>';
             return;
         }
 
         var version = ++versionBusquedaCiclo;
         boton.disabled = true;
-        resultados.innerHTML = '<div class="text-muted small">Buscando ciclo...</div>';
+        resultados.innerHTML = '<div class="text-muted small fs-5">Buscando ciclo...</div>';
         consultar("ciclos", texto)
             .then(function (ciclos) {
                 if (version !== versionBusquedaCiclo) {
@@ -341,7 +341,7 @@
                     ciclos
                         .map(function (ciclo) {
                             return (
-                                '<button type="button" class="list-group-item list-group-item-action" data-nombre="' +
+                                '<button type="button" class="list-group-item list-group-item-action fs-5" data-nombre="' +
                                 escapeHtml(ciclo.nombre) +
                                 '">' +
                                 escapeHtml(ciclo.nombre) +
@@ -349,11 +349,11 @@
                             );
                         })
                         .join("") ||
-                    '<div class="text-muted small">No se encontró un ciclo con ese nombre exacto.</div>';
+                    '<div class="text-muted small fs-5">No se encontró un ciclo con ese nombre exacto.</div>';
             })
             .catch(function (error) {
                 if (version === versionBusquedaCiclo) {
-                    resultados.innerHTML = '<div class="small text-danger">' + escapeHtml(error.message) + "</div>";
+                    resultados.innerHTML = '<div class="small text-danger fs-5">' + escapeHtml(error.message) + "</div>";
                 }
             })
             .then(function () {
@@ -380,7 +380,7 @@
                             "</span></label>"
                         );
                     })
-                    .join("") || '<div class="text-muted small">No se encontraron programas.</div>';
+                    .join("") || '<div class="text-muted small fs-5">No se encontraron programas.</div>';
         });
     }
 
@@ -483,9 +483,9 @@
     function actualizarResumen() {
         var nombres = planesSeleccionados.length ? planesSeleccionados.join(", ") : "Configuración general";
         document.getElementById("resumenCiclo").innerHTML =
-            "<strong>" +
+            "<strong class='fs-5'>" +
             escapeHtml(document.getElementById("cicloNombre").value) +
-            '</strong><br><span class="small">' +
+            '</strong><br><span class="small fs-5">' +
             escapeHtml(nombres) +
             "</span>";
     }
@@ -501,7 +501,7 @@
         document.getElementById("selectorPlanes").classList.add("d-none");
         document.getElementById("btnSiguiente").disabled = false;
         document.getElementById("resultadosCiclos").innerHTML =
-            '<div class="text-muted small">Escribe el nombre completo del ciclo y selecciona Buscar.</div>';
+            '<div class="text-muted small fs-5">Escribe el nombre completo del ciclo y selecciona Buscar.</div>';
         document.getElementById("ayudaPlanes").textContent =
             "La primera configuración del ciclo es GENERAL y no requiere programas.";
         document.getElementById("errorCiclo").textContent = "";
@@ -513,7 +513,7 @@
         versionBusquedaCiclo++;
         document.getElementById("btnBuscarCiclo").disabled = false;
         document.getElementById("resultadosCiclos").innerHTML =
-            '<div class="text-muted small">Escribe el nombre completo del ciclo y selecciona Buscar.</div>';
+            '<div class="text-muted small fs-5">Escribe el nombre completo del ciclo y selecciona Buscar.</div>';
         pasosActivos = [1, 2, 3, 4];
         document.getElementById("btnSiguiente").disabled = true;
         mostrarPaso(1);
@@ -664,7 +664,7 @@
             document.getElementById("btnSiguiente").disabled = true;
             document.getElementById("selectorPlanes").classList.add("d-none");
             document.getElementById("resultadosCiclos").innerHTML =
-                '<div class="text-muted small">Escribe el nombre completo del ciclo y selecciona Buscar.</div>';
+                '<div class="text-muted small fs-5">Escribe el nombre completo del ciclo y selecciona Buscar.</div>';
             document.getElementById("errorCiclo").textContent = "";
             planesSeleccionados = [];
             tipoCicloCargando = false;
