@@ -44,36 +44,36 @@
                             <span class="login-card__icon" aria-hidden="true">
                                 <i class="bi bi-person-lock"></i>
                             </span>
-                            <p class="login-card__eyebrow mb-2">Acceso al sistema DAE</p>
-                            <h2 id="login-title" class="h3 mb-2">Iniciar sesión</h2>
-                            <p class="text-secondary mb-0">Ingresa tus credenciales para continuar</p>
+                            <p class="login-card__eyebrow mb-2 fs-5">Acceso al sistema DAE</p>
+                            <h2 id="login-title" class="h3 mb-2 fs-2">Iniciar sesión</h2>
+                            <p class="text-secondary mb-0 fs-5">Ingresa tus credenciales para continuar</p>
                         </div>
 
                         <form id="login-form" class="login-form" data-redirect-url="./home.php" novalidate>
                             <div class="mb-3">
-                                <label for="email" class="form-label">Correo electrónico</label>
+                                <label for="email" class="form-label fs-5">Correo electrónico</label>
                                 <div class="input-group">
-                                    <span class="input-group-text" aria-hidden="true"><i class="bi bi-envelope"></i></span>
-                                    <input type="email" class="form-control" id="email" name="email" autocomplete="email" placeholder="nombre@uaeh.edu.mx" required>
+                                    <span class="input-group-text fs-5" aria-hidden="true"><i class="bi bi-envelope"></i></span>
+                                    <input type="email" class="form-control fs-5" id="email" name="email" autocomplete="email" placeholder="nombre@uaeh.edu.mx" required>
                                 </div>
                             </div>
 
                             <div class="mb-3">
-                                <label for="password" class="form-label">Contraseña</label>
+                                <label for="password" class="form-label fs-5">Contraseña</label>
                                 <div class="input-group">
-                                    <span class="input-group-text" aria-hidden="true"><i class="bi bi-lock"></i></span>
-                                    <input type="password" class="form-control" id="password" name="password" autocomplete="current-password" placeholder="Ingresa tu contraseña" required>
+                                    <span class="input-group-text fs-5" aria-hidden="true"><i class="bi bi-lock"></i></span>
+                                    <input type="password" class="form-control fs-5" id="password" name="password" autocomplete="current-password" placeholder="Ingresa tu contraseña" required>
                                     <button class="btn btn-outline-secondary password-toggle" type="button" aria-label="Mostrar contraseña" aria-pressed="false" data-password-toggle>
-                                        <i class="bi bi-eye" aria-hidden="true"></i>
+                                        <i class="bi bi-eye fs-5" aria-hidden="true"></i>
                                     </button>
                                 </div>
                             </div>
 
                             <div class="text-end mb-4">
-                                <a class="login-form__link" href="#recuperar-contrasena" data-recovery-link>¿Olvidaste tu contraseña?</a>
+                                <a class="login-form__link fs-6" href="#recuperar-contrasena" data-recovery-link>¿Olvidaste tu contraseña?</a>
                             </div>
 
-                            <button type="submit" class="btn btn-primary-uaeh w-100">
+                            <button type="submit" class="btn btn-primary-uaeh w-100 fs-5">
                                 <i class="bi bi-box-arrow-in-right me-2" aria-hidden="true"></i>
                                 Iniciar sesión
                             </button>

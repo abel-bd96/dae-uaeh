@@ -9,7 +9,7 @@
 
 				<!-- Inicio -->
 				<li>
-					<a class="sidebar-menu__link" href="../../../home.php">
+					<a class="sidebar-menu__link" href="../../../../home.php">
 						<i class="bi bi-house sidebar-menu__icon" aria-hidden="true"></i>
 						Inicio
 					</a>

@@ -54,12 +54,12 @@
 
                     <!-- Trámites -->
                     <li class="sidebar-menu__group">
-                        <button class="sidebar-menu__link sidebar-menu__trigger" type="button" data-bs-toggle="collapse" data-bs-target="#tramitesMenu" aria-expanded="false" aria-controls="tramitesMenu">
+                        <button class="sidebar-menu__link sidebar-menu__trigger" type="button" data-bs-toggle="collapse" data-bs-target="#tramitesMenu" aria-expanded="true" aria-controls="tramitesMenu">
                             <i class="bi bi-file-earmark-text sidebar-menu__icon" aria-hidden="true"></i>
                             Trámites
                             <i class="bi bi-chevron-down sidebar-menu__caret" aria-hidden="true"></i>
                         </button>
-                        <div class="collapse sidebar-menu__submenu" id="tramitesMenu">
+                        <div class="collapse show sidebar-menu__submenu" id="tramitesMenu">
                             <ul class="list-unstyled mb-0">
                                 <li>
                                     <button class="sidebar-menu__submenu-link sidebar-menu__trigger sidebar-menu__submenu-trigger" type="button" data-bs-toggle="collapse" data-bs-target="#constanciasMenu" aria-expanded="false" aria-controls="constanciasMenu">
@@ -76,7 +76,7 @@
                                                 </a>
                                             </li>
                                             <li>
-                                                <a class="sidebar-menu__submenu-link sidebar-menu__submenu-link--nested" href="./modules/constancia-estudios/views/vtaCiclos.php">
+                                                <a class="sidebar-menu__submenu-link sidebar-menu__submenu-link--nested" href="./modules/dae/constancia-estudios/views/vtaCiclos.php">
                                                     <i class="bi bi-calendar2-week sidebar-menu__submenu-icon" aria-hidden="true"></i>
                                                     Planeación de Ciclos
                                                 </a>
@@ -123,12 +123,12 @@
                 <div class="welcome-panel__icon" aria-hidden="true">
                     <i class="bi bi-building-fill"></i>
                 </div>
-                <p class="welcome-panel__eyebrow mb-2">Dirección de Administración Escolar</p>
-                <h2 id="welcome-title" class="display-6 mb-3">¡Bienvenido al sistema DAE!</h2>
-                <p class="lead text-secondary mb-4">
+                <p class="welcome-panel__eyebrow mb-2 fs-5">Dirección de Administración Escolar</p>
+                <h2 id="welcome-title" class="display-6 mb-3 fs-2">¡Bienvenido al sistema DAE!</h2>
+                <p class="lead text-secondary mb-4 fs-5">
                     Consulta los módulos disponibles desde el menú principal.
                 </p>
-                <a class="btn btn-primary-uaeh" href="#sidebarMenu" data-bs-toggle="offcanvas" aria-controls="sidebarMenu">
+                <a class="btn btn-primary-uaeh fs-5" href="#sidebarMenu" data-bs-toggle="offcanvas" aria-controls="sidebarMenu">
                     <i class="bi bi-grid me-2" aria-hidden="true"></i>
                     Ver módulos
                 </a>
