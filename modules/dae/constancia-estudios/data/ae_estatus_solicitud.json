@@ -1,0 +1,29 @@
+[
+    {
+        "id": 1,
+        "Estatus": "Solicitado"
+    },
+    {
+        "id": 2,
+        "Estatus": "Pagado"
+    },
+    {
+        "id": 3,
+        "Estatus": "Elaboración"
+    },
+    {
+        "id": 4,
+        "Estatus": "Enviado a firma"
+    },
+    {
+        "id": 5,
+        "Estatus": "Emitido"
+    },{
+        "id": 6,
+        "Estatus": "Entregado"
+    },
+    {
+        "id": 7,
+        "Estatus": "Finalizado"
+    }
+]

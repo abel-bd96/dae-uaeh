@@ -17,6 +17,15 @@
         </div>
 </div>
 
+    <!--
+    <div class="input-group mb-3">
+        <input type="search" class="form-control" id="numCuentaBuscado" placeholder="Ingresa número de cuenta a buscar">
+        <button type="button" class="btn btn-primary" id="btnBuscarNumeroCuenta">Buscar</button>
+
+        <div class="col"></div>
+    </div>
+    -->
+
     <div class="card border-0">
         <div class="card-body p-0">
             <div class="table-responsive">
@@ -70,14 +79,9 @@
 
                     <!-- Estatus -->
                     <section>
-                        <h3 class="h6">Seleciona el estatus</h3>
-                        <div class="mb-3">
-                            <label for="Estatus" class="form-label">Estatus</label>
-                            <select id="Estatus" class="form-select" name ="Estatus">
-                                <option value="S">Bloqueado</option>    
-                                <option value="N">Desbloqueado</option>    
-                            </select>
-                            <div id="resultadosEstatus" class="list-group mt-1"></div>
+                        <div>
+                            <input type="form-check-input" type="checkbox" role="switch" id="Estatus" name="Estatus" value="S">
+                            <label class="form-check-label" for="Estatus" id="labelEstatus"> Desbloqueado</label>
                         </div>
                     </section>
                 </div>
