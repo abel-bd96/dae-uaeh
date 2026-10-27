@@ -5,6 +5,13 @@ include './sidebar_constancias.php';
 <main class="container-fluid container-md py-3 py-md-4" id="solicitudNueva">
     <div class="container">
         <div class="row align-items-start g-3">
+            <div class="col-12 col-md-auto text-center text-md-start">
+                <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="var(--primary-color)" class="bi bi-plus-square-fill" viewBox="0 0 16 16" aria-hidden="true">
+                    <path
+                    d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0"/>
+                </svg>
+            </div>
+
             <div class="col-12 col-md">
                 <h1 class="h3 mb-1">
                     Nueva Solicitud de Constancia
@@ -12,9 +19,11 @@ include './sidebar_constancias.php';
                 <h2 class="text-uppercase text-muted small mb-0 text-break">
                     Programa Educativo: Licenciatura en Ciencias Computacionales
                 </h2>
+            </div>
 
-                <hr>
-
+            <hr>
+            
+            <div>
                 <form id="formNuevaConstancia">
                     <div class="mb-3">
                         <div class="row">

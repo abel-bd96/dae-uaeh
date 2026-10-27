@@ -6,8 +6,7 @@ include './sidebar_constancias.php';
     <div class="container">
         <div class="row align-items-start g-3">
             <div class="col-12 col-md-auto text-center text-md-start">
-                <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="var(--primary-color)"
-                    class="bi bi-file-text" viewBox="0 0 16 16" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="var(--primary-color)" class="bi bi-file-text" viewBox="0 0 16 16" aria-hidden="true">
                     <path
                         d="M5 4a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1zm-.5 2.5A.5.5 0 0 1 5 6h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5M5 8a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1z" />
                     <path
@@ -19,10 +18,9 @@ include './sidebar_constancias.php';
                 <h1 class="h3 mb-1">
                     Solicitud de Constancia de Estudios
                 </h1>
-
-                <p class="text-uppercase text-muted small mb-0 text-break">
+                <h2 class="text-uppercase text-muted small mb-0 text-break">
                     Programa Educativo: Licenciatura en Ciencias Computacionales
-                </p>
+                </h2>
             </div>
 
             <div class="col-12 col-md-auto">
@@ -208,5 +206,6 @@ include './sidebar_constancias.php';
         </div>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="../controllers/ajxAlumnoSolicitudes.js"></script>
 <?php include './footer_constancias.php'; ?>

@@ -27,21 +27,16 @@
 							<li>
 								<button class="sidebar-menu__submenu-link sidebar-menu__trigger sidebar-menu__submenu-trigger" type="button" data-bs-toggle="collapse" data-bs-target="#constanciasMenu" aria-expanded="true" aria-controls="constanciasMenu">
 									<i class="bi bi-folder2 sidebar-menu__submenu-icon" aria-hidden="true"></i>
-									Constancias de Estudio
+									Constancias de Estudios Alumno
 									<i class="bi bi-chevron-down sidebar-menu__caret" aria-hidden="true"></i>
 								</button>
 								<div class="collapse show sidebar-menu__nested" id="constanciasMenu">
 									<ul class="list-unstyled mb-0">
+										<!--Nueva Constancia sólo es accesible a través del botón-->
 										<li>
-											<a class="sidebar-menu__submenu-link sidebar-menu__submenu-link--nested" href="#administracion-constancias">
-												<i class="bi bi-file-earmark-check sidebar-menu__submenu-icon" aria-hidden="true"></i>
-												Administración de constancias
-											</a>
-										</li>
-										<li>
-											<a class="sidebar-menu__submenu-link sidebar-menu__submenu-link--nested" href="./vtaCiclos.php">
-												<i class="bi bi-calendar2-week sidebar-menu__submenu-icon" aria-hidden="true"></i>
-												Planeación de Ciclos
+											<a class="sidebar-menu__submenu-link sidebar-menu__submenu-link--nested" href="./vtaAlumnoSolicitudes.php">
+												<i class="bi bi-card-list" aria-hidden="true"></i>
+												Historial de Solicitudes
 											</a>
 										</li>
 									</ul>
