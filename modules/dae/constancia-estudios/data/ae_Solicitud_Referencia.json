@@ -1,0 +1,28 @@
+[
+    {
+        "idSolicitud": 1,
+        "idKardex": "",
+        "idProgramaEducativo": "",
+        "fechaSolicitud": "2026-10-27",
+        "estatus": "Pagado",
+        "tipoFirma": "N",
+        "cantidadConstancias": "1",
+        "contieneCalificaciones": "S",
+        "informacionAdicional": "S",
+        "idCicloEscolar": "",
+        "NumeroCuenta": "250122",
+        "NombreCompleto": "Petronilo Anastacio ",
+        "CicloEscolar": "Julio-Diciembre 2026",
+        "Instituto": "ICEA",
+        "Semestre": "Segundo",
+        "ProgramaEducativo": "Ingeniería en Sistemas",
+        "Observaciones": [
+            {
+                "nombre": "hdrt",
+                "valor": "dfzfnbg"
+            }
+        ],
+        "fechaActualizacion": "2026-10-27",
+        "idConstancia": 1
+    }
+]

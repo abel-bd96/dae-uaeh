@@ -1,9 +1,9 @@
 <?php
 
 header('Content-Type: application/json; charset=utf-8');
-require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'clsConstanciaListaNegra.php';
+require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'clsConstanciaCasoEspecial.php';
 
-$consulta = new clsConstanciaListaNegra();
+$consulta = new clsConstanciaCasoEspecial();
 $accion = $_GET['accion'] ?? $_POST['accion'] ?? 'listar';
 
 try {

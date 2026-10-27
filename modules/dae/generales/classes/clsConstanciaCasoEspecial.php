@@ -1,6 +1,6 @@
 <?php
 
-class clsConstanciaListaNegra
+class clsConstanciaCasoEspecial
 {
     private  $rutaNumeroCuenta;
     private  $rutaEstatus;

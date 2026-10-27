@@ -17,7 +17,7 @@ class clsConstanciaGenerarSolicitud
 
     public function __construct(){
         $directorioDatos          = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR;
-        $directorioDatosExternos  = dirname(__DIR__, 3) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR;
+        $directorioDatosExternos  = dirname(__DIR__, 3) . DIRECTORY_SEPARATOR . 'alumnos' . DIRECTORY_SEPARATOR . 'constancia-estudios-alumnos' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR;
 
         $this->rutaNumeroCuenta    = $directorioDatos . 'vta_siae_numero_cuenta.json';
         $this->rutaNombreAlumno    = $directorioDatos . 'vta_siae_nombre_alumno.json';

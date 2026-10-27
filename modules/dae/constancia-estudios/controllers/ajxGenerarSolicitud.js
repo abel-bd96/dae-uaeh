@@ -1,7 +1,7 @@
 (function () {
     "use strict";
 
-    var endpoint = "../../modules/constancia-estudios/models/modConstanciaGenerarSolicitud.php";
+    var endpoint = "../models/modConstanciaGenerarSolicitud.php";
     var paso = 1;
     var modoEdicion = false;
     var todosLosRegistros = [];

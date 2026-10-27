@@ -1,7 +1,7 @@
 (function () {
     "use strict";
 
-    var endpoint = "../../modules/constancia-estudios/models/modConstanciaListaNegra.php";
+    var endpoint = "../../modules/constancia-estudios/models/modConstanciaCasoEspecial.php";
     var modal;
     var registrosCache = [];
 
@@ -49,7 +49,7 @@
     }
 
     function mostrarMensaje(texto, tipo) {
-        var mensaje = document.getElementById("mensajeListaNegra");
+        var mensaje = document.getElementById("mensajeCasoEspecial");
         mensaje.textContent = texto;
         mensaje.className = "alert alert-" + tipo;
         mensaje.classList.remove("d-none");
@@ -62,21 +62,21 @@
     }
 
     function mostrarMensajeModal(texto, tipo) {
-        var mensaje = document.getElementById("mensajeModalListaNegra");
+        var mensaje = document.getElementById("mensajeModalCasoEspecial");
         mensaje.textContent = texto;
         mensaje.className = "alert alert-" + tipo;
         mensaje.classList.remove("d-none");
     }
 
     function limpiarMensajeModal() {
-        var mensaje = document.getElementById("mensajeModalListaNegra");
+        var mensaje = document.getElementById("mensajeModalCasoEspecial");
         mensaje.textContent = "";
         mensaje.className = "alert d-none";
     }
 
     // Render de la tabla con Toggle Switch
     function renderTabla(registros) {
-        var tbody = document.querySelector("#tablaListaNegra tbody");
+        var tbody = document.querySelector("#tablaCasoEspecial tbody");
         if (!registros || !registros.length) {
             tbody.innerHTML =
                 "<tr>" + '<td colspan="2" class="text-center text-muted py-4">Sin registros.</td>' + "</tr>";
@@ -176,7 +176,7 @@
     // Modal: solo para NUEVOS registros
     // ---------------------------------------------------------------
     function abrirModalNuevo() {
-        document.getElementById("formListaNegra").reset();
+        document.getElementById("formCasoEspecial").reset();
         document.getElementById("NumeroCuenta").value = "";
         document.getElementById("Estatus").checked = false;
         document.getElementById("labelEstatus").textContent = "Desbloqueado";
@@ -190,11 +190,11 @@
     // Inicialización (ÚNICO DOMContentLoaded, al nivel del IIFE)
     // ---------------------------------------------------------------
     document.addEventListener("DOMContentLoaded", function () {
-        modal = new bootstrap.Modal(document.getElementById("modalListaNegra"));
+        modal = new bootstrap.Modal(document.getElementById("modalCasoEspecial"));
         cargarRegistros();
 
         // ---- Cambio de switch en la tabla (actualiza directo al backend) ----
-        document.querySelector("#tablaListaNegra tbody").addEventListener("change", function (e) {
+        document.querySelector("#tablaCasoEspecial tbody").addEventListener("change", function (e) {
             var input = e.target.closest(".switch-estatus");
             if (!input) return;
 
@@ -225,17 +225,17 @@
         });
 
         // ---- Botón Nuevo ----
-        document.getElementById("btnNuevoListaNegra").addEventListener("click", function () {
+        document.getElementById("btnNuevoCasoEspecial").addEventListener("click", function () {
             abrirModalNuevo();
         });
 
         // ---- Buscador en vivo (ya no es prompt) ----
-        document.getElementById("buscarListaNegra").addEventListener("input", function () {
+        document.getElementById("buscarCasoEspecial").addEventListener("input", function () {
             filtrarTabla(this.value);
         });
 
         document.getElementById("btnLimpiarBusqueda").addEventListener("click", function () {
-            document.getElementById("buscarListaNegra").value = "";
+            document.getElementById("buscarCasoEspecial").value = "";
             filtrarTabla("");
         });
 
@@ -264,7 +264,7 @@
         });
 
         // ---- Submit del modal (solo guardar nuevos) ----
-        document.getElementById("formListaNegra").addEventListener("submit", function (e) {
+        document.getElementById("formCasoEspecial").addEventListener("submit", function (e) {
             e.preventDefault();
 
             var datos = {

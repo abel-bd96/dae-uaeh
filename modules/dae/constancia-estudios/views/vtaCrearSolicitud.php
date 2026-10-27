@@ -1,3 +1,7 @@
+<?php
+include './header_constancias.php';
+include './sidebar_constancias.php';
+?>
 <main class="container py-4" id="constanciaCrearSolicitud">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -5,7 +9,7 @@
             <p class="text-uppercase text-muted small mb-1">Emisión de constancias</p>
             <h1 class="h3 mb-0" id="tituloFormularioSolicitud">Nueva Solicitud</h1>
         </div>
-        <a href="?vta=index" class="btn btn-outline-secondary" id="btnRegresarListado">
+        <a href="./vtaGenerarSolicitud.php" class="btn btn-outline-secondary" id="btnRegresarListado">
             <i class="bi bi-arrow-left"></i> Regresar
         </a>
     </div>
@@ -140,3 +144,5 @@
     </div>
 
 </main>
+<script src="../controllers/ajxGenerarSolicitud.js"></script>
+<?php include './footer_constancias.php'; ?>
