@@ -1,3 +1,7 @@
+<?php
+include './header_constancias.php';
+include './sidebar_constancias.php';
+?>
 <main class="container-fluid container-md py-3 py-md-4" id="solicitudesConstancia">
     <div class="container">
         <div class="row align-items-start g-3">
@@ -22,7 +26,7 @@
             </div>
 
             <div class="col-12 col-md-auto">
-                <a id="btnSolicitarConstancia" class="btn btn-primary w-100" href="http://localhost:8080/dae-uaeh/public/views/index.php?vta=solicitudNueva" role="button">
+                <a id="btnSolicitarConstancia" class="btn btn-primary w-100" href="./vtaSolicitudNueva.php" role="button">
                     <i class="bi bi-plus-lg"></i> Trámite Nuevo
                 </a>
             </div>
@@ -193,10 +197,10 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" id="btnCancelar" data-bs-dismiss="modal">Cerrar</button>
                     <!--Se abre en una pestaña nueva para asegurar que genere el PDF y produzca la descarga -->
-                    <a class="btn btn-primary d-none" id="btnFormatoPago" href="http://localhost:8080/dae-uaeh/modules/constancia-estudios-alumnos/models/modFormatoPago.php" target="_blank" rel="noopener noreferrer" role="button">
+                    <a class="btn btn-primary d-none" id="btnFormatoPago" href="../models/modFormatoPago.php" target="_blank" rel="noopener noreferrer" role="button">
                         <i class="bi bi-cash-coin"></i> Descargar Formato de Pago
                     </a>
-                    <a class="btn btn-success d-none" id="btnConstanciaDigital" href="http://localhost:8080/dae-uaeh/modules/constancia-estudios-alumnos/models/modConstanciaDigital.php" target="_blank" rel="noopener noreferrer" role="button">
+                    <a class="btn btn-success d-none" id="btnConstanciaDigital" href="../models/modConstanciaDigital.php" target="_blank" rel="noopener noreferrer" role="button">
                         <i class="bi bi-file-earmark-arrow-down-fill"></i> Descargar Constancia Digital
                     </a>
                 </div>
@@ -204,3 +208,5 @@
         </div>
     </div>
 </div>
+<script src="../controllers/ajxAlumnoSolicitudes.js"></script>
+<?php include './footer_constancias.php'; ?>

@@ -1,6 +1,8 @@
 (function () {
     "use strict";
 
+    //¿Endpoint?
+    
     var enviando = false;
 
     function escapeHtml(texto) {

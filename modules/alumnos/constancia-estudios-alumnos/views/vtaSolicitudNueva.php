@@ -1,3 +1,7 @@
+<?php
+include './header_constancias.php';
+include './sidebar_constancias.php';
+?>
 <main class="container-fluid container-md py-3 py-md-4" id="solicitudNueva">
     <div class="container">
         <div class="row align-items-start g-3">
@@ -116,3 +120,5 @@
         </div>
     </div>
 </main>
+<script src="../controllers/ajxSolicitudNueva.js"></script>
+<?php include './footer_constancias.php'; ?>

@@ -1,5 +1,5 @@
 <?php
-$data = file_get_contents(dirname(__DIR__, 3) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'ae_Constancia_Contenido.json');
+$data = file_get_contents(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'ae_Constancia_Contenido.json');
 
 $constancia = json_decode($data, true);
 

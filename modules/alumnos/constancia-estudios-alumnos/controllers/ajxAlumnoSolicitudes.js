@@ -1,7 +1,7 @@
 (function () {
     "use strict";
 
-    var endpoint = "../../modules/constancia-estudios-alumnos/models/modAlumnoSolicitudes.php";
+    var endpoint = "../models/modAlumnoSolicitudes.php";
     var modal;
 
     function solicitar(datos) {
