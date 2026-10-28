@@ -4,7 +4,7 @@
         "idKardex": "466618",
         "idProgramaEducativo": "1505",
         "fechaSolicitud": "2026-10-21",
-        "estatus": "Solicitada",
+        "estatus": "Cancelado",
         "tipoFirma": "Autógrafa",
         "cantidadConstancias": "1",
         "contieneCalificaciones": "N",
@@ -37,5 +37,43 @@
         "informacionAdicional": "N",
         "idCicloEscolar": "21438",
         "cicloEscolar": "Enero-Junio 2024"
+    },
+    {
+        "idSolicitud": 10,
+        "idKardex": "",
+        "idProgramaEducativo": "",
+        "fechaSolicitud": "2026-10-27",
+        "estatus": "Pagado",
+        "tipoFirma": "N",
+        "cantidadConstancias": "1",
+        "contieneCalificaciones": "S",
+        "informacionAdicional": "S",
+        "idCicloEscolar": "",
+        "NumeroCuenta": "250122",
+        "NombreCompleto": "Petronilo Anastacio ",
+        "CicloEscolar": "Julio-Diciembre 2026",
+        "Instituto": "ICEA",
+        "Semestre": "Segundo",
+        "ProgramaEducativo": "Ingeniería en Sistemas",
+        "Observaciones": [
+            {
+                "nombre": "GARG<",
+                "valor": "gbzf bzgf"
+            }
+        ],
+        "fechaActualizacion": "2026-10-27",
+        "idConstancia": 9
+    },
+    {
+        "idSolicitud": 11,
+        "idKardex": "",
+        "idProgramaEducativo": "",
+        "fechaSolicitud": "2026-10-28",
+        "estatus": "Solicitado",
+        "tipoFirma": "N",
+        "cantidadConstancias": "1",
+        "contieneCalificaciones": "S",
+        "informacionAdicional": "S",
+        "idCicloEscolar": ""
     }
 ]

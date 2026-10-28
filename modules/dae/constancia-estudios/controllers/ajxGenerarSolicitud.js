@@ -896,6 +896,13 @@
         return true;
     }
     function pintarNumeroCuenta(texto) {
+        var contenedor = document.getElementById("listaNumeroCuenta");
+
+        if (!contenedor) {
+            console.error("No se encontró el contenedor listaNumeroCuenta.");
+            return;
+        }
+
         consultar("numeroCuenta", texto)
             .then(function (alumnos) {
                 var resultados = document.getElementById("resultadosNumeroCuenta");
@@ -965,6 +972,7 @@
 
     function seleccionarAlumno(elemento) {
         var campos = {
+            idKardex: datos.kardex || "",
             CicloEscolar: elemento.dataset.cicloEscolar || "",
             NumeroCuenta: elemento.dataset.numero || "",
             NombreCompleto: elemento.dataset.nombreCompleto || "",
@@ -986,6 +994,34 @@
         if (resultados) resultados.innerHTML = "";
         mostrarError("errorNumeroCuenta", "");
     }
+    
+function validarSolicitudActiva(idKardex) {
+    if (!idKardex) {
+        return Promise.reject(new Error("No se recibió el Kardex del alumno seleccionado."));
+    }
+
+    var url = endpoint + "?accion=validarSolicitudActiva" + "&idKardex=" + encodeURIComponent(idKardex);
+
+    return fetch(url).then(function (respuesta) {
+        return respuesta.text().then(function (contenido) {
+            var cuerpo;
+
+            try {
+                cuerpo = JSON.parse(contenido);
+            } catch (error) {
+                console.error("Respuesta NO es JSON (validarSolicitudActiva):", contenido);
+                throw new Error("El servidor no devolvió JSON válido al validar.");
+            }
+
+            if (!respuesta.ok || !cuerpo.ok) {
+                throw new Error(cuerpo.mensaje || "No fue posible validar la solicitud.");
+            }
+
+            return cuerpo.datos;
+        });
+    });
+}
+
 
     //agregar las observaciones
     function renderObservaciones() {
@@ -1058,9 +1094,11 @@
         var datoAdicional = document.querySelector('input[name="DatoAdicional"]:checked');
         var tipoFirma = document.querySelector('input[name="TipoFirma"]:checked');
         var calificaciones = document.querySelector('input[name="Calificaciones"]:checked');
+        var campoKardex = document.getElementById("idKardex");
         return {
             accion: modoEdicion ? "actualizar" : "guardar",
             id: document.getElementById("solicitudId").value,
+            idKardex: campoKardex ? campoKardex.value : "",
             CicloEscolar: document.getElementById("CicloEscolar").value,
             NumeroCuenta: document.getElementById("NumeroCuenta").value,
             NombreCompleto: document.getElementById("NombreCompleto").value,
@@ -1134,122 +1172,73 @@
         var id = params.get("id");
 
         var btnSiguiente = document.getElementById("btnSiguiente");
-        if (btnSiguiente) {
-            btnSiguiente.addEventListener("click", function (e) {
-                e.preventDefault();
-                limpiarMensaje("mensajeFormulario");
-                mostrarError("errorNumeroCuenta", "");
 
-                if (paso === 1) {
-                    var numero = document.getElementById("NumeroCuenta").value.trim();
-                    if (numero === "") {
-                        mostrarError("errorNumeroCuenta", "Seleccione un alumno primero");
+    if (btnSiguiente) {
+        btnSiguiente.addEventListener("click", function (evento) {
+        evento.preventDefault();
+
+        if (paso === 1) {
+            var campoKardex = document.getElementById("idKardex");
+            var idKardex = campoKardex
+                ? campoKardex.value.trim()
+                : "";
+
+            if (!idKardex) {
+                mostrarError(
+                    "errorNumeroCuenta",
+                    "Seleccione al alumno y su programa educativo antes de continuar."
+                );
+                return;
+            }
+
+            btnSiguiente.disabled = true;
+
+            var textoOriginal = btnSiguiente.innerHTML;
+
+            btnSiguiente.innerHTML =
+                'Validando... <span class="spinner-border spinner-border-sm" ' +
+                'role="status" aria-hidden="true"></span>';
+
+            validarSolicitudActiva(idKardex)
+                .then(function (res) {
+                    if (res && res.tieneActiva === true) {
+                        mostrarError(
+                            "errorNumeroCuenta",
+                            res.mensaje ||
+                            "El alumno ya tiene una solicitud activa."
+                        );
+
+                        mostrarMensaje(
+                            res.mensaje ||
+                            "El alumno cuenta con una solicitud activa.",
+                            "danger",
+                            "mensajeFormulario"
+                        );
+
                         return;
                     }
-                    btnSiguiente.disabled = true;
-                    var textoOriginal = btnSiguiente.innerHTML;
-                    btnSiguiente.innerHTML =
-                        'Validando... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
-                    consultar("validarSolicitudActiva", numero)
-                        .then(function (res) {
-                            btnSiguiente.disabled = false;
-                            btnSiguiente.innerHTML = textoOriginal;
-                            if (res && res.tieneActiva === true) {
-                                mostrarError("errorNumeroCuenta", "El alumno ya tiene una cuenta solicitud activa.");
-                                mostrarMensaje(
-                                    "El alumno cuenta con una solicitud activa",
-                                    "danger",
-                                    "mensajeFormulario",
-                                );
-                                return;
-                            }
-                            mostrarPaso(2);
-                        })
-                        .catch(function (error) {
-                            btnSiguiente.disabled = false;
-                            btnSiguiente.innerHTML = textoOriginal;
-                            mostrarMensaje("Error al validar: " + error.message, "danger", "mensajeFormulario");
-                        });
-                } else if (paso === 2) {
-                    if (validarPaso()) {
-                        mostrarPaso(3);
-                    }
-                }
-            });
+
+                    mostrarPaso(2);
+                })
+                .catch(function (error) {
+                    mostrarMensaje(
+                        "Error al validar: " + error.message,
+                        "danger",
+                        "mensajeFormulario"
+                    );
+                })
+                .finally(function () {
+                    btnSiguiente.disabled = false;
+                    btnSiguiente.innerHTML = textoOriginal;
+                });
+
+        } else if (paso === 2) {
+            if (validarPaso()) {
+                mostrarPaso(3);
+            }
         }
-
-        var btnAnterior = document.getElementById("btnAnterior");
-        if (btnAnterior) {
-            btnAnterior.addEventListener("click", function () {
-                mostrarPaso(Math.max(1, paso - 1));
-            });
-        }
-        var btnGuardar = document.getElementById("btnGuardar");
-        if (btnGuardar) btnGuardar.addEventListener("click", guardarSolicitud);
-
-        var form = document.getElementById("formSolicitud");
-        if (form) {
-            form.addEventListener("submit", function (e) {
-                e.preventDefault();
-                guardarSolicitud();
-            });
-        }
-
-        var buscar = document.getElementById("buscarNumeroCuenta");
-        if (buscar) {
-            buscar.addEventListener("input", function () {
-                var texto = this.value.trim();
-                if (texto.length < 6) {
-                    var resultados = document.getElementById("resultadosNumeroCuenta");
-                    if (resultados) resultados.innerHTML = "";
-                    return;
-                }
-                pintarNumeroCuenta(texto);
-            });
-        }
-
-        var resultados = document.getElementById("resultadosNumeroCuenta");
-        if (resultados) {
-            resultados.addEventListener("click", function (evento) {
-                var boton = evento.target.closest("button");
-                if (boton && boton.dataset.numero) seleccionarAlumno(boton);
-            });
-        }
-
-        document.querySelectorAll('input[name="DatoAdicional"]').forEach(function (radio) {
-            radio.addEventListener("change", actualizarVisibilidadDatosAdicionales);
-        });
-
-        var btnAgregarObservacion = document.getElementById("btnAgregarObservacion");
-        if (btnAgregarObservacion) btnAgregarObservacion.addEventListener("click", agregarObservacion);
-
-        var inputObsNombre = document.getElementById("observacionNombre");
-        var inputObsValor = document.getElementById("observacionValor");
-        [inputObsNombre, inputObsValor].forEach(function (el) {
-            if (!el) return;
-            el.addEventListener("keydown", function (e) {
-                if (e.key === "Enter") {
-                    e.preventDefault();
-                    agregarObservacion();
-                }
-            });
-        });
-
-        var listaObservaciones = document.getElementById("listaObservaciones");
-        if (listaObservaciones) {
-            listaObservaciones.addEventListener("click", function (e) {
-                var btn = e.target.closest(".btn-eliminar-observacion");
-                if (!btn) return;
-                observaciones.splice(Number(btn.dataset.index), 1);
-                renderObservaciones();
-            });
-        }
-
-        renderObservaciones();
-
-        if (id) precargarSolicitud(id);
-        else mostrarPaso(1);
-    }
+    });
+}}
 
     function precargarSolicitud(id) {
         modoEdicion = true;
@@ -1374,7 +1363,7 @@
                     chk.checked = marcado;
                     toggleSeleccion(chk.dataset.id, marcado);
                 });
-            });
+            });}
 
             var barraMasiva = document.getElementById("barraAccionesMasivas");
             if (barraMasiva) {
@@ -1406,7 +1395,7 @@
                     ejecutarAccionMasiva(accion);
                 });
             }
-        }
+        
 
         var btnLimpiarSel = document.getElementById("btnLimpiarSeleccion");
         if (btnLimpiarSel) btnLimpiarSel.addEventListener("click", limpiarSeleccion);

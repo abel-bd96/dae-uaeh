@@ -100,21 +100,21 @@ try {
             $respuesta = $resultado;
             break;
         case 'validarSolicitudActiva':
-            $numeroCuenta = isset($_REQUEST['texto']) ? $_REQUEST['texto'] : '';
-            $solicitudes = $consulta->listar(); 
-            $tieneActiva = false;
-            $estatusActivos = array('Solicitado', 'Pagado');
-            
-            foreach ($solicitudes as $s) {
-                $nc = isset($s['NumeroCuenta']) ? trim((string)$s['NumeroCuenta']) : '';
-                $est = isset($s['EstatusInterno']) ? $s['EstatusInterno'] : '';
-
-                if ($nc === $numeroCuenta && in_array($est, $estatusActivos, true)) {
-                    $tieneActiva = true;
-                    break;
-                }
+            $idKardex = isset($_REQUEST['idKardex']) ? trim((string) $_REQUEST['idKardex']) : '';
+            if($idKardex === ''){
+                throw new Exception(
+                    'No se encontro Kardex'
+                );
             }
-            $respuesta = array('tieneActiva' => $tieneActiva);
+            $resultado = $consulta->validarSolicituActivaPorKardex($idKardex);
+            if (isset($resultado['ok']) && $resultado['ok'] === false) {
+                throw new Exception(
+                    isset($resultado['mensaje'])
+                        ? $resultado['mensaje']
+                        : 'No fue posible validar la solicitud.'
+                );
+            }
+            $respuesta = $resultado;
             break;
         default:
             throw new Exception('La acción solicitada no es válida.');
