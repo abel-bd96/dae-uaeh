@@ -1,7 +1,7 @@
 (function () {
     ("use strict");
 
-    //Funciones derivadas del objeto GLOBAL window
+    //Funciones derivadas del objeto GLOBAL window. Utilizadas tanto por ajxAlumnoSolicitudes y ajxSolicitudNueva 
 
     window.mostrarMensaje = function (texto, tipo) {
         var configuracion = {
@@ -33,6 +33,12 @@
 
         Swal.fire(configuracion);
     };
+
+    window.escapeHtml = function (texto) {
+        var div = document.createElement("div");
+        div.textContent = texto === null || texto === undefined ? "" : String(texto);
+        return div.innerHTML;
+    }
 
     window.solicitar = function (datos, endpoint) {
         var parametros = new URLSearchParams();

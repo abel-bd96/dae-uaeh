@@ -5,12 +5,6 @@
     
     var enviando = false;
 
-    function escapeHtml(texto) {
-        var div = document.createElement("div");
-        div.textContent = texto === null || texto === undefined ? "" : String(texto);
-        return div.innerHTML;
-    }
-
     function mostrarcontenedorTablaDatos() {
         var tipoFirmaSeleccionado = document.querySelector('input[name="tipoFirma"]:checked');
         var calificacionesSeleccionado = document.querySelector('input[name="calificaciones"]:checked');

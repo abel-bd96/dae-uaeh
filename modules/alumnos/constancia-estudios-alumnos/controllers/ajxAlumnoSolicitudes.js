@@ -3,7 +3,7 @@
 
     var endpoint = "../models/modAlumnoSolicitudes.php";
     var modal;
-
+    
     //Trae los datos que llenarán el modal
     function consultar(accion, parametros) {
         var valores = new URLSearchParams();

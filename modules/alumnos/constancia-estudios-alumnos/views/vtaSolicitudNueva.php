@@ -130,6 +130,9 @@ include './sidebar_constancias.php';
     </div>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="../controllers/ajxMensaje&Datos.js" window.endpointSolicitudes="../modAlumnoSolicitudes.php"></script>
+<script src="../controllers/ajxMensaje&Datos.js"></script>
+<script>
+    window.endpointSolicitudes = "../models/modAlumnoSolicitudes.php";
+</script>
 <script src=" ../controllers/ajxSolicitudNueva.js"></script>
 <?php include './footer_constancias.php'; ?>
