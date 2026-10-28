@@ -195,7 +195,7 @@ include './sidebar_constancias.php';
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" id="btnCancelar" data-bs-dismiss="modal">Cerrar</button>
                     <!--Se abre en una pestaña nueva para asegurar que genere el PDF y produzca la descarga -->
-                    <a class="btn btn-primary d-none" id="btnFormatoPago" href="../models/modFormatoPago.php" target="_blank" rel="noopener noreferrer" role="button">
+                    <a class="btn btn-primary d-none" id="btnFormatoPago" name="DescargarFPago" href="../models/modFormatoPago.php" target="_blank" rel="noopener noreferrer" role="button">
                         <i class="bi bi-cash-coin"></i> Descargar Formato de Pago
                     </a>
                     <a class="btn btn-success d-none" id="btnConstanciaDigital" href="../models/modConstanciaDigital.php" target="_blank" rel="noopener noreferrer" role="button">
@@ -207,5 +207,6 @@ include './sidebar_constancias.php';
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="../controllers/ajxMensaje&Datos.js" window.endpointSolicitudes="../modAlumnoSolicitudes.php" ;></script>
 <script src="../controllers/ajxAlumnoSolicitudes.js"></script>
 <?php include './footer_constancias.php'; ?>

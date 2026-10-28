@@ -31,10 +31,10 @@ if (!empty($constancia)) {
         $txtMensajePredeterminado = '<div style="text-align: left"> <b> A quien corresponda: Con fundamento en lo estipulado por la UAEH, se hace constar la siguiente información: </b> </div>';
         $pdf->writeHTMLCell(860, '', 10, 68, $txtMensajePredeterminado, 0, 0, false, true, 'J', false);
 
-        $txtApellidoPaterno = '<div style="text-align: justify"> Apellido Paterno: ' . $constancias['apellidoPaterno'] . '</div>';
+        $txtApellidoPaterno = '<div style="text-align: justify"> Primer Apellido: ' . $constancias['apellidoPaterno'] . '</div>';
         $pdf->writeHTMLCell(130, '', 10, 78, $txtApellidoPaterno, 0, 1, false, true, 'J', false);
 
-        $txtApellidoMaterno = '<div style="text-align: justify"> Apellido Materno: ' . $constancias['apellidoMaterno'] . '</div>';
+        $txtApellidoMaterno = '<div style="text-align: justify"> Segundo Apellido: ' . $constancias['apellidoMaterno'] . '</div>';
         $pdf->writeHTMLCell(130, '', 10, 84, $txtApellidoMaterno, 0, 1, false, true, 'J', false);
 
         $txtAlumnoNombre = '<div style="text-align: justify"> Nombre: ' . $constancias['nombre'] . '</div>';

@@ -1,7 +1,7 @@
 (function () {
     "use strict";
 
-    //¿Endpoint?
+    var endpoint = "../models/modAlumnoSolicitudes.php";
     
     var enviando = false;
 
@@ -27,47 +27,13 @@
         }
     }
 
-    //Se utilizan los datos enviados
-    function solicitar(datos) {
-        var parametros = new URLSearchParams();
-
-        Object.keys(datos).forEach(function (clave) {
-            parametros.append(clave, datos[clave] === null || datos[clave] === undefined ? "" : datos[clave]);
-        });
-
-        return fetch("modAlumnoSolicitudes.php", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-                "X-Requested-With": "XMLHttpRequest",
-            },
-            body: parametros.toString(),
-        }).then(function (respuesta) {
-            return respuesta.text().then(function (texto) {
-                var datosRespuesta;
-
-                try {
-                    datosRespuesta = JSON.parse(texto);
-                } catch (error) {
-                    throw new Error("El servidor devolvió una respuesta no válida.");
-                }
-
-                if (!respuesta.ok || !datosRespuesta.ok) {
-                    throw new Error(datosRespuesta.mensaje || "No fue posible procesar la solicitud.");
-                }
-
-                return datosRespuesta.datos;
-            });
-        });
-    }
-
-    //Es necesaria esta función para evitar mostrar datos desactualizados
+    //Se asegura de que el historial de solicitudes en ajxAlumnoSolicitudes muestre la solicitud nueva
     function actualizarHistorial() {
         if (typeof window.cargarRegistros === "function") {
             window.cargarRegistros();
         }
     }
-    /*
+    
     function cargarDatosCorroborar() {
         solicitar({ accion: "mostrarDatosPersonales" })
             .then(function (datos) {
@@ -97,19 +63,12 @@
                 document.getElementById("promedio").textContent = datos.Promedio || "";
             })
             .catch(function (e) {
-                Swal.fire({
-                    title: "Error",
-                    text: "No fue posible mostrar tus datos.",
-                    icon: "error",
-                    confirmButtonText: "Aceptar",
-                });
+                mostrarMensaje(e.message || "No fue posible cargar tus datos.", "error");
             });
         }
-            */
 
     function guardarNuevaConstancia() {
-        // Evita cambios simultáneos o que se produzcan errores
-        // si se "traba" la página
+        // Evita cambios simultáneos o que se produzcan errores si se "traba" la página
         if (enviando) {
             return;
         }
@@ -117,12 +76,7 @@
         var formulario = document.getElementById("formNuevaConstancia");
 
         if (!formulario) {
-            Swal.fire({
-                title: "Error",
-                text: "No se encontró el formulario de nueva constancia.",
-                icon: "error",
-                confirmButtonText: "Aceptar",
-            });
+            mostrarMensaje("No se encuentra disponible este formulario.", "error");
             return;
         }
 
@@ -131,12 +85,7 @@
         var calificacionesSeleccionado = formulario.querySelector('input[name="calificaciones"]:checked');
 
         if (!tipoFirmaSeleccionado) {
-            Swal.fire({
-                title: "Falta información",
-                text: "Selecciona el tipo de firma de la constancia.",
-                icon: "warning",
-                confirmButtonText: "Aceptar",
-            });
+            mostrarMensaje("Debes seleccionar el tipo de firma de la constancia.", "warning");
             return;
         }
 
@@ -210,19 +159,14 @@
                             "<strong>Folio:</strong> " +
                             escapeHtml(respuesta.Folio || "") +
                             "<br><strong>Estado:</strong> " +
-                            escapeHtml(respuesta.Estado || "Pendiente de Pago"),
+                            escapeHtml(respuesta.Estado || "Solicitada"),
                         icon: "success",
                         confirmButtonColor: "#28a745",
                         confirmButtonText: "Aceptar",
                     });
                 })
-                .catch(function (error) {
-                    Swal.fire({
-                        title: "No fue posible generar la solicitud",
-                        text: error.message || "Ocurrió un error al guardar la solicitud.",
-                        icon: "error",
-                        confirmButtonText: "Aceptar",
-                    });
+                .catch(function (e) {
+                    mostrarMensaje(e.message || "Ocurrió un error al guardar la solicitud.", "error");
                 })
                 .finally(function () {
                     // Si todo sale bien o ocurre un error,
@@ -239,7 +183,7 @@
         });
 
         mostrarcontenedorTablaDatos();
-        //cargarDatosCorroborar();
+        cargarDatosCorroborar();
 
         var formularioNuevaConstancia = document.getElementById("formNuevaConstancia");
 

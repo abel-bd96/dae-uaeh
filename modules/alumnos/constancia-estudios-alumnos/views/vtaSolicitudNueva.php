@@ -8,7 +8,7 @@ include './sidebar_constancias.php';
             <div class="col-12 col-md-auto text-center text-md-start">
                 <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="var(--primary-color)" class="bi bi-plus-square-fill" viewBox="0 0 16 16" aria-hidden="true">
                     <path
-                    d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0"/>
+                        d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0" />
                 </svg>
             </div>
 
@@ -22,7 +22,7 @@ include './sidebar_constancias.php';
             </div>
 
             <hr>
-            
+
             <div>
                 <form id="formNuevaConstancia">
                     <div class="mb-3">
@@ -80,11 +80,11 @@ include './sidebar_constancias.php';
                                     <td id="nombreAlumno"> </td>
                                 </tr>
                                 <tr>
-                                    <th scope="row" class="mark">Apellido Paterno</th>
+                                    <th scope="row" class="mark">Primer Apellido</th>
                                     <td id="apellidoPaterno"> </td>
                                 </tr>
                                 <tr>
-                                    <th scope="row" class="mark">Apellido Materno</th>
+                                    <th scope="row" class="mark">Segundo Apellido</th>
                                     <td id="apellidoMaterno"> </td>
                                 </tr>
                                 <tr>
@@ -129,5 +129,7 @@ include './sidebar_constancias.php';
         </div>
     </div>
 </main>
-<script src="../controllers/ajxSolicitudNueva.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="../controllers/ajxMensaje&Datos.js" window.endpointSolicitudes="../modAlumnoSolicitudes.php"></script>
+<script src=" ../controllers/ajxSolicitudNueva.js"></script>
 <?php include './footer_constancias.php'; ?>

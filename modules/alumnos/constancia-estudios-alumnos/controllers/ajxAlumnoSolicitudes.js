@@ -4,36 +4,6 @@
     var endpoint = "../models/modAlumnoSolicitudes.php";
     var modal;
 
-    function solicitar(datos) {
-        var parametros = new URLSearchParams();
-
-        Object.keys(datos).forEach(function (clave) {
-            if (Array.isArray(datos[clave])) {
-                datos[clave].forEach(function (valor) {
-                    parametros.append(clave + "[]", valor);
-                });
-            } else {
-                parametros.append(clave, datos[clave]);
-            }
-        });
-
-        return fetch(endpoint, {
-            method: "POST",
-            body: parametros,
-            headers: {
-                Accept: "application/json",
-            },
-        }).then(function (respuesta) {
-            return respuesta.json().then(function (cuerpo) {
-                if (!respuesta.ok || !cuerpo.ok) {
-                    throw new Error(cuerpo.mensaje || "No fue posible completar la operación.");
-                }
-
-                return cuerpo.datos;
-            });
-        });
-    }
-
     //Trae los datos que llenarán el modal
     function consultar(accion, parametros) {
         var valores = new URLSearchParams();
@@ -58,43 +28,6 @@
                 return cuerpo.datos;
             });
         });
-    }
-
-    function mostrarMensaje(texto, tipo) {
-        var configuracion = {
-            icon: tipo || "info",
-            title: "",
-            text: texto || "",
-            confirmButtonText: "Aceptar",
-            confirmButtonColor: "#28a745",
-        };
-
-        switch (tipo) {
-            case "success":
-                configuracion.title = "Operación exitosa";
-                break;
-
-            case "error":
-                configuracion.title = "Ocurrió un error";
-                break;
-
-            case "warning":
-                configuracion.title = "Advertencia";
-                break;
-
-            case "info":
-            default:
-                configuracion.title = "Información";
-                break;
-        }
-
-        Swal.fire(configuracion);
-    }
-
-    function escapeHtml(texto) {
-        var div = document.createElement("div");
-        div.textContent = texto === null || texto === undefined ? "" : String(texto);
-        return div.innerHTML;
     }
 
     //Llena la tabla del historial de solicitudes
@@ -165,7 +98,7 @@
         var barra = document.getElementById("barraProgresoEstado");
 
         if (barra) {
-            barra.textContent = "Pendiente de Pago";
+            barra.textContent = "Solicitada";
             barra.style.width = "20%";
             barra.setAttribute("aria-valuenow", "20");
         }
@@ -233,7 +166,6 @@
 
             case "Pagada":
                 porcentaje = 40;
-
                 break;
 
             case "En Elaboración":
@@ -245,17 +177,18 @@
                 porcentaje = 80;
                 barra.classList.remove("bg-primary");
                 barra.classList.add("bg-success");
-                //Ubicación Torre de Posgrado
-                if (btnConstanciaDigital) {
+                if (datos.tipoFirma === "D" && btnConstanciaDigital) {
                     btnConstanciaDigital.classList.remove("d-none");
                 }
+                else{
+                    mostrarMensaje("Puedes recoger tu Constancia en el primer piso de la Torre de Posgrado, ubicada en Carretera Pachuca-Tulancingo Km 4.5, Col. Carboneras, Mineral de la Reforma, Hidalgo, C.P. 42184.", "info",);
+                }                
                 break;
 
             case "Finalizada":
                 porcentaje = 100;
                 barra.classList.remove("bg-primary");
                 barra.classList.add("bg-success");
-                //Al cambiar estatus, btnConstanciaDigital se oculta forma predeterminada
                 /*Revisar campos de ae_ciclo.json (dependiendo del id_kardex): fechaSolicitudConstanciaTermino && fechaPeriodoVacacionalTermino cuál es mayor + 14 días, 23 horas y 59 minutos
                  */
                 break;
@@ -333,6 +266,7 @@
         modal.show();
     }
 
+    //Buscar el detalle por Id
     function cargarDetallePorId(idSolicitud) {
         if (!idSolicitud) {
             mostrarMensaje("No existe la referencia a la solicitud.", "error");
@@ -406,20 +340,15 @@
                     mostrarMensaje(e.message || "No fue posible cancelar la solicitud.", "error");
                 });
         });
-        //
     }
 
     document.addEventListener("DOMContentLoaded", function () {
-        var vistaCorrecta = document.getElementById("solicitudesConstancia");
-        if (!vistaCorrecta) {
-            return;
-        }
 
         var elementoModal = document.getElementById("modalSeguimientoConstancia");
 
         if (!elementoModal) {
             //Verifica que esté el modal
-            mostrarMensaje("No se encontró el modal de la solicitud.", "error");
+            mostrarMensaje("No se puede mostrar el detalle de la solicitud.", "error");
             return;
         }
 
@@ -430,7 +359,6 @@
 
         document.addEventListener("click", function (evento) {
             var botonSeguimiento = evento.target.closest('[name="SeguimientoCorroborar"]');
-
             if (botonSeguimiento) {
                 var idSolicitud = botonSeguimiento.getAttribute("data-id");
 
@@ -443,11 +371,17 @@
 
             var botonCancelar = evento.target.closest('[name="CancelarSolicitud"]');
             if (botonCancelar) {
-                var folioCancelar = botonCancelar.getAttribute("data-id");
+                var idCancelar = botonCancelar.getAttribute("data-id");
                 var estadoCancelar = botonCancelar.getAttribute("data-estado");
-                cancelarSolicitud(folioCancelar, estadoCancelar);
+                cancelarSolicitud(idCancelar, estadoCancelar);
                 return;
             }
+
+            /*var botonFormatoPago = evento.target.closest('[name="DescargarFPago"]');
+            if (botonFormatoPago) {
+                estatus = "Pagada";
+                return;
+            }*/
         });
     });
 })();
