@@ -43,7 +43,7 @@ include './sidebar_constancias.php';
                 <table class="table table-hover align-middle mb-0" id="tablaHistorialSolicitudes">
                     <thead class="table-light">
                         <tr>
-                            <th class="text-nowrap">Fecha de Registro</th>
+                            <th class="text-nowrap">Fecha de Registro (Año-Mes-Día)</th>
                             <th>Descripción</th>
                             <th class="text-nowrap">Estado</th>
                             <th class="text-end text-nowrap">Acciones</th>
@@ -87,109 +87,110 @@ include './sidebar_constancias.php';
 
                     <div class="progress mb-4" style="height: 10px;">
                         <div class="progress-bar" id="barraProgresoEstado" role="progressbar" aria-valuemin="0"
-                            aria-valuemax="100" aria-valuenow="20" style="width: 20%;">
-                            Pendiente de Pago
+                            aria-valuemax="100" aria-valuenow="0" style="width: 0%;">
+                            Solicitada
                         </div>
                     </div>
 
                     <section class="paso-solicitud">
+                        <div class=" table-responsive">
+                            <table class="table table-striped-columns align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th colspan="2" class="text-center">
+                                            Contiene los siguientes datos:
+                                        </th>
+                                    </tr>
+                                </thead>
 
-                        <table class="table table-striped-columns align-middle mb-0">
-                            <thead>
-                                <tr>
-                                    <th colspan="2" class="text-center">
-                                        Contiene los siguientes datos:
-                                    </th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                <tr>
-                                    <th scope="row" class="mark">Nombre</th>
-                                    <td id="nombreAlumno"> </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="mark">Apellido Paterno</th>
-                                    <td id="apellidoPaterno"> </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="mark">Apellido Materno</th>
-                                    <td id="apellidoMaterno"> </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="mark">CURP</th>
-                                    <td id="curp"> </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="mark">Unidad Académica</th>
-                                    <td id="unidadAcademica"> </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="mark">Programa Educativo</th>
-                                    <td id="programaEducativo"> </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="mark">Ciclo Escolar</th>
-                                    <td id="cicloEscolarConstancia"> </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="mark">CCT UAEH</th>
-                                    <td id="cctUniversidad"> </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="mark">CCT Unidad Académica</th>
-                                    <td id="cctUnidadAcademica"> </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="mark">Número de cuenta</th>
-                                    <td id="numeroCuenta"> </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="mark">Semestre</th>
-                                    <td id="semestre"> </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="mark">Tipo de Ingreso</th>
-                                    <td id="tipoIngreso"> </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="mark">Fecha de Ingreso</th>
-                                    <td id="fechaIngreso"> </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="mark">Fecha de Egreso</th>
-                                    <td id="fechaEgreso"> </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="mark">Estatus Alumno (Condición Escolar)</th>
-                                    <td id="estatusAlumno"> </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="mark">Duración del Programa Educativo</th>
-                                    <td id="duracionPE"> </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="mark">Calidad del Alumno</th>
-                                    <td id="calidadAlumno"> </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="mark">Promedio General</th>
-                                    <td id="promedioGeneral"> </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="mark">Avance en el Programa Educativo</th>
-                                    <td id="avanceProgramaEducativo"> </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="mark">Periodo de Clases</th>
-                                    <td id="periodoClases"> </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="mark">Periodo Vacacional</th>
-                                    <td id="periodoVacacional"> </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                <tbody>
+                                    <tr>
+                                        <th scope="row" class="mark">Nombre</th>
+                                        <td id="nombreAlumno"> </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="mark">Apellido Paterno</th>
+                                        <td id="apellidoPaterno"> </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="mark">Apellido Materno</th>
+                                        <td id="apellidoMaterno"> </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="mark">CURP</th>
+                                        <td id="curp"> </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="mark">Unidad Académica</th>
+                                        <td id="unidadAcademica"> </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="mark">Programa Educativo</th>
+                                        <td id="programaEducativo"> </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="mark">Ciclo Escolar</th>
+                                        <td id="cicloEscolarConstancia"> </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="mark">CCT UAEH</th>
+                                        <td id="cctUniversidad"> </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="mark">CCT Unidad Académica</th>
+                                        <td id="cctUnidadAcademica"> </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="mark">Número de cuenta</th>
+                                        <td id="numeroCuenta"> </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="mark">Semestre</th>
+                                        <td id="semestre"> </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="mark">Tipo de Ingreso</th>
+                                        <td id="tipoIngreso"> </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="mark">Fecha de Ingreso</th>
+                                        <td id="fechaIngreso"> </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="mark">Fecha de Egreso</th>
+                                        <td id="fechaEgreso"> </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="mark">Estatus Alumno (Condición Escolar)</th>
+                                        <td id="estatusAlumno"> </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="mark">Duración del Programa Educativo</th>
+                                        <td id="duracionPE"> </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="mark">Calidad del Alumno</th>
+                                        <td id="calidadAlumno"> </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="mark">Promedio General</th>
+                                        <td id="promedioGeneral"> </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="mark">Avance en el Programa Educativo</th>
+                                        <td id="avanceProgramaEducativo"> </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="mark">Periodo de Clases</th>
+                                        <td id="periodoClases"> </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="mark">Periodo Vacacional</th>
+                                        <td id="periodoVacacional"> </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </section>
                 </div>
                 <div class="modal-footer">

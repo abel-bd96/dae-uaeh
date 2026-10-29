@@ -129,6 +129,8 @@ class clsAlumnoSolicitudes
 
         //Vincular los datos de la solicitud a la constancia, para poder corregir el progreso en la barra de progreso
         $constanciaEncontrada['estatus'] = $solicitudEncontrada['estatus'] ?? '';
+        //CHECA SI SÍ O NO
+        $constanciaEncontrada['tipoFirma'] = $solicitudEncontrada['tipoFirma'] ?? '';
         return $constanciaEncontrada;
     }
 

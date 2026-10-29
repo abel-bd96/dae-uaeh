@@ -3,7 +3,7 @@
 
     var endpoint = "../models/modAlumnoSolicitudes.php";
     var modal;
-    
+
     //Trae los datos que llenarán el modal
     function consultar(accion, parametros) {
         var valores = new URLSearchParams();
@@ -170,19 +170,17 @@
 
             case "En Elaboración":
                 porcentaje = 60;
-
                 break;
 
             case "Atendida":
                 porcentaje = 80;
                 barra.classList.remove("bg-primary");
                 barra.classList.add("bg-success");
-                if (datos.tipoFirma === "D" && btnConstanciaDigital) {
+                if (datos.tipoFirma === "Digital" && btnConstanciaDigital) {
                     btnConstanciaDigital.classList.remove("d-none");
+                } else {
+                    //mostrarMensaje("Puedes recoger tu Constancia en el primer piso de la Torre de Posgrado, ubicada en Carretera Pachuca-Tulancingo Km 4.5, Col. Carboneras, Mineral de la Reforma, Hidalgo, C.P. 42184.", "info",);
                 }
-                else{
-                    mostrarMensaje("Puedes recoger tu Constancia en el primer piso de la Torre de Posgrado, ubicada en Carretera Pachuca-Tulancingo Km 4.5, Col. Carboneras, Mineral de la Reforma, Hidalgo, C.P. 42184.", "info",);
-                }                
                 break;
 
             case "Finalizada":
@@ -301,6 +299,7 @@
             return;
         }
 
+        //Se queda así para dar oportunidad a retractarse
         Swal.fire({
             title: "¿Cancelar solicitud?",
             html: "¿Estás seguro de cancelar esta solicitud de Constancia?<br><br>",
@@ -329,12 +328,8 @@
             solicitar({ accion: "cancelar", idSolicitud: idSolicitud })
                 .then(function (respuesta) {
                     cargarRegistros();
-                    Swal.fire({
-                        title: "Solicitud cancelada",
-                        text: respuesta.mensaje || "La solicitud fue cancelada correctamente.",
-                        icon: "success",
-                        confirmButtonText: "Aceptar",
-                    });
+
+                    mostrarMensaje(respuesta.mensaje || "La solicitud fue cancelada correctamente.", "success");
                 })
                 .catch(function (e) {
                     mostrarMensaje(e.message || "No fue posible cancelar la solicitud.", "error");
@@ -343,7 +338,6 @@
     }
 
     document.addEventListener("DOMContentLoaded", function () {
-
         var elementoModal = document.getElementById("modalSeguimientoConstancia");
 
         if (!elementoModal) {
@@ -377,11 +371,11 @@
                 return;
             }
 
-            /*var botonFormatoPago = evento.target.closest('[name="DescargarFPago"]');
+            var botonFormatoPago = evento.target.closest('[name="DescargarFPago"]');
             if (botonFormatoPago) {
-                estatus = "Pagada";
+                datos.estatus = "Pagada";
                 return;
-            }*/
+            }
         });
     });
 })();

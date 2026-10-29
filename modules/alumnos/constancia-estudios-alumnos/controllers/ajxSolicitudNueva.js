@@ -1,8 +1,7 @@
 (function () {
     "use strict";
 
-    var endpoint = "../models/modAlumnoSolicitudes.php";
-    
+    var endpoint = "../models/modAlumnoSolicitudes.php";    
     var enviando = false;
 
     function mostrarcontenedorTablaDatos() {
@@ -84,12 +83,7 @@
         }
 
         if (!calificacionesSeleccionado) {
-            Swal.fire({
-                title: "Falta información",
-                text: "Selecciona si deseas incluir las calificaciones.",
-                icon: "warning",
-                confirmButtonText: "Aceptar",
-            });
+            mostrarMensaje("Debes seleccionar si deseas incluir las calificaciones.", "warning");
             return;
         }
 
@@ -106,10 +100,10 @@
             icon: "question",
             showCancelButton: true,
             confirmButtonText: "Sí, generar",
-            confirmButtonColor: "#28a745",
             cancelButtonText: "Cancelar",
             reverseButtons: true,
             focusCancel: true,
+            onfirmButtonColor: "#28a745"
         }).then(function (resultado) {
             if (!resultado.isConfirmed) {
                 return;
@@ -145,19 +139,7 @@
                             instanciaModal.hide();
                         }
                     }
-
-                    Swal.fire({
-                        title: "Solicitud generada",
-                        html:
-                            "La solicitud fue registrada correctamente.<br><br>" +
-                            "<strong>Folio:</strong> " +
-                            escapeHtml(respuesta.Folio || "") +
-                            "<br><strong>Estado:</strong> " +
-                            escapeHtml(respuesta.Estado || "Solicitada"),
-                        icon: "success",
-                        confirmButtonColor: "#28a745",
-                        confirmButtonText: "Aceptar",
-                    });
+                    mostrarMensaje("La solicitud fue registrada correctamente.", "success");
                 })
                 .catch(function (e) {
                     mostrarMensaje(e.message || "Ocurrió un error al guardar la solicitud.", "error");

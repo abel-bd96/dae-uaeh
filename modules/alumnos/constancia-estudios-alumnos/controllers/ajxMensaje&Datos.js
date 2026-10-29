@@ -55,7 +55,6 @@
             }
         });
 
-        // Usar el endpoint proporcionado o la ruta predeterminada.
         var url = endpoint || window.endpointSolicitudes;
 
         if (!url) {
