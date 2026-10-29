@@ -96,11 +96,16 @@
         }
 
         var barra = document.getElementById("barraProgresoEstado");
+        var infoAuxiliar = document.getElementById("infoAuxiliarSeguimientoSolicitud");
 
         if (barra) {
             barra.textContent = "Solicitada";
             barra.style.width = "20%";
             barra.setAttribute("aria-valuenow", "20");
+        }
+
+        if (infoAuxiliar){
+            infoAuxiliar.textContent = "Espera...";
         }
 
         [
@@ -140,6 +145,7 @@
 
     function corregirProgreso(estatus, datos) {
         var barra = document.getElementById("barraProgresoEstado");
+        var infoAuxiliar = document.getElementById("infoAuxiliarSeguimientoSolicitud");
         var btnFormatoPago = document.getElementById("btnFormatoPago");
         var btnConstanciaDigital = document.getElementById("btnConstanciaDigital");
 
@@ -159,6 +165,10 @@
             case "Solicitada":
                 porcentaje = 20;
 
+                if (infoAuxiliar) {
+                    infoAuxiliar.textContent = "Realiza tu pago presionando el botón Descargar Formato de Pago. ⬇️";
+                }
+
                 if (btnFormatoPago) {
                     btnFormatoPago.classList.remove("d-none");
                 }
@@ -166,35 +176,67 @@
 
             case "Pagada":
                 porcentaje = 40;
+
+                if (infoAuxiliar) {
+                    infoAuxiliar.textContent = "Ha sido validado tu pago, espera a que sea elaborada tu constancia.";
+                }
                 break;
 
             case "En Elaboración":
                 porcentaje = 60;
+
+                if (infoAuxiliar) {
+                    infoAuxiliar.textContent = "Pronto tu constancia estará lista. Mantente atento.";
+                }
                 break;
 
             case "Atendida":
                 porcentaje = 80;
+                
                 barra.classList.remove("bg-primary");
                 barra.classList.add("bg-success");
                 if (datos.tipoFirma === "Digital" && btnConstanciaDigital) {
                     btnConstanciaDigital.classList.remove("d-none");
+                    if (infoAuxiliar) {
+                        infoAuxiliar.classList.remove("alert-info");
+                        infoAuxiliar.classList.add("alert-success");
+                        infoAuxiliar.textContent =
+                            "Puedes descargar tu Constancia a través del botón Decargar Constancia Digital. ⬇️";
+                    }
                 } else {
-                    //mostrarMensaje("Puedes recoger tu Constancia en el primer piso de la Torre de Posgrado, ubicada en Carretera Pachuca-Tulancingo Km 4.5, Col. Carboneras, Mineral de la Reforma, Hidalgo, C.P. 42184.", "info",);
+                    if (infoAuxiliar) {
+                        infoAuxiliar.classList.remove("alert-info");
+                        infoAuxiliar.classList.add("alert-success");
+                        infoAuxiliar.textContent =
+                            "Puedes recoger tu Constancia en el primer piso de la Torre de Posgrado, ubicada en Carretera Pachuca-Tulancingo Km 4.5, Col. Carboneras, Mineral de la Reforma, Hidalgo, C.P. 42184.";
+                    }
                 }
                 break;
 
             case "Finalizada":
                 porcentaje = 100;
+                
                 barra.classList.remove("bg-primary");
                 barra.classList.add("bg-success");
+                if (infoAuxiliar) {
+                    infoAuxiliar.classList.remove("alert-info");
+                    infoAuxiliar.classList.add("alert-success");
+                    infoAuxiliar.textContent = "Tu constancia ya ha sido entregada y su respectivo trámite concluido.";
+                }
                 /*Revisar campos de ae_ciclo.json (dependiendo del id_kardex): fechaSolicitudConstanciaTermino && fechaPeriodoVacacionalTermino cuál es mayor + 14 días, 23 horas y 59 minutos
                  */
                 break;
 
             case "Cancelada":
                 porcentaje = 100;
+                
                 barra.classList.remove("bg-primary");
                 barra.classList.add("bg-danger");
+                if (infoAuxiliar) {
+                    infoAuxiliar.classList.remove("alert-info");
+                    infoAuxiliar.classList.add("alert-danger");
+                    infoAuxiliar.textContent = "Esta solicitud de constancia ha sido cancelada.";
+                }
                 break;
 
             default:

@@ -91,7 +91,7 @@ include './sidebar_constancias.php';
                             Solicitada
                         </div>
                     </div>
-
+                    <div class="alert alert-info" id="infoAuxiliarSeguimientoSolicitud"> Espera... </div>
                     <section class="paso-solicitud">
                         <div class=" table-responsive">
                             <table class="table table-striped-columns align-middle mb-0">
