@@ -149,59 +149,78 @@ class clsConstanciaGenerarSolicitud
     }
 
     public function consultarAlumnoPorKardex($idKardex){
-        $idKardex = $this->normalizar($idKardex);
-        if($idKardex === ''){
-            return null;
-        }
-        $cuentas = $this->leer($this->rutaNumeroCuenta);
-        $alumnos = $this->leer($this->rutaNombreAlumno);
+    $idKardex = $this->normalizar($idKardex);
 
-        foreach ($alumnos as $registro){
-            $idRegistro = isset($registro['idKardex']) ? $this->normalizar($registro['idkardex']) : '';
-
-            if($idRegistro !== $idKardex){
-                continue;
-            }
-            $numeroCuenta = isset($registro['NumeroCuenta']) ? $this->normalizar($registro['NumeroCuenta']) : '';
-            
-            //recuperar los datos generales del alumno
-            foreach($cuentas as $cuenta){
-                $numero = isset($cuenta['NumeroCuenta']) ? $this->normalizar($cuenta['NumeroCuenta']) : '';
-                if($numero === $numeroCuenta){
-                    return array_merge($cuenta, $registro);
-                }
-            }
-            return $registro;
-        }
+    if ($idKardex === '') {
         return null;
     }
 
-    public function consultarSolicitudExistente($idKardex, $idCicloEscolar){
-        $idKardex = $this->normalizar($idKardex);
-        $idCicloEscolar = $this->normalizar($idCicloEscolar);
-        if($idKardex === '' || $idCicloEscolar === ''){
-            throw new Exception('Falta el kardex o ciclo');
+    $alumnos = $this->leer($this->rutaNombreAlumno);
+
+    foreach ($alumnos as $alumno) {
+        $kardex = isset($alumno['idKardex'])
+            ? $this->normalizar($alumno['idKardex'])
+            : '';
+
+        if ($kardex !== '' && $kardex === $idKardex) {
+            return $alumno;
         }
+    }
 
-        $solicitudes = $this->leer($this->rutaSolicitud);
-        $estatusActivos = array('Solicitado', 'Pagado');
+    return null;
+}
 
-        foreach($solicitudes as $solicitud){
-            $kardex = isset($solicitud['idKardex']) ? $this->normalizar($solicitud['idKardex']) : '';
-            $ciclo = isset($solicitud['idCicloEscolar']) ? $this->normalizar($solicitud['idCicloEscolar']) : '';
-            $estatus = isset($solicitud['estatus']) ? $this->normalizar($solicitud['estatus']) : '';
-            if($kardex === $idKardex && $ciclo === $idCicloEscolar && in_array($estatus, array('Solicitado', 'Pagado'), true)){
-                return array(
+    
+public function consultarSolicitudExistente($idKardex, $idCicloEscolar)
+{
+    // 1. Normalizar identificadores
+    $idKardex = $this->normalizar($idKardex);
+    $idCicloEscolar = $this->normalizar($idCicloEscolar);
+
+    if ($idKardex === '' || $idCicloEscolar === '') {
+        throw new Exception(
+            'Falta el Kardex o el ciclo escolar para validar la solicitud.'
+        );
+    }
+
+    // 2. Leer solicitudes registradas
+    $solicitudes = $this->leer($this->rutaSolicitud);
+
+    // 3. Estados que impiden registrar otra solicitud
+    $estatusActivos = array('solicitado', 'pagado');
+
+    // 4. Buscar coincidencia por Kardex y ciclo escolar
+    foreach ($solicitudes as $solicitud) {
+        $kardex = isset($solicitud['idKardex'])
+            ? $this->normalizar($solicitud['idKardex'])
+            : '';
+
+        $ciclo = isset($solicitud['idCicloEscolar'])
+            ? $this->normalizar($solicitud['idCicloEscolar']) : (isset($solicitud['CicloEscolar']) ? $this->normalizar($solicitud['CicloEscolar']) : '');
+
+        $estatus = isset($solicitud['estatus'])
+            ? strtolower(trim((string)$solicitud['estatus']))
+            : '';
+
+        if (
+            $kardex === $this->normalizar($idKardex) &&
+            $ciclo === $this->normalizar($idCicloEscolar) &&
+            in_array($estatus, $estatusActivos, true)
+        ) {
+            return array(
                 'existe' => true,
                 'mensaje' => 'Este alumno ya tiene una solicitud de constancia registrada para el ciclo escolar seleccionado.'
             );
-            }
         }
-        return array(
+    }
+
+    // 5. No existe una solicitud activa para esa combinación
+    return array(
         'existe' => false,
         'mensaje' => ''
     );
-    }
+}
+
     // CONSULTAS DE SOLICITUDES Y CONSTANCIAS
     public function consultar($idSolicitud) {
         if ($idSolicitud === null || trim((string)$idSolicitud) === '') return null;
@@ -236,7 +255,71 @@ class clsConstanciaGenerarSolicitud
         return null;
     }
     
+    public function validarSolicitudActivaPorKardex($idKardex)
+    {
+        $idKardex = $this->normalizar($idKardex);
 
+        if ($idKardex === '') {
+            throw new Exception('No se recibió el idKardex del alumno.');
+        }
+
+        $cicloActivo = $this->obtenerCicloActivo();
+
+        if (
+            empty($cicloActivo) ||
+            empty($cicloActivo['idCiclo'])
+        ) {
+            throw new Exception(
+                'No se encontró un ciclo escolar activo para solicitar constancias.'
+            );
+        }
+
+        $resultado = $this->consultarSolicitudExistente(
+            $idKardex,
+            $cicloActivo['idCiclo']
+        );
+
+        return array(
+            'tieneActiva' => $resultado['existe'],
+            'mensaje' => $resultado['mensaje']
+        );
+    }
+    public function obtenerCicloActivo()
+{
+    $ciclos = $this->leer($this->rutaCiclo);
+    $hoy = date('Y-m-d');
+
+    foreach ($ciclos as $ciclo) {
+        $estado = isset($ciclo['estado'])
+            ? strtoupper(trim((string) $ciclo['estado']))
+            : '';
+
+        $fechaInicio = isset($ciclo['fechaSolicitudConstanciaInicio'])
+            ? trim((string) $ciclo['fechaSolicitudConstanciaInicio'])
+            : '';
+
+        $fechaTermino = isset($ciclo['fechaSolicitudConstanciaTermino'])
+            ? trim((string) $ciclo['fechaSolicitudConstanciaTermino'])
+            : '';
+
+        $idCiclo = isset($ciclo['idCiclo'])
+            ? trim((string) $ciclo['idCiclo'])
+            : '';
+
+        if (
+            $estado === 'ACTIVO' &&
+            $idCiclo !== '' &&
+            $fechaInicio !== '' &&
+            $fechaTermino !== '' &&
+            $hoy >= $fechaInicio &&
+            $hoy <= $fechaTermino
+        ) {
+            return $ciclo;
+        }
+    }
+
+    return null;
+}
     // LISTAR — Join de Solicitud + Constancia + Contenido
     public function listar() {
         $solicitudes = $this->leer($this->rutaSolicitud);
@@ -381,7 +464,7 @@ class clsConstanciaGenerarSolicitud
         );
         }
         //verificar que el kardex tenga cuenta 
-        if(!isset($alumno['NumeroCuenta'])|| $this->normalizar($alumno['NumeroCuenta']) !== $htis->normalizar($datos['NumeroCuenta'])
+        if(!isset($alumno['NumeroCuenta'])|| $this->normalizar($alumno['NumeroCuenta']) !== $this->normalizar($datos['NumeroCuenta'])
         ){
             return array(
             'ok' => false,
@@ -450,7 +533,7 @@ class clsConstanciaGenerarSolicitud
         $ultimoId = 0;
 
         foreach ($solicitudes as $solicitudExistente) {
-            if (isset($solicitudExistente['idSolicitud']) && (int)$s['idSolicitud'] > $ultimoId) {
+            if (isset($solicitudExistente['idSolicitud']) && (int)$solicitudExistente['idSolicitud'] > $ultimoId) {
                 $ultimoId = (int)$solicitudExistente['idSolicitud'];
             }
         }

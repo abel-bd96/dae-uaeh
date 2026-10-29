@@ -106,7 +106,7 @@ try {
                     'No se encontro Kardex'
                 );
             }
-            $resultado = $consulta->validarSolicituActivaPorKardex($idKardex);
+            $resultado = $consulta->validarSolicitudActivaPorKardex($idKardex);
             if (isset($resultado['ok']) && $resultado['ok'] === false) {
                 throw new Exception(
                     isset($resultado['mensaje'])

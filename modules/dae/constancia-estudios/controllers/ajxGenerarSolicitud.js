@@ -7,6 +7,7 @@
     var todosLosRegistros = [];
     var idsSeleccionados = [];
     var observaciones = [];
+    var btnSiguiente = null;
 
     var ACCIONES_MASIVAS = {
         elaborar: { estatus: "En elaboración", titulo: "Elaborar" },
@@ -16,6 +17,7 @@
         finalizar: { estatus: "Finalizado", titulo: "Finalizar" },
         cancelar: { estatus: "Cancelado", titulo: "Cancelar" },
     };
+
     // ENVIAR DATOS AL PHP (POST)
     function solicitar(datos) {
         var parametros = new URLSearchParams();
@@ -112,7 +114,8 @@
         el.classList.toggle("d-block", !!texto);
         el.classList.toggle("d-none", !texto);
     }
-    //Pantallas
+
+    // PANTALLAS
     function esPantallaListado() {
         return !!document.getElementById("tablaSolicitudes");
     }
@@ -159,6 +162,7 @@
         actualizarContadorSeleccionadas();
         actualizarCheckTodos();
     }
+
     function limpiarSeleccion() {
         idsSeleccionados = [];
         document.querySelectorAll(".check-solicitud").forEach(function (chk) {
@@ -201,8 +205,6 @@
             var nom = String(s.NombreCompleto || "")
                 .toLowerCase()
                 .trim();
-
-            // Estatus y otros campos del nuevo backend
             var est = String(s.EstatusInterno || s.estatus || "")
                 .toLowerCase()
                 .trim();
@@ -330,7 +332,7 @@
             botones.push(
                 '<button type="button" class="btn btn-sm btn-outline-primary btn-imprimir" data-id="' +
                     id +
-                    '"><i class="bi bi-pinter"></i> PDF</button>',
+                    '"><i class="bi bi-printer"></i> PDF</button>',
             );
         }
 
@@ -338,7 +340,7 @@
             botones.push(
                 '<button type="button" class="btn btn-sm btn-success" disabled><i class="bi bi-box-arrow-right"></i> Entregado</button>',
             );
-            return botones.join(" "); // Retornamos inmediatamente para que NO se agregue el botón de Cancelar
+            return botones.join(" ");
         }
 
         if (!["Finalizado", "Cancelado", "Entregado"].includes(estatus)) {
@@ -369,16 +371,11 @@
 
         tbody.innerHTML = registros
             .map(function (s) {
-                // 1. ID principal
                 var id = String(s.idSolicitud || s.id || "");
-
-                // 2. Datos base
                 var nombre = s.NombreCompleto || "(Sin nombre)";
                 var ciclo = s.CicloEscolar || "(Sin ciclo)";
                 var estatus = s.EstatusInterno || s.Estatus || s.estatus || "";
                 var folio = s.Folio || "";
-
-                // 3. Variables mapeadas del nuevo JSON
                 var firma = s.tipoFirma === "S" ? "Digital (PDF)" : s.tipoFirma === "N" ? "Autógrafa" : "";
                 var datoAdicional = s.informacionAdicional || "";
                 var fecha = s.fechaSolicitud || s.fechaRegistro || "";
@@ -388,7 +385,6 @@
 
                 return (
                     "<tr>" +
-                    // Checkbox
                     '<td><input type="checkbox" class="form-check-input check-solicitud" ' +
                     'data-id="' +
                     escapeHtml(id) +
@@ -397,7 +393,6 @@
                     " " +
                     checkDisabled +
                     "></td>" +
-                    // Datos
                     "<td>" +
                     escapeHtml(folio) +
                     "</td>" +
@@ -422,7 +417,6 @@
                     "<td>" +
                     escapeHtml(firma) +
                     "</td>" +
-                    // Botones
                     '<td class="text-end">' +
                     generarBotones(s) +
                     "</td>" +
@@ -519,10 +513,7 @@
         var select = document.getElementById("modalConfirmarSelect");
         var btnOk = document.getElementById("modalConfirmarAceptar");
 
-        if (!titulo || !mensaje || !selectWrap || !select || !btnOk) {
-            console.error("Faltan elementos del modal en el HTML");
-            return;
-        }
+        if (!titulo || !mensaje || !selectWrap || !select || !btnOk) return;
 
         titulo.textContent = opciones.titulo || "Confirmar acción";
         mensaje.textContent = opciones.mensaje || "¿Está seguro?";
@@ -544,7 +535,6 @@
         btnOk.className = "btn " + (opciones.btnClass || "btn-primary");
         btnOk.textContent = opciones.btnTexto || "Aceptar";
 
-        // Clonar para eliminar listeners previos
         var btnOkNuevo = btnOk.cloneNode(true);
         btnOk.parentNode.replaceChild(btnOkNuevo, btnOk);
 
@@ -562,9 +552,7 @@
         modalInstance.show();
     }
 
-    // ACCIONES — cada función definida UNA SOLA VEZ
-
-    // Flujo A - Paso 2
+    // ACCIONES
     function pagarSolicitud(id) {
         abrirModal({
             titulo: "Registrar pago",
@@ -584,13 +572,11 @@
         });
     }
 
-    // Flujo A y B - Paso 3/4: En elaboración
     function elaborarSolicitud(id) {
         var solicitud = todosLosRegistros.find(function (s) {
             return String(s.idSolicitud) === String(id);
         });
 
-        // Verificamos si requiere datos adicionales (S) y si aún no los tiene guardados
         if (
             solicitud &&
             solicitud.informacionAdicional === "S" &&
@@ -617,7 +603,6 @@
         });
     }
 
-    // Flujo B - Paso 5: En firma
     function mandarFirmaSolicitud(id) {
         abrirModal({
             titulo: "Mandar a firma",
@@ -637,7 +622,6 @@
         });
     }
 
-    // Flujo B - Paso 6: Emitida
     function emitirSolicitud(id) {
         abrirModal({
             titulo: "Emitir constancia",
@@ -657,7 +641,6 @@
         });
     }
 
-    // Flujo B - Paso 8: Entregado
     function entregarSolicitud(id) {
         abrirModal({
             titulo: "Entregar constancia",
@@ -677,47 +660,6 @@
         });
     }
 
-    // Flujo A - Paso 9: Atendido
-    function atenderSolicitud(id) {
-        abrirModal({
-            titulo: "Marcar como atendido",
-            mensaje: "¿Marcar este trámite como atendido?",
-            btnTexto: "Sí, atender",
-            btnClass: "btn-secondary",
-            onAceptar: function () {
-                solicitar({ accion: "atender", id: id })
-                    .then(function () {
-                        mostrarMensaje("El trámite se marcó como atendido.", "success", "mensajeSolicitud");
-                        cargarSolicitudes();
-                    })
-                    .catch(function (error) {
-                        mostrarMensaje(error.message, "danger", "mensajeSolicitud");
-                    });
-            },
-        });
-    }
-
-    // Flujo A y B - Paso 10: Finalizado
-    function finalizarSolicitud(id) {
-        abrirModal({
-            titulo: "Finalizar solicitud",
-            mensaje: "¿Marcar esta solicitud como finalizada? Esta acción cierra el trámite.",
-            btnTexto: "Sí, finalizar",
-            btnClass: "btn-dark",
-            onAceptar: function () {
-                solicitar({ accion: "finalizar", id: id })
-                    .then(function () {
-                        mostrarMensaje("La solicitud se finalizó correctamente.", "success", "mensajeSolicitud");
-                        cargarSolicitudes();
-                    })
-                    .catch(function (error) {
-                        mostrarMensaje(error.message, "danger", "mensajeSolicitud");
-                    });
-            },
-        });
-    }
-
-    // Cancelar
     function cancelarSolicitud(id) {
         abrirModal({
             titulo: "Cancelar solicitud",
@@ -737,7 +679,6 @@
         });
     }
 
-    //acciones maxivas
     function ejecutarAccionMasiva(accion) {
         if (!idsSeleccionados.length) {
             mostrarMensaje("No hay solicitudes seleccionadas.", "warning", "mensajeSolicitud");
@@ -746,6 +687,7 @@
 
         var cfg = ACCIONES_MASIVAS[accion];
         if (!cfg) return;
+
         if (accion === "elaborar") {
             var requiereDatos = idsSeleccionados.find(function (id) {
                 var sol = todosLosRegistros.find(function (s) {
@@ -769,8 +711,7 @@
                 idsSeleccionados.length +
                 ' solicitud(es) a "' +
                 cfg.estatus +
-                '". ' +
-                "Las que no cumplan con la transición serán omitidas.",
+                '". Las que no cumplan con la transición serán omitidas.',
             btnTexto: "Sí, " + cfg.titulo.toLowerCase(),
             btnClass: "btn-primary",
             onAceptar: function () {
@@ -795,52 +736,6 @@
         });
     }
 
-    // Cambiar estatus manual (con la lista COMPLETA)
-    function cambiarEstatusSolicitud(id, estatusActual) {
-        var TRANSICIONES = {
-            Solicitado: ["Pagado", "Cancelado"],
-            Pagado: ["En elaboración", "Cancelado"],
-            "En elaboración": ["En firma", "Atendido", "Cancelado"],
-            "En firma": ["Emitida", "Cancelado"],
-            Emitida: ["Entregado", "Cancelado"],
-            Entregado: ["Finalizado"],
-            Atendido: ["Finalizado"],
-            Finalizado: [],
-            Cancelado: [],
-        };
-
-        var opciones = TRANSICIONES[estatusActual] || [];
-        if (!opciones.length) {
-            mostrarMensaje(
-                "No hay transiciones disponibles desde el estatus actual (" + estatusActual + ").",
-                "warning",
-                "mensajeSolicitud",
-            );
-            return;
-        }
-
-        abrirModal({
-            titulo: "Cambiar estatus",
-            mensaje: "Estatus actual: " + estatusActual + ". Seleccione el nuevo estatus:",
-            tipo: "select",
-            opciones: opciones,
-            valorInicial: opciones[0],
-            btnTexto: "Cambiar estatus",
-            btnClass: "btn-primary",
-            onAceptar: function (nuevoEstatus) {
-                if (!nuevoEstatus) return;
-                solicitar({ accion: "cambiarEstatus", id: id, estatus: nuevoEstatus })
-                    .then(function () {
-                        mostrarMensaje("El estatus se actualizó correctamente.", "success", "mensajeSolicitud");
-                        cargarSolicitudes();
-                    })
-                    .catch(function (error) {
-                        mostrarMensaje(error.message, "danger", "mensajeSolicitud");
-                    });
-            },
-        });
-    }
-
     // NAVEGACIÓN POR PASOS (FORMULARIO)
     function mostrarPaso(numero) {
         if (modoEdicion && numero < 2) numero = 2;
@@ -851,19 +746,15 @@
         });
 
         var subtitulo = document.getElementById("subtituloFormularioSolicitud");
-        if (subtitulo) {
-            subtitulo.textContent = modoEdicion ? "Paso " + (paso - 1) + " de 2" : "Paso " + paso + " de 3";
-        }
+        if (subtitulo) subtitulo.textContent = modoEdicion ? "Paso " + (paso - 1) + " de 2" : "Paso " + paso + " de 3";
+
         var barra = document.getElementById("barraPaso");
-        if (barra) {
-            barra.style.width = modoEdicion ? ((paso - 1) / 2) * 100 + "%" : (paso / 3) * 100 + "%";
-        }
+        if (barra) barra.style.width = modoEdicion ? ((paso - 1) / 2) * 100 + "%" : (paso / 3) * 100 + "%";
+
         var btnAnterior = document.getElementById("btnAnterior");
         var btnGuardar = document.getElementById("btnGuardar");
 
-        if (btnAnterior) {
-            btnAnterior.classList.toggle("invisible", paso === 1 || (modoEdicion && paso === 2));
-        }
+        if (btnAnterior) btnAnterior.classList.toggle("invisible", paso === 1 || (modoEdicion && paso === 2));
         if (btnSiguiente) btnSiguiente.classList.toggle("d-none", paso === 3);
         if (btnGuardar) btnGuardar.classList.toggle("d-none", paso !== 3);
 
@@ -895,84 +786,82 @@
         }
         return true;
     }
-    function pintarNumeroCuenta(texto) {
-        var contenedor = document.getElementById("listaNumeroCuenta");
 
-        if (!contenedor) {
-            console.error("No se encontró el contenedor listaNumeroCuenta.");
+    function pintarNumeroCuenta(texto) {
+        var resultados = document.getElementById("resultadosNumeroCuenta");
+
+        if (!resultados) {
+            console.error("No existe #resultadosNumeroCuenta");
+            return;
+        }
+
+        texto = String(texto || "").trim();
+
+        if (texto.length < 6) {
+            resultados.innerHTML = "";
             return;
         }
 
         consultar("numeroCuenta", texto)
             .then(function (alumnos) {
-                var resultados = document.getElementById("resultadosNumeroCuenta");
-                if (!resultados) return;
-
-                if (!alumnos.length) {
-                    resultados.innerHTML = '<div class="texto-muted small p-2">No se encontraron alumnos.</div>';
+                if (!Array.isArray(alumnos) || alumnos.length === 0) {
+                    resultados.innerHTML =
+                        '<div class="list-group-item text-muted">' +
+                        "No se encontraron asociaciones académicas." +
+                        "</div>";
                     return;
                 }
-                resultados.innerHTML =
-                    alumnos
-                        .map(function (alumno) {
-                            var numero = String(alumno.NumeroCuenta || "");
-                            var nombreCompleto = [
-                                alumno.Nombre || alumno.nombre || "",
-                                alumno.ApellidoPaterno || "",
-                                alumno.ApellidoMaterno || "",
-                            ]
-                                .join(" ")
-                                .trim();
 
-                            var detalle = [
-                                alumno.Instituto || "",
-                                alumno.Semestre || "",
-                                alumno.ProgramaEducativo || "",
-                                alumno.CicloEscolar || "",
-                            ]
-                                .join(" ")
-                                .trim();
+                resultados.innerHTML = alumnos
+                    .map(function (alumno) {
+                        var numero = alumno.NumeroCuenta || "";
+                        var kardex = alumno.idKardex || "";
+                        var nombre = alumno.NombreCompleto || "";
+                        var programa = alumno.ProgramaEducativo || "";
+                        var instituto = alumno.Instituto || "";
+                        var semestre = alumno.Semestre || "";
+                        var ciclo = alumno.CicloEscolar || "";
+                        var idPrograma = alumno.idProgramaEducativo || "";
 
-                            return (
-                                '<button type="button" ' +
-                                'class="list-group-item list-group-item-action" ' +
-                                'data-numero="' +
-                                escapeHtml(numero) +
-                                '" ' +
-                                'data-nombre-completo="' +
-                                escapeHtml(alumno.NombreCompleto || "") +
-                                '" ' +
-                                'data-instituto="' +
-                                escapeHtml(alumno.Instituto || "") +
-                                '" ' +
-                                'data-semestre="' +
-                                escapeHtml(alumno.Semestre || "") +
-                                '" ' +
-                                'data-programa-educativo="' +
-                                escapeHtml(alumno.ProgramaEducativo || "") +
-                                '" ' +
-                                'data-ciclo-escolar="' +
-                                escapeHtml(alumno.CicloEscolar || "") +
-                                '" ' +
-                                ">" +
-                                "<strong>" +
-                                escapeHtml(numero) +
-                                "</strong>" +
-                                (nombreCompleto ? "<br><small>" + escapeHtml(nombreCompleto) + "</small>" : "") +
-                                (detalle ? '<br><small class="text-muted">' + escapeHtml(detalle) + "</small>" : "") +
-                                "</button>"
-                            );
-                        })
-                        .join("") || '<div class="text-muted small">No se encontraron alumnos.</div>';
+                        return `
+                    <button
+                        type="button"
+                        class="list-group-item list-group-item-action"
+                        data-numero="${escapeHtml(numero)}"
+                        data-kardex="${escapeHtml(kardex)}"
+                        data-id-programa-educativo="${escapeHtml(idPrograma)}"
+                        data-nombre-completo="${escapeHtml(nombre)}"
+                        data-instituto="${escapeHtml(instituto)}"
+                        data-semestre="${escapeHtml(semestre)}"
+                        data-programa-educativo="${escapeHtml(programa)}"
+                        data-ciclo-escolar="${escapeHtml(ciclo)}"
+                    >
+                        <strong>${escapeHtml(numero)} — ${escapeHtml(nombre)}</strong>
+                        <br>
+                        <span>${escapeHtml(programa)}</span>
+                        <br>
+                        <small class="text-muted">
+                            ${escapeHtml(instituto)} ·
+                            ${escapeHtml(semestre)} ·
+                            Kardex: ${escapeHtml(kardex)}
+                        </small>
+                    </button>
+                `;
+                    })
+                    .join("");
             })
             .catch(function (error) {
-                mostrarMensaje(error.message, "danger", "mensajeFormulario");
+                console.error("Error al consultar alumnos:", error);
+
+                resultados.innerHTML =
+                    '<div class="list-group-item text-danger">' + "No fue posible consultar los alumnos." + "</div>";
             });
     }
 
     function seleccionarAlumno(elemento) {
         var campos = {
-            idKardex: datos.kardex || "",
+            idKardex: elemento.dataset.kardex || "",
+            idProgramaEducativo: elemento.dataset.idProgramaEducativo || "",
             CicloEscolar: elemento.dataset.cicloEscolar || "",
             NumeroCuenta: elemento.dataset.numero || "",
             NombreCompleto: elemento.dataset.nombreCompleto || "",
@@ -980,50 +869,58 @@
             Semestre: elemento.dataset.semestre || "",
             ProgramaEducativo: elemento.dataset.programaEducativo || "",
         };
-        Object.keys(campos).forEach(function (k) {
-            var input = document.getElementById(k);
-            if (input) input.value = campos[k];
-            var span = document.getElementById("mostrar" + k);
-            if (span) span.textContent = campos[k];
+
+        if (!campos.idKardex) {
+            mostrarError(
+                "errorNumeroCuenta",
+                "El resultado no contiene un Kardex. Verifica los datos devueltos por PHP.",
+            );
+            console.error("Resultado sin idKardex:", elemento);
+            return;
+        }
+
+        Object.keys(campos).forEach(function (clave) {
+            var input = document.getElementById(clave);
+            if (input) input.value = campos[clave];
+            var span = document.getElementById("mostrar" + clave);
+            if (span) span.textContent = campos[clave];
         });
+
         var datosAlumno = document.getElementById("datosAlumno");
         var datosInstitucional = document.getElementById("datosInstitucional");
         if (datosAlumno) datosAlumno.classList.remove("d-none");
         if (datosInstitucional) datosInstitucional.classList.remove("d-none");
+
         var resultados = document.getElementById("resultadosNumeroCuenta");
         if (resultados) resultados.innerHTML = "";
+
         mostrarError("errorNumeroCuenta", "");
     }
-    
-function validarSolicitudActiva(idKardex) {
-    if (!idKardex) {
-        return Promise.reject(new Error("No se recibió el Kardex del alumno seleccionado."));
+
+    function validarSolicitudActiva(idKardex) {
+        idKardex = String(idKardex || "").trim();
+        if (!idKardex) {
+            return Promise.reject(new Error("No se recibió el Kardex del alumno seleccionado."));
+        }
+
+        var url = endpoint + "?accion=validarSolicitudActiva&idKardex=" + encodeURIComponent(idKardex);
+        return fetch(url).then(function (respuesta) {
+            return respuesta.text().then(function (contenido) {
+                var cuerpo;
+                try {
+                    cuerpo = JSON.parse(contenido);
+                } catch (error) {
+                    console.error("Respuesta no válida del servidor:", contenido);
+                    throw new Error("El servidor no devolvió JSON válido.");
+                }
+                if (!respuesta.ok || !cuerpo.ok) {
+                    throw new Error(cuerpo.mensaje || "No fue posible validar la solicitud.");
+                }
+                return cuerpo.datos;
+            });
+        });
     }
 
-    var url = endpoint + "?accion=validarSolicitudActiva" + "&idKardex=" + encodeURIComponent(idKardex);
-
-    return fetch(url).then(function (respuesta) {
-        return respuesta.text().then(function (contenido) {
-            var cuerpo;
-
-            try {
-                cuerpo = JSON.parse(contenido);
-            } catch (error) {
-                console.error("Respuesta NO es JSON (validarSolicitudActiva):", contenido);
-                throw new Error("El servidor no devolvió JSON válido al validar.");
-            }
-
-            if (!respuesta.ok || !cuerpo.ok) {
-                throw new Error(cuerpo.mensaje || "No fue posible validar la solicitud.");
-            }
-
-            return cuerpo.datos;
-        });
-    });
-}
-
-
-    //agregar las observaciones
     function renderObservaciones() {
         var lista = document.getElementById("listaObservaciones");
         if (!lista) return;
@@ -1048,21 +945,20 @@ function validarSolicitudActiva(idKardex) {
             })
             .join("");
     }
+
     function actualizarVisibilidadDatosAdicionales() {
         var wrap = document.getElementById("wrapDatosAdicionales");
         if (!wrap) return;
-
         var seleccionado = document.querySelector('input[name="DatoAdicional"]:checked');
         var esSi = seleccionado && seleccionado.value === "S";
-
         wrap.classList.toggle("d-none", !esSi);
 
-        // Si eligen "No", limpiamos lo que hubieran agregado
         if (!esSi && observaciones.length) {
             observaciones = [];
             renderObservaciones();
         }
     }
+
     function agregarObservacion() {
         var nombreEl = document.getElementById("observacionNombre");
         var valorEl = document.getElementById("observacionValor");
@@ -1071,6 +967,7 @@ function validarSolicitudActiva(idKardex) {
         var nombre = (nombreEl.value || "").trim();
         var valor = (valorEl.value || "").trim();
         mostrarError("errorObservaciones", "");
+
         if (!nombre) {
             mostrarError("errorObservaciones", "Ingrese el nombre del campo.");
             nombreEl.focus();
@@ -1089,16 +986,18 @@ function validarSolicitudActiva(idKardex) {
         renderObservaciones();
     }
 
-    // FORMULARIO
     function datosFormulario() {
         var datoAdicional = document.querySelector('input[name="DatoAdicional"]:checked');
         var tipoFirma = document.querySelector('input[name="TipoFirma"]:checked');
         var calificaciones = document.querySelector('input[name="Calificaciones"]:checked');
         var campoKardex = document.getElementById("idKardex");
+        var campoPrograma = document.getElementById("idProgramaEducativo");
+
         return {
             accion: modoEdicion ? "actualizar" : "guardar",
             id: document.getElementById("solicitudId").value,
             idKardex: campoKardex ? campoKardex.value : "",
+            idProgramaEducativo: campoPrograma ? campoPrograma.value : "",
             CicloEscolar: document.getElementById("CicloEscolar").value,
             NumeroCuenta: document.getElementById("NumeroCuenta").value,
             NombreCompleto: document.getElementById("NombreCompleto").value,
@@ -1117,12 +1016,10 @@ function validarSolicitudActiva(idKardex) {
         var datoAdicional = datos.DatoAdicional === "S" ? "Sí" : "No";
         var firma = datos.TipoFirma === "S" ? "Digital (PDF)" : "Autógrafa";
         var calificaciones = datos.Calificaciones === "S" ? "Sí" : "No";
-
         var datosInstitucionales = [datos.Instituto, datos.Semestre, datos.ProgramaEducativo, datos.CicloEscolar]
             .filter(Boolean)
             .join(" ")
             .trim();
-
         var resumen = document.getElementById("resumenSolicitud");
         if (!resumen) return;
 
@@ -1160,8 +1057,7 @@ function validarSolicitudActiva(idKardex) {
     }
 
     function seleccionarRadio(nombre, valor) {
-        var radios = document.querySelectorAll('input[name="' + nombre + '"]');
-        radios.forEach(function (radio) {
+        document.querySelectorAll('input[name="' + nombre + '"]').forEach(function (radio) {
             radio.checked = String(radio.value) === String(valor);
         });
     }
@@ -1171,85 +1067,149 @@ function validarSolicitudActiva(idKardex) {
         var params = new URLSearchParams(window.location.search);
         var id = params.get("id");
 
-        var btnSiguiente = document.getElementById("btnSiguiente");
+        btnSiguiente = document.getElementById("btnSiguiente");
+        var resultados = document.getElementById("resultadosNumeroCuenta");
 
-    if (btnSiguiente) {
-        btnSiguiente.addEventListener("click", function (evento) {
-        evento.preventDefault();
+        if (resultados) {
+            resultados.addEventListener("click", function (evento) {
+                var boton = evento.target.closest("button[data-kardex]");
+                if (boton && resultados.contains(boton)) {
+                    seleccionarAlumno(boton);
+                }
+            });
+        }
 
-        if (paso === 1) {
-            var campoKardex = document.getElementById("idKardex");
-            var idKardex = campoKardex
-                ? campoKardex.value.trim()
-                : "";
+        if (btnSiguiente) {
+            btnSiguiente.addEventListener("click", function (evento) {
+                evento.preventDefault();
 
-            if (!idKardex) {
-                mostrarError(
-                    "errorNumeroCuenta",
-                    "Seleccione al alumno y su programa educativo antes de continuar."
-                );
-                return;
-            }
+                if (paso === 1) {
+                    var campoKardex = document.getElementById("idKardex");
+                    var idKardex = campoKardex ? campoKardex.value.trim() : "";
+                    var numero = document.getElementById("NumeroCuenta");
 
-            btnSiguiente.disabled = true;
-
-            var textoOriginal = btnSiguiente.innerHTML;
-
-            btnSiguiente.innerHTML =
-                'Validando... <span class="spinner-border spinner-border-sm" ' +
-                'role="status" aria-hidden="true"></span>';
-
-            validarSolicitudActiva(idKardex)
-                .then(function (res) {
-                    if (res && res.tieneActiva === true) {
+                    if (!numero || !numero.value.trim() || !idKardex) {
                         mostrarError(
                             "errorNumeroCuenta",
-                            res.mensaje ||
-                            "El alumno ya tiene una solicitud activa."
+                            "Seleccione al alumno y su programa educativo antes de continuar.",
                         );
-
-                        mostrarMensaje(
-                            res.mensaje ||
-                            "El alumno cuenta con una solicitud activa.",
-                            "danger",
-                            "mensajeFormulario"
-                        );
-
                         return;
                     }
 
-                    mostrarPaso(2);
-                })
-                .catch(function (error) {
-                    mostrarMensaje(
-                        "Error al validar: " + error.message,
-                        "danger",
-                        "mensajeFormulario"
-                    );
-                })
-                .finally(function () {
-                    btnSiguiente.disabled = false;
-                    btnSiguiente.innerHTML = textoOriginal;
-                });
+                    btnSiguiente.disabled = true;
+                    var textoOriginal = btnSiguiente.innerHTML;
+                    btnSiguiente.innerHTML =
+                        'Validando... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
 
-        } else if (paso === 2) {
-            if (validarPaso()) {
-                mostrarPaso(3);
-            }
+                    validarSolicitudActiva(idKardex)
+                        .then(function (res) {
+                            if (res && res.tieneActiva === true) {
+                                mostrarError(
+                                    "errorNumeroCuenta",
+                                    res.mensaje || "El alumno ya tiene una solicitud activa.",
+                                );
+                                mostrarMensaje(
+                                    res.mensaje || "El alumno cuenta con una solicitud activa.",
+                                    "danger",
+                                    "mensajeFormulario",
+                                );
+                                return;
+                            }
+                            mostrarPaso(2);
+                        })
+                        .catch(function (error) {
+                            mostrarMensaje("Error al validar: " + error.message, "danger", "mensajeFormulario");
+                        })
+                        .finally(function () {
+                            btnSiguiente.disabled = false;
+                            btnSiguiente.innerHTML = textoOriginal;
+                        });
+                } else if (paso === 2) {
+                    if (validarPaso()) mostrarPaso(3);
+                }
+            });
         }
-    });
-}}
+
+        var btnAnterior = document.getElementById("btnAnterior");
+        if (btnAnterior) {
+            btnAnterior.addEventListener("click", function () {
+                mostrarPaso(Math.max(1, paso - 1));
+            });
+        }
+
+        var btnGuardar = document.getElementById("btnGuardar");
+        if (btnGuardar) btnGuardar.addEventListener("click", guardarSolicitud);
+
+        var form = document.getElementById("formSolicitud");
+        if (form) {
+            form.addEventListener("submit", function (e) {
+                e.preventDefault();
+                guardarSolicitud();
+            });
+        }
+
+        var buscar = document.getElementById("buscarNumeroCuenta");
+        if (buscar) {
+            buscar.addEventListener("input", function () {
+                var texto = this.value.trim();
+                if (texto.length < 6) {
+                    var res = document.getElementById("resultadosNumeroCuenta");
+                    if (res) res.innerHTML = "";
+                    return;
+                }
+                pintarNumeroCuenta(texto);
+            });
+        }
+        var campoBusqueda = document.getElementById("buscarNumeroCuenta");
+
+        if (campoBusqueda) {
+            campoBusqueda.addEventListener("input", function () {
+                pintarNumeroCuenta(this.value);
+            });
+        }
+        document.querySelectorAll('input[name="DatoAdicional"]').forEach(function (radio) {
+            radio.addEventListener("change", actualizarVisibilidadDatosAdicionales);
+        });
+
+        var btnAgregarObservacion = document.getElementById("btnAgregarObservacion");
+        if (btnAgregarObservacion) btnAgregarObservacion.addEventListener("click", agregarObservacion);
+
+        var inputObsNombre = document.getElementById("observacionNombre");
+        var inputObsValor = document.getElementById("observacionValor");
+        [inputObsNombre, inputObsValor].forEach(function (el) {
+            if (!el) return;
+            el.addEventListener("keydown", function (e) {
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                    agregarObservacion();
+                }
+            });
+        });
+
+        var listaObservaciones = document.getElementById("listaObservaciones");
+        if (listaObservaciones) {
+            listaObservaciones.addEventListener("click", function (e) {
+                var btn = e.target.closest(".btn-eliminar-observacion");
+                if (!btn) return;
+                observaciones.splice(Number(btn.dataset.index), 1);
+                renderObservaciones();
+            });
+        }
+
+        renderObservaciones();
+
+        if (id) precargarSolicitud(id);
+        else mostrarPaso(1);
+    }
 
     function precargarSolicitud(id) {
         modoEdicion = true;
-
         solicitar({ accion: "consultar", id: id })
             .then(function (solicitud) {
                 if (!solicitud) {
-                    mostrarMensaje("No se encontró la solicitud seleccionada.", "danger", "mensajeFormulario");
+                    mostrarMensaje("No se encontró la solicitud.", "danger", "mensajeFormulario");
                     return;
                 }
-
                 if (solicitud.Estatus === "Cancelado") {
                     mostrarMensaje("No se puede editar una solicitud cancelada.", "warning", "mensajeFormulario");
                     return;
@@ -1279,14 +1239,11 @@ function validarSolicitudActiva(idKardex) {
                 seleccionarRadio("TipoFirma", solicitud.TipoFirma);
                 seleccionarRadio("Calificaciones", solicitud.Calificaciones);
 
-                // Cargar observaciones
                 observaciones = [];
-                if (Array.isArray(solicitud.Observaciones)) {
-                    observaciones = solicitud.Observaciones.slice();
-                } else if (solicitud.Observacion) {
-                    // Compatibilidad con datos anteriores (string simple)
+                if (Array.isArray(solicitud.Observaciones)) observaciones = solicitud.Observaciones.slice();
+                else if (solicitud.Observacion)
                     observaciones = [{ nombre: "Observación", valor: solicitud.Observacion }];
-                }
+
                 renderObservaciones();
                 actualizarVisibilidadDatosAdicionales();
 
@@ -1318,13 +1275,10 @@ function validarSolicitudActiva(idKardex) {
         solicitar(datos)
             .then(function () {
                 mostrarMensaje(
-                    modoEdicion
-                        ? "Solicitud actualizada correctamente. Redirigiendo..."
-                        : "Solicitud registrada correctamente. Redirigiendo...",
+                    modoEdicion ? "Solicitud actualizada. Redirigiendo..." : "Solicitud registrada. Redirigiendo...",
                     "success",
                     "mensajeFormulario",
                 );
-
                 setTimeout(function () {
                     window.location.href = "?vta=index";
                 }, 1000);
@@ -1334,7 +1288,7 @@ function validarSolicitudActiva(idKardex) {
             });
     }
 
-    // LISTADO
+    // LISTADO (PANTALLA PRINCIPAL)
     function iniciarListado() {
         limpiarMensaje("mensajeSolicitud");
 
@@ -1363,39 +1317,34 @@ function validarSolicitudActiva(idKardex) {
                     chk.checked = marcado;
                     toggleSeleccion(chk.dataset.id, marcado);
                 });
-            });}
+            });
+        }
 
-            var barraMasiva = document.getElementById("barraAccionesMasivas");
-            if (barraMasiva) {
-                barraMasiva.addEventListener("click", function (evento) {
-                    var btn = evento.target.closest("[data-accion-masiva]");
-                    if (!btn) return;
-                    var accion = btn.getAttribute("data-accion-masiva");
+        var barraMasiva = document.getElementById("barraAccionesMasivas");
+        if (barraMasiva) {
+            barraMasiva.addEventListener("click", function (evento) {
+                var btn = evento.target.closest("[data-accion-masiva]");
+                if (!btn) return;
+                var accion = btn.getAttribute("data-accion-masiva");
 
-                    if (accion === "imprimir") {
-                        if (idsSeleccionados.length === 0) {
-                            mostrarMensaje("Selecciona al menos una constancia.", "warning", "mensajeSolicitud");
-                            return;
-                        }
-                        if (idsSeleccionados.length > 1) {
-                            mostrarMensaje(
-                                "Por el momento, solo puedes imprimir una constancia a la vez.",
-                                "warning",
-                                "mensajeSolicitud",
-                            );
-                            return;
-                        }
-                        var idSolicitud = idsSeleccionados[0];
-                        var urlPDF = "?vta=ConstanciaDigital$idSolicitud=" + idSolicitud;
-
-                        window.open(urlPDF, "_blank");
+                if (accion === "imprimir") {
+                    if (idsSeleccionados.length === 0) {
+                        mostrarMensaje("Selecciona al menos una constancia.", "warning", "mensajeSolicitud");
                         return;
                     }
 
-                    ejecutarAccionMasiva(accion);
-                });
-            }
-        
+                    idsSeleccionados.forEach(function (id) {
+                        var urlPDF =
+                            "../../modules/constancia-estudios/models/modConstanciaImprimirDigital.php?idSolicitud=" +
+                            id;
+                        window.open(urlPDF, "_blank");
+                    });
+                    return;
+                }
+
+                ejecutarAccionMasiva(accion);
+            });
+        }
 
         var btnLimpiarSel = document.getElementById("btnLimpiarSeleccion");
         if (btnLimpiarSel) btnLimpiarSel.addEventListener("click", limpiarSeleccion);
@@ -1417,17 +1366,20 @@ function validarSolicitudActiva(idKardex) {
                         acciones[i][1](btn.dataset.id);
                         return;
                     }
-                    var btnImprimir = evento.target.closest(".btn-imprimir");
-                    if (btnImprimir) {
-                        var idSolicitud = btnImprimir.dataset.id;
-                        var urlPDF = "vta=ConstanciaDigital&idSolicitud=" + idSolicitud;
+                }
 
-                        window.open(urlPDF, "_blank");
-                        return;
-                    }
+                var btnImprimir = evento.target.closest(".btn-imprimir");
+                if (btnImprimir) {
+                    var idSolicitud = btnImprimir.dataset.id;
+                    var urlPDF =
+                        "../../modules/constancia-estudios/models/modConstanciaImprimirDigital.php?idSolicitud=" +
+                        idSolicitud;
+                    window.open(urlPDF, "_blank");
+                    return;
                 }
             });
         }
+
         var btnGuardarDA = document.getElementById("btnGuardarDA");
         if (btnGuardarDA) btnGuardarDA.addEventListener("click", guardarDatosAdicionales);
 
@@ -1443,32 +1395,49 @@ function validarSolicitudActiva(idKardex) {
             });
         }
     }
-    // --- LÓGICA PARA EL MODAL DE DATOS ADICIONALES ---
-    function abrirModalDatosAdicionales(idSolicitud, esMasivo, accionMasiva) {
-        document.getElementById("daSolicitudId").value = idSolicitud;
-        document.getElementById("daAccionMasiva").value = esMasivo ? "1" : "0";
-        document.getElementById("daEstatusMasivo").value = accionMasiva || "";
-        var msjModal = document.getElementById("mensajeModalDA");
-        if (msjModal) {
-            msjModal.textContent = "";
-            msjModal.className = "alert alert-warning d-none";
-        }
 
-        var sol = todosLosRegistros.find(function (s) {
-            return String(s.idSolicitud) === String(idSolicitud);
-        });
-        document.getElementById("daNumeroCuenta").textContent = sol ? sol.NumeroCuenta : "";
+   
+function abrirModalDatosAdicionales(idSolicitud, esMasivo, accionMasiva) {
+    document.getElementById("daSolicitudId").value = idSolicitud;
+    document.getElementById("daAccionMasiva").value = esMasivo ? "1" : "0";
+    document.getElementById("daEstatusMasivo").value = accionMasiva || "";
 
-        // Limpiar campos previos
-        document.querySelectorAll(".campo-adicional:not(:first-child)").forEach(function (el) {
-            el.remove();
-        });
-        document.querySelector(".da-nombre").value = "";
-        document.querySelector(".da-valor").value = "";
+    var msjModal = document.getElementById("mensajeModalDA");
 
-        var modal = new bootstrap.Modal(document.getElementById("modalDatosAdicionales"));
-        modal.show();
+    if (msjModal) {
+        msjModal.textContent = "";
+        msjModal.className = "alert alert-warning d-none";
     }
+
+    // Buscar la solicitud seleccionada
+    var sol = todosLosRegistros.find(function (s) {
+        return String(s.idSolicitud) === String(idSolicitud);
+    });
+
+    console.log("Solicitud encontrada:", sol);
+
+    // Recuperar el número de cuenta
+    var numeroCuenta = "";
+
+    if (sol) {
+        numeroCuenta = sol.NumeroCuenta || sol.numeroCuenta || "";
+    }
+
+    document.getElementById("daNumeroCuenta").textContent = numeroCuenta || "Número de cuenta no disponible";
+
+    // Limpiar campos adicionales
+    document.querySelectorAll(".campo-adicional:not(:first-child)").forEach(function (el) {
+        el.remove();
+    });
+
+    document.querySelector(".da-nombre").value = "";
+    document.querySelector(".da-valor").value = "";
+
+    var modal = new bootstrap.Modal(document.getElementById("modalDatosAdicionales"));
+
+    modal.show();
+}
+
 
     function guardarDatosAdicionales() {
         var id = document.getElementById("daSolicitudId").value;
@@ -1479,9 +1448,7 @@ function validarSolicitudActiva(idKardex) {
         document.querySelectorAll(".campo-adicional").forEach(function (campo) {
             var nombre = campo.querySelector(".da-nombre").value.trim();
             var valor = campo.querySelector(".da-valor").value.trim();
-            if (nombre && valor) {
-                observaciones.push({ nombre: nombre, valor: valor });
-            }
+            if (nombre && valor) observaciones.push({ nombre: nombre, valor: valor });
         });
 
         if (observaciones.length === 0) {
@@ -1492,17 +1459,11 @@ function validarSolicitudActiva(idKardex) {
         msjModal.textContent = "";
         msjModal.className = "alert alert-warning d-none";
 
-        // Primero guardamos las observaciones en la solicitud
-        solicitar({
-            accion: "actualizarObservaciones",
-            id: id,
-            Observaciones: JSON.stringify(observaciones),
-        })
+        solicitar({ accion: "actualizarObservaciones", id: id, Observaciones: JSON.stringify(observaciones) })
             .then(function () {
                 if (document.activeElement && typeof document.activeElement.blur === "function") {
                     document.activeElement.blur();
                 }
-                // Cerrar modal y recargar datos locales
                 bootstrap.Modal.getInstance(document.getElementById("modalDatosAdicionales")).hide();
 
                 if (esMasivo) {

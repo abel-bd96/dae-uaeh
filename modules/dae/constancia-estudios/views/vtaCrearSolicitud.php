@@ -28,6 +28,8 @@ include './sidebar_constancias.php';
             <form id="formSolicitud" novalidate>
 
                 <input type="hidden" id="solicitudId" value="">
+                <input type="hidden" id="idKardex" name="idKardex" value="">
+                <input type="hidden" id="idProgramaEducativo" name="idProgramaEducativo" value="">
                 <input type="hidden" id="CicloEscolar" value="">
                 <input type="hidden" id="NumeroCuenta" value="">
                 <input type="hidden" id="NombreCompleto" value="">
