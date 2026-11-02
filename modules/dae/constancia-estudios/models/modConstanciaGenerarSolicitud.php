@@ -104,14 +104,14 @@ try {
             $solicitudes = $consulta->listar(); 
             $tieneActiva = false;
             
-            $estatusActivos = array('Solicitado', 'Pagado');
+            $estatusActivos = array('Solicitado', 'En elaboración', 'En firma');
             
             foreach ($solicitudes as $s) {
                 $kardexExistente = isset($s['idKardex']) ? trim((string)$s['idKardex']) : '';
                 $estatusExistente = isset($s['estatus']) ? $s['estatus'] : '';
                 
                 // Si el kardex coincide y el estatus es activo, frena
-                if ($kardexExistente === $idKardex && in_array($estatusExistente, $estatusActivos, true)) {
+                if ($kardexExistente !== '' && $kardexExistente === $idKardex && in_array($estatusExistente, $estatusActivos, true)) {
                     $tieneActiva = true;
                     break;
                 }

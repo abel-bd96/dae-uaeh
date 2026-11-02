@@ -184,9 +184,8 @@ public function consultarSolicitudExistente($idKardex, $idCicloEscolar)
 
     // 2. Leer solicitudes registradas
     $solicitudes = $this->leer($this->rutaSolicitud);
-
     // 3. Estados que impiden registrar otra solicitud
-    $estatusActivos = array('solicitado', 'pagado');
+    $estatusActivos = array('Solicitado', 'En elaboración', 'En firma');
 
     // 4. Buscar coincidencia por Kardex y ciclo escolar
     foreach ($solicitudes as $solicitud) {
@@ -201,10 +200,7 @@ public function consultarSolicitudExistente($idKardex, $idCicloEscolar)
             ? strtolower(trim((string)$solicitud['estatus']))
             : '';
 
-        if (
-            $kardex === $this->normalizar($idKardex) &&
-            $ciclo === $this->normalizar($idCicloEscolar) &&
-            in_array($estatus, $estatusActivos, true)
+        if ($kardex === $idKardex && $ciclo === $idCicloEscolar && in_array($estatus, $estatusActivos, true)
         ) {
             return array(
                 'existe' => true,
@@ -483,12 +479,12 @@ public function consultarSolicitudExistente($idKardex, $idCicloEscolar)
             }
         }
         return array(
-            'procesados' => $procesados,
-            'omitidos'   => $omitidos
-        );
+                    'existe' => true, 
+                    'mensaje' => 'Este alumno ya tiene una solicitud activa para este Kardex en este ciclo.'
+                );
     }
     // GUARDAR (crear solicitud nueva)
-       public function guardar($datos) {
+    public function guardar($datos) {
         if (!isset($datos['NumeroCuenta']) || trim($datos['NumeroCuenta']) === '') {
             return array('ok' => false, 'mensaje' => 'El número de cuenta es obligatorio.');
         }
@@ -496,20 +492,20 @@ public function consultarSolicitudExistente($idKardex, $idCicloEscolar)
         $datos = $this->normalizarObservaciones($datos);
         $solicitudes = $this->leer($this->rutaSolicitud);
 
-        // ✅ VALIDACIÓN CORREGIDA: Por Número de Cuenta y TODOS los estatus activos
-        $estatusActivos = array('Solicitado', 'Pagado', 'En elaboración', 'En firma', 'Emitida', 'Entregado');
+        // Por Número de Cuenta y TODOS los estatus activos
+        $estatusActivos = array('Solicitado', 'En elaboración', 'En firma');
         
         foreach ($solicitudes as $s) {
-            $cuentaExistente = isset($s['NumeroCuenta']) ? trim((string)$s['NumeroCuenta']) : '';
+            $kardexExistente = isset($s['idKardex']) ? trim((string)$s['idKardex']) : '';
+            $kardexNuevo = isset($datos['idKardex']) ? trim((string)$datos['idKardex']) : '';
             $estatusExistente = isset($s['estatus']) ? $s['estatus'] : '';
             
             // Si la cuenta coincide y el estatus está activo, bloqueamos
-            if ($cuentaExistente === trim((string)$datos['NumeroCuenta']) && in_array($estatusExistente, $estatusActivos, true)) {
+            if ($kardexNuevo !== '' && $kardexExistente === $kardexNuevo && in_array($estatusExistente, $estatusActivos, true)) {
                 return array('ok' => false, 'mensaje' => 'El alumno ya tiene una solicitud activa (' . $estatusExistente . ').');
             }
         }
 
-        // ... (El resto del código de guardar se queda igual) ...
         $ultimoId = 0;
         foreach ($solicitudes as $s) {
             if (isset($s['idSolicitud']) && (int)$s['idSolicitud'] > $ultimoId) {

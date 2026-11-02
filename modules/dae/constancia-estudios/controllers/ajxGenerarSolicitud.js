@@ -288,7 +288,6 @@
     }
 
     // BOTONES SEGÚN ESTATUS
-    // BOTONES SEGÚN ESTATUS
     function generarBotones(s) {
         var id = escapeHtml(s.idSolicitud || s.id || "");
         var estatus = s.EstatusInterno || s.Estatus || s.estatus || "";
@@ -1170,6 +1169,23 @@
         if (buscar) {
             buscar.addEventListener("input", function () {
                 var texto = this.value.trim();
+                document.getElementById("idKardex").value = "";
+                document.getElementById("idProgramaEducativo").value = "";
+                document.getElementById("NumeroCuenta").value = "";
+                document.getElementById("NombreCompleto").value = "";
+                document.getElementById("Instituto").value = "";
+                document.getElementById("Semestre").value = "";
+                document.getElementById("ProgramaEducativo").value = "";
+                document.getElementById("CicloEscolar").value = "";
+
+                // Ocultar los paneles de datos
+                document.getElementById("datosAlumno").classList.add("d-none");
+                document.getElementById("datosInstitucional").classList.add("d-none");
+
+                // Limpiar mensajes de error
+                mostrarError("errorNumeroCuenta", "");
+                limpiarMensaje("mensajeFormulario");
+
                 if (texto.length < 6) {
                     var res = document.getElementById("resultadosNumeroCuenta");
                     if (res) res.innerHTML = "";
@@ -1275,6 +1291,9 @@
     }
 
     function guardarSolicitud() {
+        if (paso !== 3) {
+            return;
+        }
         limpiarMensaje("mensajeFormulario");
         var datos = datosFormulario();
 

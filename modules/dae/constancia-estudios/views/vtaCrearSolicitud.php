@@ -25,7 +25,7 @@ include './sidebar_constancias.php';
             </div>
             <p class="text-muted small text-end mb-3" id="subtituloFormularioSolicitud">Paso 1 de 3</p>
 
-            <form id="formSolicitud" novalidate>
+            <form id="formSolicitud" novalidate onsubmit="return false;">
 
                 <input type="hidden" id="solicitudId" value="">
                 <input type="hidden" id="idKardex" name="idKardex" value="">
