@@ -12,7 +12,7 @@ require_once $rutaTCPDF;
 $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 $pdfNombre = "Constancia-de-Estudios";
 
-require(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'vtaConstanciaDigital.php');
+require(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'vtaPDFConstanciaDigital.php');
 
 $pdf->SetCreator(PDF_CREATOR);
 $pdf->SetTitle($pdfNombre);

@@ -13,7 +13,7 @@ $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8',
 
 $pdfNombre = "Formato-de-Pago";
 
-require(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'vtaFormatoPago.php');
+require(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'vtaPDFFormatoPago.php');
 
 $pdf->SetCreator(PDF_CREATOR);
 $pdf->SetTitle($pdfNombre);

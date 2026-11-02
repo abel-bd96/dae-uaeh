@@ -56,7 +56,7 @@
                             escapeHtml(r.fechaSolicitud) +
                             "</td>" +
                             "<td>" +
-                            escapeHtml(r.cicloEscolar) +
+                            escapeHtml(r.nombreCiclo) +
                             ". " +
                             escapeHtml(r.tipoFirma) +
                             "</td>" +
@@ -201,7 +201,7 @@
                         infoAuxiliar.classList.remove("alert-info");
                         infoAuxiliar.classList.add("alert-success");
                         infoAuxiliar.textContent =
-                            "Puedes descargar tu Constancia a través del botón Decargar Constancia Digital. ⬇️";
+                            "Puedes descargar tu Constancia a través del botón Descargar Constancia Digital. ⬇️";
                     }
                 } else {
                     if (infoAuxiliar) {
@@ -223,6 +223,7 @@
                     infoAuxiliar.classList.add("alert-success");
                     infoAuxiliar.textContent = "Tu constancia ya ha sido entregada y su respectivo trámite concluido.";
                 }
+                //Aquí debe dejar descargar, no en atendida
                 /*Revisar campos de ae_ciclo.json (dependiendo del id_kardex): fechaSolicitudConstanciaTermino && fechaPeriodoVacacionalTermino cuál es mayor + 14 días, 23 horas y 59 minutos
                  */
                 break;

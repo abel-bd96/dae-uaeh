@@ -4,66 +4,75 @@ class clsAlumnoSolicitudes
 {
     private $rutaHistorial;
     private $rutaDatosConstancia;
-    //private $rutaBloqueo;
+    private $rutaCiclo;
 
     public function __construct()
     {
         $directorioDatos = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR;
 
-        //$directorioDatosListaNegra = pendiente
+        $directorioDatosExternos = dirname(__DIR__, 3) . DIRECTORY_SEPARATOR . 'dae' . DIRECTORY_SEPARATOR . 'constancia-estudios' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR;
 
         $this->rutaHistorial = $directorioDatos . 'ae_Solicitud_Referencia.json';
         $this->rutaDatosConstancia = $directorioDatos . 'ae_Constancia_Contenido.json';
-        //$this->rutaBloqueo = $directorioDatos . 'casos_especiales.json'; ???
+        $this->rutaCiclo = $directorioDatosExternos . 'ae_ciclo.json';
     }
 
     public function listar()
     {
-        return $this->leer($this->rutaHistorial);
-    }
+        // Leer historial de solicitudes
+        $solicitudes = $this->leer($this->rutaHistorial);
 
+        if (empty($solicitudes)) {
+            return [];
+        }
 
-    public function mostrarDatosPersonales()
-    {
-        $datos = $this->leer($this->rutaDatosConstancia);
+        // Leer ciclos escolares
+        $ciclos = $this->leer($this->rutaCiclo);
 
-        if (!is_array($datos)) {
+        if (empty($ciclos)) {
             throw new RuntimeException(
-                'Los datos de la constancia no tienen un formato válido.'
+                'No se encontraron registros de ciclos escolares.'
             );
         }
 
-        if (isset($datos['idConstancia'])) {
-            $datos = [$datos];
+        // Normalizar registros individuales
+        if (isset($solicitudes['idSolicitud'])) {
+            $solicitudes = [$solicitudes];
         }
 
-        foreach ($datos as $registro) {
-            if (!is_array($registro)) {
+        if (isset($ciclos['idCiclo'])) {
+            $ciclos = [$ciclos];
+        }
+
+        // Crear índice de ciclos escolares
+        $indiceCiclos = [];
+
+        foreach ($ciclos as $ciclo) {
+
+            if (!is_array($ciclo) || !isset($ciclo['idCiclo'])) {
                 continue;
             }
 
-            if (
-                isset($registro['Cuenta']) &&
-                trim((string) $registro['Cuenta']) !== ''
-            ) {
-                return [
-                    'nombre' => $registro['nombre'] ?? '',
-                    'apellidoPaterno' => $registro['apellidoPaterno'] ?? '',
-                    'apellidoMaterno' => $registro['apellidoMaterno'] ?? '',
-                    'CURP' => $registro['CURP'] ?? '',
-                    'unidadAcademica' => $registro['unidadAcademica'] ?? '',
-                    'programaEducativo' => $registro['programaEducativo'] ?? '',
-                    'numeroCuenta' => $registro['numeroCuenta'] ?? '',
-                    'semestre' => $registro['semestre'] ?? '',
-                    'calidadAlumno' => $registro['calidadAlumno'] ?? '',
-                    'promedioGeneral' => $registro['promedioGeneral'] ?? ''
-                ];
-            }
+            $indiceCiclos[(string) $ciclo['idCiclo']] =
+                $ciclo['nombre'] ?? '';
         }
 
-        throw new RuntimeException(
-            'No fue posible obtener los datos personales del alumno.'
-        );
+        // Vincular nombre del ciclo a cada solicitud
+        foreach ($solicitudes as $key => $solicitud) {
+
+            if (!is_array($solicitud)) {
+                continue;
+            }
+
+            $idCicloEscolar = $solicitud['idCicloEscolar'] ?? null;
+
+            $solicitudes[$key]['nombreCiclo'] =
+                $idCicloEscolar !== null
+                ? ($indiceCiclos[(string) $idCicloEscolar] ?? 'Ciclo no encontrado')
+                : 'Sin ciclo asignado';
+        }
+
+        return $solicitudes;
     }
 
     public function consultarPorId($idSolicitud)
@@ -129,11 +138,117 @@ class clsAlumnoSolicitudes
 
         //Vincular los datos de la solicitud a la constancia, para poder corregir el progreso en la barra de progreso
         $constanciaEncontrada['estatus'] = $solicitudEncontrada['estatus'] ?? '';
-        //CHECA SI SÍ O NO
         $constanciaEncontrada['tipoFirma'] = $solicitudEncontrada['tipoFirma'] ?? '';
         return $constanciaEncontrada;
     }
 
+    public function cancelar($identificador)
+    {
+        $identificador = trim((string) $identificador);
+
+        if ($identificador === '') {
+            throw new InvalidArgumentException('La referencia a la solicitud es obligatoria.');
+        }
+
+        try {
+            $registros = $this->leer($this->rutaHistorial);
+
+            if (!is_array($registros)) {
+                throw new RuntimeException('El historial de solicitudes no tiene un formato válido.');
+            }
+
+            //Inicialización de variables usadas para el manejo de solicitud a cancelar
+            $encontrado = false;
+            $historialActualizado = [];
+
+            foreach ($registros as $registro) {
+                if (
+                    is_array($registro) &&
+                    isset($registro['idSolicitud']) &&
+                    (string) $registro['idSolicitud'] === $identificador
+                ) {
+                    $encontrado = true;
+
+                    if (!isset($registro['estatus']) || $registro['estatus'] !== 'Solicitada') {
+                        throw new RuntimeException(
+                            'La solicitud no puede cancelarse porque su estado actual es: ' .
+                                ($registro['estatus'] ?? 'Desconocido') . '.'
+                        );
+                    }
+
+                    $registro['estatus'] = 'Cancelada';
+                }
+                $historialActualizado[] = $registro;
+            }
+
+            if (!$encontrado) {
+                throw new RuntimeException('No se encontró la solicitud referenciada.');
+            }
+
+            try {
+                $this->escribir($this->rutaHistorial, array_values($historialActualizado));
+            } catch (Exception $excepcion) {
+                try {
+                    $this->escribir($this->rutaHistorial, $registros);
+                } catch (Exception $rollbackExcepcion) {
+                    // Conservar el error original.
+                }
+
+                throw new RuntimeException(
+                    'No fue posible cancelar la solicitud: ' . $excepcion->getMessage()
+                );
+            }
+
+            return [
+                'mensaje' => 'La solicitud fue cancelada correctamente.'
+            ];
+        } catch (Exception $excepcion) {
+        }
+    }
+
+    //AlumnoSolicitudes ↑ SolicitudNueva ↓
+    public function mostrarDatosPersonales()
+    {
+        $datos = $this->leer($this->rutaDatosConstancia);
+
+        if (!is_array($datos)) {
+            throw new RuntimeException(
+                'Los datos de la constancia no tienen un formato válido.'
+            );
+        }
+
+        if (isset($datos['idConstancia'])) {
+            $datos = [$datos];
+        }
+
+        foreach ($datos as $registro) {
+            if (!is_array($registro)) {
+                continue;
+            }
+
+            if (
+                isset($registro['Cuenta']) &&
+                trim((string) $registro['Cuenta']) !== ''
+            ) {
+                return [
+                    'nombre' => $registro['nombre'] ?? '',
+                    'apellidoPaterno' => $registro['apellidoPaterno'] ?? '',
+                    'apellidoMaterno' => $registro['apellidoMaterno'] ?? '',
+                    'CURP' => $registro['CURP'] ?? '',
+                    'unidadAcademica' => $registro['unidadAcademica'] ?? '',
+                    'programaEducativo' => $registro['programaEducativo'] ?? '',
+                    'numeroCuenta' => $registro['numeroCuenta'] ?? '',
+                    'semestre' => $registro['semestre'] ?? '',
+                    'calidadAlumno' => $registro['calidadAlumno'] ?? '',
+                    'promedioGeneral' => $registro['promedioGeneral'] ?? ''
+                ];
+            }
+        }
+
+        throw new RuntimeException(
+            'No fue posible obtener los datos personales del alumno.'
+        );
+    }
 
     public function guardar($tipoFirma, $calificaciones) //pendiente
     {
@@ -256,70 +371,6 @@ class clsAlumnoSolicitudes
                 'FechaRegistro' => $fechaRegistro,
                 'Estado' => 'Pendiente de Pago',
                 //'mensaje' => 'La solicitud ' . $folio . ' fue registrada correctamente.'
-            ];
-        } catch (Exception $excepcion) {
-        }
-    }
-
-    public function cancelar($identificador)
-    {
-        $identificador = trim((string) $identificador);
-
-        if ($identificador === '') {
-            throw new InvalidArgumentException('La referencia a la solicitud es obligatoria.');
-        }
-
-        try {
-            $registros = $this->leer($this->rutaHistorial);
-
-            if (!is_array($registros)) {
-                throw new RuntimeException('El historial de solicitudes no tiene un formato válido.');
-            }
-
-            //Inicialización de variables usadas para el manejo de solicitud a cancelar
-            $encontrado = false;
-            $historialActualizado = [];
-
-            foreach ($registros as $registro) {
-                if (
-                    is_array($registro) &&
-                    isset($registro['idSolicitud']) &&
-                    (string) $registro['idSolicitud'] === $identificador
-                ) {
-                    $encontrado = true;
-
-                    if (!isset($registro['estatus']) || $registro['estatus'] !== 'Solicitada') {
-                        throw new RuntimeException(
-                            'La solicitud no puede cancelarse porque su estado actual es: ' .
-                                ($registro['estatus'] ?? 'Desconocido') . '.'
-                        );
-                    }
-
-                    $registro['estatus'] = 'Cancelada';
-                }
-                $historialActualizado[] = $registro;
-            }
-
-            if (!$encontrado) {
-                throw new RuntimeException('No se encontró la solicitud referenciada.');
-            }
-
-            try {
-                $this->escribir($this->rutaHistorial, array_values($historialActualizado));
-            } catch (Exception $excepcion) {
-                try {
-                    $this->escribir($this->rutaHistorial, $registros);
-                } catch (Exception $rollbackExcepcion) {
-                    // Conservar el error original.
-                }
-
-                throw new RuntimeException(
-                    'No fue posible cancelar la solicitud: ' . $excepcion->getMessage()
-                );
-            }
-
-            return [
-                'mensaje' => 'La solicitud fue cancelada correctamente.'
             ];
         } catch (Exception $excepcion) {
         }
@@ -629,9 +680,7 @@ class clsAlumnoSolicitudes
         );
     }
 
-    /**
-     * Lee un archivo JSON.
-     */
+    //Funciones privadas, utilizadas por amabs vistas
     private function leer($ruta)
     {
         if (!file_exists($ruta)) {
@@ -668,9 +717,6 @@ class clsAlumnoSolicitudes
             : [];
     }
 
-    /**
-     * Escribe datos en un archivo JSON.
-     */
     private function escribir($ruta, $datos)
     {
         $json = json_encode(
@@ -701,9 +747,6 @@ class clsAlumnoSolicitudes
         }
     }
 
-    /**
-     * Normaliza un texto para comparaciones.
-     */
     private function normalizar($texto)
     {
         $texto = trim((string) $texto);

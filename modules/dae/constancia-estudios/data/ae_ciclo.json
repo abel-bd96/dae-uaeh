@@ -42,5 +42,16 @@
         "estado": "ACTIVO",
         "idCiclo": 4,
         "nombre": "SEPTIEMBRE-OCTUBRE 2026"
+    },
+    {
+        "fechaPeriodoEstudiosInicio": "2026-08-03",
+        "fechaPeriodoEstudiosTermino": "2026-12-02",
+        "fechaPeriodoVacacionalInicio": "2026-12-03",
+        "fechaPeriodoVacacionalTermino": "2027-01-17",
+        "fechaSolicitudConstanciaInicio": "2026-08-03",
+        "fechaSolicitudConstanciaTermino": "2026-12-04",
+        "estado": "ACTIVO",
+        "idCiclo": 5,
+        "nombre": "JULIO-DICIEMBRE 2026"
     }
 ]
