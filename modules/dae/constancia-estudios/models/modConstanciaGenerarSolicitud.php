@@ -104,7 +104,7 @@ try {
             $solicitudes = $consulta->listar(); 
             $tieneActiva = false;
             
-            $estatusActivos = array('Solicitado', 'Pagado', 'En elaboración', 'En firma', 'Emitida', 'Entregado');
+            $estatusActivos = array('Solicitado', 'Pagado');
             
             foreach ($solicitudes as $s) {
                 $kardexExistente = isset($s['idKardex']) ? trim((string)$s['idKardex']) : '';
