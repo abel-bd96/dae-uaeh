@@ -24,7 +24,8 @@ include './sidebar_constancias.php';
             </div>
 
             <div class="col-12 col-md-auto">
-                <a id="btnSolicitarConstancia" class="btn btn-primary w-100" href="./vtaSolicitudNueva.php" role="button">
+                <a id="btnSolicitarConstancia" name="solicitarConstancia" class="btn btn-primary w-100" role="button">
+                    <!--href="./vtaSolicitudNueva.php"-->
                     <i class="bi bi-plus-lg"></i> Trámite Nuevo
                 </a>
             </div>

@@ -64,10 +64,10 @@
                             escapeHtml(r.estatus) +
                             "</td>" +
                             '<td class="text-end text-nowrap">' +
-                            '<button name="SeguimientoCorroborar" title="Detalles de la Solicitud" type="button" class="btn btn-sm btn-outline-primary" data-id="' +
+                            '<button name="seguimientoCorroborar" title="Detalles de la Solicitud" type="button" class="btn btn-sm btn-outline-primary" data-id="' +
                             escapeHtml(r.idSolicitud) +
                             '"><i class="bi bi-eye"></i> Detalles de la Solicitud</button> ' +
-                            '<button name="CancelarSolicitud" title="Cancelar Solicitud" type="button" class="btn btn-sm btn-outline-danger" data-id="' +
+                            '<button name="cancelarSolicitud" title="Cancelar Solicitud" type="button" class="btn btn-sm btn-outline-danger" data-id="' +
                             escapeHtml(r.idSolicitud) +
                             '" ' +
                             'data-estado="' +
@@ -186,15 +186,50 @@
                 porcentaje = 60;
 
                 if (infoAuxiliar) {
-                    infoAuxiliar.textContent = "Pronto tu constancia estará lista. Mantente atento.";
+                    infoAuxiliar.textContent = "Pronto tu constancia estará lista para ser recogida. Mantente atento.";
                 }
                 break;
 
             case "Atendida":
                 porcentaje = 80;
-                
+
                 barra.classList.remove("bg-primary");
                 barra.classList.add("bg-success");
+                if (datos.tipoFirma === "Autógrafa") {
+                    if (infoAuxiliar) {
+                        infoAuxiliar.classList.remove("alert-info");
+                        infoAuxiliar.classList.add("alert-success");
+                        infoAuxiliar.textContent =
+                            "Puedes recoger tu Constancia en el primer piso de la Torre de Posgrado, ubicada en Carretera Pachuca-Tulancingo Km 4.5, Col. Carboneras, Mineral de la Reforma, Hidalgo, C.P. 42184.";
+                    }
+                } else {
+                    if (infoAuxiliar) {
+                        infoAuxiliar.classList.remove("alert-info");
+                        infoAuxiliar.classList.add("alert-success");
+                        infoAuxiliar.textContent = "Estamos procesando tu solicitud y pronto podrás descargarla.";
+                    }
+                }
+                break;
+
+            case "Finalizada":
+                porcentaje = 100;
+
+                barra.classList.remove("bg-primary");
+                barra.classList.add("bg-success");
+
+                /*
+                const hoy = new Date();
+                const fechaActual = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
+                //Convertir la fecha límite a objeto Date
+                const [anio, mes, dia] = Constancia.fechaLimiteDescarga.split("-");
+                const fechaLimite = new Date(anio, mes - 1, dia);
+
+                if (fechaActual <= fechaLimite && datos.tipoFirma === "Digital" && btnConstanciaDigital) {
+                    "ok";
+                } else {
+                    "no";
+                }
+                    */
                 if (datos.tipoFirma === "Digital" && btnConstanciaDigital) {
                     btnConstanciaDigital.classList.remove("d-none");
                     if (infoAuxiliar) {
@@ -207,30 +242,16 @@
                     if (infoAuxiliar) {
                         infoAuxiliar.classList.remove("alert-info");
                         infoAuxiliar.classList.add("alert-success");
-                        infoAuxiliar.textContent =
-                            "Puedes recoger tu Constancia en el primer piso de la Torre de Posgrado, ubicada en Carretera Pachuca-Tulancingo Km 4.5, Col. Carboneras, Mineral de la Reforma, Hidalgo, C.P. 42184.";
+                        infoAuxiliar.textContent = "Este trámite ha sido concluido.";
                     }
                 }
-                break;
-
-            case "Finalizada":
-                porcentaje = 100;
-                
-                barra.classList.remove("bg-primary");
-                barra.classList.add("bg-success");
-                if (infoAuxiliar) {
-                    infoAuxiliar.classList.remove("alert-info");
-                    infoAuxiliar.classList.add("alert-success");
-                    infoAuxiliar.textContent = "Tu constancia ya ha sido entregada y su respectivo trámite concluido.";
-                }
-                //Aquí debe dejar descargar, no en atendida
                 /*Revisar campos de ae_ciclo.json (dependiendo del id_kardex): fechaSolicitudConstanciaTermino && fechaPeriodoVacacionalTermino cuál es mayor + 14 días, 23 horas y 59 minutos
                  */
                 break;
 
             case "Cancelada":
                 porcentaje = 100;
-                
+
                 barra.classList.remove("bg-primary");
                 barra.classList.add("bg-danger");
                 if (infoAuxiliar) {
@@ -396,7 +417,7 @@
 
         //Interacción con botones
         document.addEventListener("click", function (evento) {
-            var botonSeguimiento = evento.target.closest('[name="SeguimientoCorroborar"]');
+            var botonSeguimiento = evento.target.closest('[name="seguimientoCorroborar"]');
             if (botonSeguimiento) {
                 var idSolicitud = botonSeguimiento.getAttribute("data-id");
 
@@ -407,7 +428,7 @@
                 return;
             }
 
-            var botonCancelar = evento.target.closest('[name="CancelarSolicitud"]');
+            var botonCancelar = evento.target.closest('[name="cancelarSolicitud"]');
             if (botonCancelar) {
                 var idCancelar = botonCancelar.getAttribute("data-id");
                 var estadoCancelar = botonCancelar.getAttribute("data-estado");
@@ -417,8 +438,37 @@
 
             var botonFormatoPago = evento.target.closest('[name="DescargarFPago"]');
             if (botonFormatoPago) {
-                datos.estatus = "Pagada";
+                datos.estatus = "Pagada"; //corregir
                 return;
+            }
+
+            var botonSolicitarConstancia = evento.target.closest('[name="solicitarConstancia"]');
+
+            if(botonSolicitarConstancia){
+                solicitar({ accion: "listar" })
+                    .then(function (registros) {
+                        if (!Array.isArray(registros)) {
+                            throw new Error("No fue posible consultar el historial de solicitudes.");
+                        }
+
+                        var existeSolicitudInicial = registros.some(function (r) {
+                            return r.estatus === "Solicitada";
+                        });
+
+                        if (existeSolicitudInicial) {
+                            Swal.fire({
+                                icon: "warning",
+                                title: "Solicitud pendiente",
+                                text: "No puedes crear una solicitud nueva si existe alguna solicitud con estatus inicial.",
+                                confirmButtonText: "Entendido",
+                            });
+                        } else {
+                            window.location.href = "./vtaSolicitudNueva.php";
+                        }
+                    })
+                    .catch(function (e) {
+                        mostrarMensaje(e.message || "No fue posible verificar las solicitudes.", "error");
+                    });
             }
         });
     });

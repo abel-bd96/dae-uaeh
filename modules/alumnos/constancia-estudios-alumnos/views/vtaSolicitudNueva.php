@@ -120,9 +120,9 @@ include './sidebar_constancias.php';
                     </div>
 
                     <div class="d-flex justify-content-between">
-                        <button type="button" class="btn btn-danger" name="DatosErroneos">
+                        <button id="infoIncorrecta" type="button" class="btn btn-danger d-none" name="infoIncorrecta">
                             <i class="bi bi-exclamation-circle-fill"></i> Mi información es incorrecta </button>
-                        <button id="EnvioNuevaConstancia" type="submit" class="btn btn-success">
+                        <button id="envioNuevaConstancia" type="submit" class="btn btn-success">
                             <i class="bi bi-file-earmark-check-fill"></i> Solicitar Constancia </button>
                     </div>
                 </form>

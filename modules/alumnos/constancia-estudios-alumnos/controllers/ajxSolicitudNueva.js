@@ -4,10 +4,11 @@
     var endpoint = "../models/modAlumnoSolicitudes.php";
     var enviando = false;
 
-    function mostrarcontenedorTablaDatos() {
+    function mostrarContenedorTablaDatos() {
         var tipoFirmaSeleccionado = document.querySelector('input[name="tipoFirma"]:checked');
         var calificacionesSeleccionado = document.querySelector('input[name="calificaciones"]:checked');
         var tabla = document.getElementById("contenedorTablaDatos");
+        var botonInfoIncorrecta = document.getElementById("infoIncorrecta");
 
         if (!tabla) {
             return;
@@ -15,8 +16,10 @@
 
         if (tipoFirmaSeleccionado && calificacionesSeleccionado) {
             tabla.classList.remove("d-none");
+            botonInfoIncorrecta.classList.remove("d-none");
         } else {
             tabla.classList.add("d-none");
+            botonInfoIncorrecta.classList.add("d-none");
         }
     }
 
@@ -155,19 +158,19 @@
     document.addEventListener("DOMContentLoaded", function () {
         // Se necesita verificar que esté seleccionada alguna opción en ambos input
         document.querySelectorAll('input[name="tipoFirma"], input[name="calificaciones"]').forEach(function (radio) {
-            radio.addEventListener("change", mostrarcontenedorTablaDatos);
+            radio.addEventListener("change", mostrarContenedorTablaDatos);
         });
 
-        mostrarcontenedorTablaDatos();
+        mostrarContenedorTablaDatos();
         cargarDatosCorroborar();
 
         //Interacción con botones
         document.addEventListener("click", function (evento) {
-            var botonDatosErroneos = evento.target.closest('[name="DatosErroneos"]');
-            if (botonDatosErroneos) {
+            var botonInfoIncorrecta = evento.target.closest('[name="infoIncorrecta"]');
+            if (botonInfoIncorrecta) {
                 Swal.fire({
                     title: "¿Tu información es incorrecta?",
-                    html: '<div style="text-align: left">Si la información mostrada es incorrecta o requiere algún dato adicional, comuníquese al correo <a href="mailto:validacionesdae@uaeh.edu.mx">validacionesdae@uaeh.edu.mx </a> o al teléfono <strong>771 71 72 000, ext. 48514,</strong> para solicitar su constancia.</div>',
+                    html: '<div style="text-align: left">Si la información mostrada es incorrecta o requieres algún dato adicional, comunícate al correo <a href="mailto:validacionesdae@uaeh.edu.mx">validacionesdae@uaeh.edu.mx </a> o al teléfono <strong>771 71 72 000, ext. 48514,</strong> para solicitar su constancia.</div>',
                     icon: "warning",
                     reverseButtons: true,
                     focusCancel: true,
