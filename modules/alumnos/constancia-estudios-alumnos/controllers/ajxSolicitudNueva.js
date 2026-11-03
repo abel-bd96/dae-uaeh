@@ -1,7 +1,7 @@
 (function () {
     "use strict";
 
-    var endpoint = "../models/modAlumnoSolicitudes.php";    
+    var endpoint = "../models/modAlumnoSolicitudes.php";
     var enviando = false;
 
     function mostrarcontenedorTablaDatos() {
@@ -26,7 +26,7 @@
             window.cargarRegistros();
         }
     }
-    
+
     function cargarDatosCorroborar() {
         solicitar({ accion: "mostrarDatosPersonales" })
             .then(function (datos) {
@@ -58,7 +58,7 @@
             .catch(function (e) {
                 mostrarMensaje(e.message || "No fue posible cargar tus datos.", "error");
             });
-        }
+    }
 
     function guardarNuevaConstancia() {
         // Evita cambios simultáneos o que se produzcan errores si se "traba" la página
@@ -103,7 +103,7 @@
             cancelButtonText: "Cancelar",
             reverseButtons: true,
             focusCancel: true,
-            onfirmButtonColor: "#28a745"
+            onfirmButtonColor: "#28a745",
         }).then(function (resultado) {
             if (!resultado.isConfirmed) {
                 return;
@@ -161,8 +161,29 @@
         mostrarcontenedorTablaDatos();
         cargarDatosCorroborar();
 
-        var formularioNuevaConstancia = document.getElementById("formNuevaConstancia");
+        //Interacción con botones
+        document.addEventListener("click", function (evento) {
+            var botonDatosErroneos = evento.target.closest('[name="DatosErroneos"]');
+            if (botonDatosErroneos) {
+                Swal.fire({
+                    title: "¿Tu información es incorrecta?",
+                    html: '<div style="text-align: left">Si la información mostrada es incorrecta o requiere algún dato adicional, comuníquese al correo <a href="mailto:validacionesdae@uaeh.edu.mx">validacionesdae@uaeh.edu.mx </a> o al teléfono <strong>771 71 72 000, ext. 48514,</strong> para solicitar su constancia.</div>',
+                    icon: "warning",
+                    reverseButtons: true,
+                    focusCancel: true,
+                    showCancelButton: true,
+                    cancelButtonText: "Revisar de nuevo",
+                    confirmButtonColor: "#28a745",
+                    confirmButtonText: "De acuerdo, salir",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "./vtaAlumnoSolicitudes.php";
+                    }
+                });
+            }
+        });
 
+        var formularioNuevaConstancia = document.getElementById("formNuevaConstancia");
         if (formularioNuevaConstancia) {
             formularioNuevaConstancia.addEventListener("submit", function (evento) {
                 evento.preventDefault();

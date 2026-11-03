@@ -389,11 +389,12 @@
             return;
         }
 
-        //Va sin "var" para poder funcionar correctamente
+        //Se declara sin "var" para poder funcionar correctamente
         modal = new bootstrap.Modal(elementoModal);
 
         cargarRegistros();
 
+        //Interacción con botones
         document.addEventListener("click", function (evento) {
             var botonSeguimiento = evento.target.closest('[name="SeguimientoCorroborar"]');
             if (botonSeguimiento) {
