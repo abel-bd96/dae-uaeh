@@ -337,6 +337,16 @@ public function consultarSolicitudExistente($idKardex, $idCicloEscolar)
             $const = isset($mapaConst[$idSol]) ? $mapaConst[$idSol] : null;
             $cont  = isset($mapaCont[$idSol])  ? $mapaCont[$idSol]  : null;
 
+            $estatusInterno = $const && isset($const['estatus'])
+                ? $const['estatus']
+                : (isset($s['estatus']) ? $s['estatus'] : 'Solicitado'); // Si está vacío, por defecto es Solicitado
+
+            $s['EstatusInterno'] = $estatusInterno;
+            $s['EstatusAlumno']  = $this->mapearEstatusAlumno($estatusInterno);
+            $s['Folio']          = $cont && isset($cont['folio']) ? $cont['folio'] : '';
+            $s['Constancia']     = $const;
+            $s['Contenido']      = $cont;
+
             //Recuperar al alumno x kardex 
             $alumno = null;
             if(!empty($s['idKardex'])){

@@ -1363,11 +1363,9 @@
                         mostrarMensaje("Selecciona al menos una constancia.", "warning", "mensajeSolicitud");
                         return;
                     }
-
-                    idsSeleccionados.forEach(function (id) {
-                        var urlPDF = "../models/modConstanciaImprimirDigital.php?idSolicitud=" + id;
-                        window.open(urlPDF, "_blank");
-                    });
+                    var idsString = idsSeleccionados.join(",");
+                    var urlPDF = "../models/modConstanciaImprimirDigital.php?idSolicitud=" + idsString;
+                    window.open(urlPDF, "_blank");
                     return;
                 }
 
@@ -1442,8 +1440,13 @@
 
         // Recuperar el número de cuenta.
         var numeroCuenta = sol ? sol.NumeroCuenta || sol.numeroCuenta || "" : "";
-        document.getElementById("daNumeroCuenta").textContent = numeroCuenta || "Número de cuenta no disponible";
+        var kardex = sol ? sol.idKardex || "No registrado" : "No registrado";
 
+        document.getElementById("daNumeroCuenta").textContent = numeroCuenta || "Número de cuenta no disponible";
+        var spanKardex = document.getElementById("daKardex");
+        if (spanKardex) {
+            spanKardex.textContent = kardex;
+        }
         // Limpiar campos adicionales.
         document.querySelectorAll(".campo-adicional:not(:first-child)").forEach(function (el) {
             el.remove();
@@ -1460,17 +1463,15 @@
     function guardarDatosAdicionales() {
         var id = document.getElementById("daSolicitudId").value;
         var esMasivo = document.getElementById("daAccionMasiva").value === "1";
+        var accionMasiva = document.getElementById("daEstatusMasivo").value;
         var msjModal = document.getElementById("mensajeModalDA");
 
-        // Limpiamos el mensaje anterior
         if (msjModal) {
             msjModal.textContent = "";
             msjModal.className = "alert alert-warning d-none";
         }
 
         var observaciones = [];
-
-        // Leemos TODOS los campos que el usuario haya llenado
         document.querySelectorAll(".campo-adicional").forEach(function (campo) {
             var inputNombre = campo.querySelector(".da-nombre");
             var inputValor = campo.querySelector(".da-valor");
@@ -1478,14 +1479,12 @@
             if (inputNombre && inputValor) {
                 var nombre = inputNombre.value.trim();
                 var valor = inputValor.value.trim();
-
                 if (nombre !== "" && valor !== "") {
                     observaciones.push({ nombre: nombre, valor: valor });
                 }
             }
         });
 
-        // Si no llenó nada, mostramos error
         if (observaciones.length === 0) {
             if (msjModal) {
                 msjModal.textContent = "Debe ingresar al menos un nombre y un valor.";
@@ -1494,21 +1493,25 @@
             return;
         }
 
-        // Bloqueamos el botón para que no le den doble clic
         var btnGuardar = document.getElementById("btnGuardarDA");
         var textoOriginal = btnGuardar.innerHTML;
         btnGuardar.disabled = true;
         btnGuardar.innerHTML = 'Guardando... <span class="spinner-border spinner-border-sm"></span>';
 
-        // Enviamos al servidor
         solicitar({
             accion: "actualizarObservaciones",
             id: id,
             Observaciones: JSON.stringify(observaciones),
         })
             .then(function () {
-                // Cerramos el modal
                 bootstrap.Modal.getInstance(document.getElementById("modalDatosAdicionales")).hide();
+
+                var solIndex = todosLosRegistros.findIndex(function (s) {
+                    return String(s.idSolicitud) === String(id);
+                });
+                if (solIndex !== -1) {
+                    todosLosRegistros[solIndex].Observaciones = observaciones;
+                }
 
                 if (esMasivo) {
                     mostrarMensaje(
@@ -1517,10 +1520,9 @@
                         "mensajeSolicitud",
                     );
                     setTimeout(function () {
-                        ejecutarAccionMasiva("elaborar");
+                        ejecutarAccionMasiva(accionMasiva || "elaborar");
                     }, 1000);
                 } else {
-                    // Si es individual, procedemos a elaborar
                     solicitar({ accion: "elaborar", id: id })
                         .then(function () {
                             mostrarMensaje(

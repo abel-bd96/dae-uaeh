@@ -26,10 +26,8 @@ include './sidebar_constancias.php';
         <button type="button" class="btn btn-sm btn-outline-info"    data-accion-masiva="elaborar">     <i class="bi bi-gear"></i> Elaborar</button>
         <button type="button" class="btn btn-sm btn-outline-warning" data-accion-masiva="mandarFirma">  <i class="bi bi-pen"></i> Mandar a firma</button>
         <button type="button" class="btn btn-sm btn-outline-success" data-accion-masiva="emitir">       <i class="bi bi-file-earmark-check"></i> Emitida</button>
-        <button type="button" class="btn btn-sm btn-outline-success" data-accion-masiva="entregar">     <i class="bi bi-box-arrow-right"></i> Entregado</button>
-        <button type="button" class="btn btn-sm btn-outline-dark"    data-accion-masiva="finalizar">    <i class="bi bi-flag"></i> Finalizar</button>
         <button type="button" class="btn btn-sm btn-outline-danger"  data-accion-masiva="cancelar">     <i class="bi bi-x-circle"></i> Cancelar</button>
-        <button type="button" class="btn btn-sm btn-outline-primary" data-accion-masiva="imprimir">     <i class="bi bi-printer"></i> Imprimir</button>
+        <button type="button" class="btn btn-sm btn-outline-primary" data-accion-masiva="imprimir">     <i class="bi bi-printer"></i> Generar PDF</button>
         <button type="button" class="btn btn-sm btn-link ms-auto"    id="btnLimpiarSeleccion">Limpiar selección</button>
     </div>
 </div>
@@ -193,6 +191,8 @@ include './sidebar_constancias.php';
                         La solicitud <strong id="daNumeroCuenta"></strong> requiere datos adicionales. 
                         Por favor ingréselos para continuar con la elaboración.
                     </p>
+                    
+                    <p class="small mb-3"><strong>Kardex:</strong> <span id="daKardex" class="text-primary"></span></p>
                     <div id="mensajeModalDA" class="alert alert-warning d-none py-2" role="alert"></div>
                     
                     <input type="hidden" id="daSolicitudId">
