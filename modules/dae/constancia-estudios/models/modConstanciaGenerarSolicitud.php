@@ -100,18 +100,18 @@ try {
             $respuesta = $resultado;
             break;
         case 'validarSolicitudActiva':
-            $idKardex = isset($_REQUEST['idKardex']) ? trim($_REQUEST['idKardex']) : '';
+            $IdKardex = isset($_REQUEST['IdKardex']) ? trim($_REQUEST['IdKardex']) : '';
             $solicitudes = $consulta->listar(); 
             $tieneActiva = false;
             
             $estatusActivos = array('Solicitado', 'En elaboración', 'En firma');
             
             foreach ($solicitudes as $s) {
-                $kardexExistente = isset($s['idKardex']) ? trim((string)$s['idKardex']) : '';
+                $kardexExistente = isset($s['IdKardex']) ? trim((string)$s['IdKardex']) : '';
                 $estatusExistente = isset($s['estatus']) ? $s['estatus'] : '';
                 
                 // Si el kardex coincide y el estatus es activo, frena
-                if ($kardexExistente !== '' && $kardexExistente === $idKardex && in_array($estatusExistente, $estatusActivos, true)) {
+                if ($kardexExistente !== '' && $kardexExistente === $IdKardex && in_array($estatusExistente, $estatusActivos, true)) {
                     $tieneActiva = true;
                     break;
                 }

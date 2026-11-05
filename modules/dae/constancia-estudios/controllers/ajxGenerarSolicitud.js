@@ -823,13 +823,13 @@
                 resultados.innerHTML = alumnos
                     .map(function (alumno) {
                         var numero = alumno.NumeroCuenta || "";
-                        var kardex = alumno.idKardex || "";
+                        var kardex = alumno.IdKardex || "";
                         var nombre = alumno.NombreCompleto || "";
                         var programa = alumno.ProgramaEducativo || "";
                         var instituto = alumno.Instituto || "";
                         var semestre = alumno.Semestre || "";
                         var ciclo = alumno.CicloEscolar || "";
-                        var idPrograma = alumno.idProgramaEducativo || "";
+                        var IdPrograma = alumno.IdProgramaEducativo || "";
 
                         return `
                     <button
@@ -837,7 +837,7 @@
                         class="list-group-item list-group-item-action"
                         data-numero="${escapeHtml(numero)}"
                         data-kardex="${escapeHtml(kardex)}"
-                        data-id-programa-educativo="${escapeHtml(idPrograma)}"
+                        data-id-programa-educativo="${escapeHtml(IdPrograma)}"
                         data-nombre-completo="${escapeHtml(nombre)}"
                         data-instituto="${escapeHtml(instituto)}"
                         data-semestre="${escapeHtml(semestre)}"
@@ -868,8 +868,8 @@
 
     function seleccionarAlumno(elemento) {
         var campos = {
-            idKardex: elemento.dataset.kardex || "",
-            idProgramaEducativo: elemento.dataset.idProgramaEducativo || "",
+            IdKardex: elemento.dataset.kardex || "",
+            IdProgramaEducativo: elemento.dataset.IdProgramaEducativo || "",
             CicloEscolar: elemento.dataset.cicloEscolar || "",
             NumeroCuenta: elemento.dataset.numero || "",
             NombreCompleto: elemento.dataset.nombreCompleto || "",
@@ -878,20 +878,18 @@
             ProgramaEducativo: elemento.dataset.programaEducativo || "",
         };
 
-        if (!campos.idKardex || !campos.NumeroCuenta) {
+        if (!campos.IdKardex || !campos.NumeroCuenta) {
             mostrarError("errorNumeroCuenta", "El resultado no contiene número de cuenta o Kardex.");
             return;
         }
 
         Object.keys(campos).forEach(function (clave) {
             var input = document.getElementById(clave);
-
             if (input) {
                 input.value = campos[clave];
             }
 
             var span = document.getElementById("mostrar" + clave);
-
             if (span) {
                 span.textContent = campos[clave];
             }
@@ -910,13 +908,13 @@
         mostrarError("errorNumeroCuenta", "");
     }
 
-    function validarSolicitudActiva(idKardex) {
-        idKardex = String(idKardex || "").trim();
-        if (!idKardex) {
+    function validarSolicitudActiva(IdKardex) {
+        IdKardex = String(IdKardex || "").trim();
+        if (!IdKardex) {
             return Promise.reject(new Error("No se recibió el Kardex del alumno seleccionado."));
         }
 
-        var url = endpoint + "?accion=validarSolicitudActiva&idKardex=" + encodeURIComponent(idKardex);
+        var url = endpoint + "?accion=validarSolicitudActiva&IdKardex=" + encodeURIComponent(IdKardex);
         return fetch(url).then(function (respuesta) {
             return respuesta.text().then(function (contenido) {
                 var cuerpo;
@@ -1003,14 +1001,14 @@
         var datoAdicional = document.querySelector('input[name="DatoAdicional"]:checked');
         var tipoFirma = document.querySelector('input[name="TipoFirma"]:checked');
         var calificaciones = document.querySelector('input[name="Calificaciones"]:checked');
-        var campoKardex = document.getElementById("idKardex");
-        var campoPrograma = document.getElementById("idProgramaEducativo");
+        var campoKardex = document.getElementById("IdKardex");
+        var campoPrograma = document.getElementById("IdProgramaEducativo");
 
         return {
             accion: modoEdicion ? "actualizar" : "guardar",
             id: document.getElementById("solicitudId").value,
-            idKardex: campoKardex ? campoKardex.value : "",
-            idProgramaEducativo: campoPrograma ? campoPrograma.value : "",
+            IdKardex: campoKardex ? campoKardex.value : "",
+            IdProgramaEducativo: campoPrograma ? campoPrograma.value : "",
             CicloEscolar: document.getElementById("CicloEscolar").value,
             NumeroCuenta: document.getElementById("NumeroCuenta").value,
             NombreCompleto: document.getElementById("NombreCompleto").value,
@@ -1097,10 +1095,10 @@
                 evento.preventDefault();
 
                 if (paso === 1) {
-                    var campoKardex = document.getElementById("idKardex");
-                    var idKardex = campoKardex ? campoKardex.value.trim() : "";
+                    var campoKardex = document.getElementById("IdKardex");
+                    var IdKardex = campoKardex ? campoKardex.value.trim() : "";
 
-                    if (!idKardex) {
+                    if (!IdKardex) {
                         mostrarError("errorNumeroCuenta", "Primero debes seleccionar un alumno.");
                         return;
                     }
@@ -1112,7 +1110,7 @@
                         'Validando... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
 
                     // Llamamos a la función de validación
-                    validarSolicitudActiva(idKardex)
+                    validarSolicitudActiva(IdKardex)
                         .then(function (res) {
                             // Si el servidor dice que tiene una activa, lo frenamos
                             if (res && res.tieneActiva === true) {
@@ -1169,8 +1167,8 @@
         if (buscar) {
             buscar.addEventListener("input", function () {
                 var texto = this.value.trim();
-                document.getElementById("idKardex").value = "";
-                document.getElementById("idProgramaEducativo").value = "";
+                document.getElementById("IdKardex").value = "";
+                document.getElementById("IdProgramaEducativo").value = "";
                 document.getElementById("NumeroCuenta").value = "";
                 document.getElementById("NombreCompleto").value = "";
                 document.getElementById("Instituto").value = "";
@@ -1427,7 +1425,6 @@
         document.getElementById("daEstatusMasivo").value = accionMasiva || "";
 
         var msjModal = document.getElementById("mensajeModalDA");
-
         if (msjModal) {
             msjModal.textContent = "";
             msjModal.className = "alert alert-warning d-none";
@@ -1440,7 +1437,7 @@
 
         // Recuperar el número de cuenta.
         var numeroCuenta = sol ? sol.NumeroCuenta || sol.numeroCuenta || "" : "";
-        var kardex = sol ? sol.idKardex || "No registrado" : "No registrado";
+        var kardex = sol ? sol.IdKardex || "No registrado" : "No registrado";
 
         document.getElementById("daNumeroCuenta").textContent = numeroCuenta || "Número de cuenta no disponible";
         var spanKardex = document.getElementById("daKardex");
