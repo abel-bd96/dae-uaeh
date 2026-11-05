@@ -456,12 +456,10 @@
                         });
 
                         if (existeSolicitudInicial) {
-                            Swal.fire({
-                                icon: "warning",
-                                title: "Solicitud pendiente",
-                                text: "No puedes crear una solicitud nueva si existe alguna solicitud con estatus inicial.",
-                                confirmButtonText: "Entendido",
-                            });
+                            mostrarMensaje(
+                                "No puedes crear una solicitud nueva si existe alguna solicitud con pago pendiente.",
+                                "warning",
+                            );
                         } else {
                             window.location.href = "./vtaSolicitudNueva.php";
                         }

@@ -4,6 +4,7 @@
     var endpoint = "../models/modAlumnoSolicitudes.php";
     var enviando = false;
 
+    //Valida que estén seleccionado el tipo de firma y si es que necesita calificaciones
     function mostrarContenedorTablaDatos() {
         var tipoFirmaSeleccionado = document.querySelector('input[name="tipoFirma"]:checked');
         var calificacionesSeleccionado = document.querySelector('input[name="calificaciones"]:checked');
@@ -170,7 +171,7 @@
             if (botonInfoIncorrecta) {
                 Swal.fire({
                     title: "¿Tu información es incorrecta?",
-                    html: '<div style="text-align: left">Si la información mostrada es incorrecta o requieres algún dato adicional, comunícate al correo <a href="mailto:validacionesdae@uaeh.edu.mx">validacionesdae@uaeh.edu.mx </a> o al teléfono <strong>771 71 72 000, ext. 48514,</strong> para solicitar su constancia.</div>',
+                    html: '<div style="text-align: left">Si la información mostrada es incorrecta o requieres algún dato adicional, comunícate al correo <a href="mailto:validacionesdae@uaeh.edu.mx">validacionesdae@uaeh.edu.mx </a> o al teléfono <strong>771 71 72 000, ext. 48514,</strong> para solicitar tu constancia.</div>',
                     icon: "warning",
                     reverseButtons: true,
                     focusCancel: true,

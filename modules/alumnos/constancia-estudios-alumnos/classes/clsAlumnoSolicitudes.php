@@ -5,6 +5,7 @@ class clsAlumnoSolicitudes
     private $rutaHistorial;
     private $rutaDatosConstancia;
     private $rutaCiclo;
+    private $rutaSiaeAlumno;
 
     public function __construct()
     {
@@ -15,10 +16,14 @@ class clsAlumnoSolicitudes
         $this->rutaHistorial = $directorioDatos . 'ae_Solicitud_Referencia.json';
         $this->rutaDatosConstancia = $directorioDatos . 'ae_Constancia_Contenido.json';
         $this->rutaCiclo = $directorioDatosExternos . 'ae_ciclo.json';
+        $this->rutaSiaeAlumno = $directorioDatosExternos . 'vta_siae_nombre_alumno.json';
     }
 
     public function listar()
     {
+        /*if (vista= vtaSolicitudNueva)
+            $solicitudes = $this->leer($this->rutaSiaeAlumno);
+        */
         // Leer historial de solicitudes
         $solicitudes = $this->leer($this->rutaHistorial);
 
@@ -249,7 +254,7 @@ class clsAlumnoSolicitudes
             'No fue posible obtener los datos personales del alumno.'
         );
     }
-
+    
     public function guardar($tipoFirma, $calificaciones) //pendiente
     {
         $tipoFirma = trim((string) $tipoFirma);
@@ -290,14 +295,6 @@ class clsAlumnoSolicitudes
                 $datosConstancia = [];
             }
 
-            /*
-            $folio = $this->generarSiguienteFolio(
-                $historial,
-                $datosConstancia
-            );
-            */
-
-
             $fechaRegistro = date('d/m/Y');
 
             $descripcion = 'Julio-Diciembre ' . date("Y") . '. ' . $tipoFirma;
@@ -306,8 +303,6 @@ class clsAlumnoSolicitudes
                 // stdClass() genera JSONs con {} en vez de []
                 $calificacionesJson = new stdClass();
             } else {
-
-                $calificacionesJson = $this->obtenerCalificacionesPredefinidas();
             }
 
             $nuevoHistorial = [
@@ -354,10 +349,7 @@ class clsAlumnoSolicitudes
                         $datosConstanciaAnterior
                     );
                 } catch (Exception $rollbackExcepcion) {
-                    /*
-         * No sustituir el mensaje de error original
-         * por el error del rollback.
-         */
+                    
                 }
 
                 throw new RuntimeException(
@@ -370,103 +362,12 @@ class clsAlumnoSolicitudes
                 //'Folio' => $folio,
                 'FechaRegistro' => $fechaRegistro,
                 'Estado' => 'Pendiente de Pago',
-                //'mensaje' => 'La solicitud ' . $folio . ' fue registrada correctamente.'
+                'mensaje' => 'La solicitud fue registrada correctamente.'
             ];
         } catch (Exception $excepcion) {
         }
     }
 
-    /* pendiente
-    private function generarSiguienteFolio(
-        $registrosHistorial,
-        $registrosConstancia
-    ) {
-        $numeroMayor = 0;
-
-
-        foreach (
-            $registrosHistorial
-            as $registro
-        ) {
-
-            if (
-                !is_array($registro) || !isset($registro['Folio'])
-            ) {
-                continue;
-            }
-
-            $folio = trim(
-                (string) $registro['Folio']
-            );
-
-            if (
-                preg_match(
-                    '/^(\d+)\/2026D$/',
-                    $folio,
-                    $coincidencias
-                )
-            ) {
-
-                $numero =
-                    (int) $coincidencias[1];
-
-                if ($numero > $numeroMayor) {
-                    $numeroMayor = $numero;
-                }
-            }
-        }
-
-
-        foreach (
-            $registrosConstancia
-            as $registro
-        ) {
-
-            if (
-                !is_array($registro) || !isset($registro['Folio'])
-            ) {
-                continue;
-            }
-
-            $folio = trim(
-                (string) $registro['Folio']
-            );
-
-            if (
-                preg_match(
-                    '/^(\d+)\/2026D$/',
-                    $folio,
-                    $coincidencias
-                )
-            ) {
-
-                $numero =
-                    (int) $coincidencias[1];
-
-                if ($numero > $numeroMayor) {
-                    $numeroMayor = $numero;
-                }
-            }
-        }
-
-        $siguienteNumero = $numeroMayor + 1;
-
-        return str_pad(
-            (string) $siguienteNumero,
-            2,
-            '0',
-            STR_PAD_LEFT
-        ) . '/2026D';
-    }
-    */
-
-    /**
-     * Regresa las calificaciones predefinidas.
-     *
-     * IMPORTANTE:
-     * Sustituir el contenido del arreglo por el arreglo exacto
-     * de calificaciones definido para este módulo.
-     */
     private function obtenerDatosAlumnoBase($datosConstancia)
     {
         foreach ($datosConstancia as $registro) {
@@ -490,193 +391,6 @@ class clsAlumnoSolicitudes
 
         throw new RuntimeException(
             'No fue posible obtener los datos base del alumno para crear la solicitud.'
-        );
-    }
-
-    //Corregir
-    private function obtenerCalificacionesPredefinidas()
-    {
-        return array(
-            array(
-                'Ciclo' => 'Julio-Diciembre 2026',
-                'Materia' => 'LOGROS Y EXPERIENCIAS. LENGUA EXTRANJERA',
-                'Calificacion' => '10',
-                'Creditos' => '5'
-            ),
-            array(
-                'Ciclo' => 'Julio-Diciembre 2026',
-                'Materia' => 'ÁLGEBRA LINEAL',
-                'Calificacion' => '8',
-                'Creditos' => '5'
-            ),
-            array(
-                'Ciclo' => 'Julio-Diciembre 2026',
-                'Materia' => 'SEXUALIDAD RESPONSABLE',
-                'Calificacion' => '10',
-                'Creditos' => '5'
-            ),
-            array(
-                'Ciclo' => 'Julio-Diciembre 2026',
-                'Materia' => 'DISEÑO DE BASES DE DATOS',
-                'Calificacion' => '8',
-                'Creditos' => '5'
-            ),
-            array(
-                'Ciclo' => 'Julio-Diciembre 2026',
-                'Materia' => 'PROGRAMACIÓN ORIENTADA A OBJETOS',
-                'Calificacion' => '9',
-                'Creditos' => '5'
-            ),
-            array(
-                'Ciclo' => 'Julio-Diciembre 2026',
-                'Materia' => 'FUNDAMENTOS ELECTRÓNICOS PARA LA COMPUTACIÓN',
-                'Calificacion' => '9',
-                'Creditos' => '5'
-            ),
-            array(
-                'Ciclo' => 'Julio-Diciembre 2026',
-                'Materia' => 'INGENIERÍA DE SOFTWARE',
-                'Calificacion' => '9',
-                'Creditos' => '5'
-            ),
-            array(
-                'Ciclo' => 'Enero-Junio 2025',
-                'Materia' => 'GRAFICACIÓN',
-                'Calificacion' => '9',
-                'Creditos' => '5'
-            ),
-            array(
-                'Ciclo' => 'Enero-Junio 2025',
-                'Materia' => 'PROGRAMACIÓN DE MICROPROCESADORES',
-                'Calificacion' => '9',
-                'Creditos' => '5'
-            ),
-            array(
-                'Ciclo' => 'Enero-Junio 2025',
-                'Materia' => 'ADMINISTRACIÓN DE BASES DE DATOS',
-                'Calificacion' => '9',
-                'Creditos' => '5'
-            ),
-            array(
-                'Ciclo' => 'Enero-Junio 2025',
-                'Materia' => 'GESTIÓN DE PROYECTOS INFORMÁTICOS',
-                'Calificacion' => '10',
-                'Creditos' => '5'
-            ),
-            array(
-                'Ciclo' => 'Enero-Junio 2025',
-                'Materia' => 'ESTADÍSTICA Y PROBABILIDAD',
-                'Calificacion' => '9',
-                'Creditos' => '5'
-            ),
-            array(
-                'Ciclo' => 'Enero-Junio 2025',
-                'Materia' => 'SALUD FÍSICA Y EMOCIONAL',
-                'Calificacion' => '10',
-                'Creditos' => '5'
-            ),
-            array(
-                'Ciclo' => 'Enero-Junio 2025',
-                'Materia' => 'DECISIONES PERSONALES. LENGUA EXTRANJERA',
-                'Calificacion' => '10',
-                'Creditos' => '5'
-            ),
-            array(
-                'Ciclo' => 'Julio-Diciembre 2025',
-                'Materia' => 'CAUSA Y EFECTO. LENGUA EXTRANJERA',
-                'Calificacion' => '9',
-                'Creditos' => '5'
-            ),
-            array(
-                'Ciclo' => 'Julio-Diciembre 2025',
-                'Materia' => 'ARTES VISUALES',
-                'Calificacion' => '9',
-                'Creditos' => '5'
-            ),
-            array(
-                'Ciclo' => 'Julio-Diciembre 2025',
-                'Materia' => 'SISTEMAS MULTIMEDIA',
-                'Calificacion' => '9',
-                'Creditos' => '5'
-            ),
-            array(
-                'Ciclo' => 'Julio-Diciembre 2025',
-                'Materia' => 'INTELIGENCIA ARTIFICIAL',
-                'Calificacion' => '9',
-                'Creditos' => '5'
-            ),
-            array(
-                'Ciclo' => 'Julio-Diciembre 2025',
-                'Materia' => 'COMUNICACIÓN ORAL',
-                'Calificacion' => '10',
-                'Creditos' => '5'
-            ),
-            array(
-                'Ciclo' => 'Julio-Diciembre 2025',
-                'Materia' => 'ORGANIZACIÓN DE COMPUTADORAS',
-                'Calificacion' => '9',
-                'Creditos' => '5'
-            ),
-            array(
-                'Ciclo' => 'Enero-Junio 2024',
-                'Materia' => 'BASES DE DATOS DISTRIBUIDAS',
-                'Calificacion' => '9',
-                'Creditos' => '5'
-            ),
-            array(
-                'Ciclo' => 'Enero-Junio 2024',
-                'Materia' => 'AUTÓMATAS Y COMPILADORES',
-                'Calificacion' => '9',
-                'Creditos' => '5'
-            ),
-            array(
-                'Ciclo' => 'Enero-Junio 2024',
-                'Materia' => 'SISTEMAS BASADOS EN CONOCIMIENTO',
-                'Calificacion' => '9',
-                'Creditos' => '5'
-            ),
-            array(
-                'Ciclo' => 'Enero-Junio 2024',
-                'Materia' => 'FUNDAMENTOS DE METODOLOGÍA DE LA INVESTIGACIÓN',
-                'Calificacion' => '10',
-                'Creditos' => '5'
-            ),
-            array(
-                'Ciclo' => 'Enero-Junio 2024',
-                'Materia' => 'MÚSICA',
-                'Calificacion' => '9',
-                'Creditos' => '5'
-            ),
-            array(
-                'Ciclo' => 'Enero-Junio 2024',
-                'Materia' => 'EN OTRAS PALABRAS... LENGUA EXTRANJERA',
-                'Calificacion' => '9',
-                'Creditos' => '5'
-            ),
-            array(
-                'Ciclo' => 'Julio-Diciembre 2026',
-                'Materia' => 'OPTATIVA I (APRENDIZAJE COLABORATIVO ASISTIDO POR COMPUTADORA)',
-                'Calificacion' => '9',
-                'Creditos' => '5'
-            ),
-            array(
-                'Ciclo' => 'Julio-Diciembre 2026',
-                'Materia' => 'ADMINISTRACIÓN DE LA FUNCIÓN INFORMÁTICA',
-                'Calificacion' => '10',
-                'Creditos' => '5'
-            ),
-            array(
-                'Ciclo' => 'Julio-Diciembre 2026',
-                'Materia' => 'SISTEMAS DE REALIDAD VIRTUAL',
-                'Calificacion' => '10',
-                'Creditos' => '5'
-            ),
-            array(
-                'Ciclo' => 'Julio-Diciembre 2026',
-                'Materia' => 'PROGRAMACIÓN WEB',
-                'Calificacion' => '10',
-                'Creditos' => '5'
-            )
         );
     }
 
