@@ -3,8 +3,9 @@
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
-//MODIFICAR PARA VISUALIZAR DISTINTAS SOLICITUDES
-$_SESSION['IdKardex'] = '488967';
+/* MODIFICAR PARA VISUALIZAR DISTINTAS SOLICITUDES
+00004 = Anastacio || 488967 = Krista || 366276 = María */
+$_SESSION['IdKardex'] = '488967'; // = $alumno['IdKardex'];
 include './header_constancias.php';
 include './sidebar_constancias.php';
 ?>

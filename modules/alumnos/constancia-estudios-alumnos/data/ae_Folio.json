@@ -1,7 +1,25 @@
 [
     {
-        "idFolio": "8",
-        "folio": "8",
+        "idFolio": "19",
+        "folio": "19",
+        "anio": "2026",
+        "estatus": "usado"
+    },
+    {
+        "idFolio": "12",
+        "folio": "2",
+        "anio": "2024",
+        "estatus": "usado"
+    },
+    {
+        "idFolio": "11",
+        "folio": "1",
+        "anio": "2024",
+        "estatus": "usado"
+    },
+    {
+        "idFolio": "9",
+        "folio": "9",
         "anio": "2026",
         "estatus": "usado"
     },
@@ -14,6 +32,24 @@
     {
         "idFolio": "1",
         "folio": "1",
+        "anio": "2024",
+        "estatus": "usado"
+    },
+    {
+        "idFolio": "7",
+        "folio": "7",
+        "anio": "2026",
+        "estatus": "usado"
+    },
+    {
+        "idFolio": "4",
+        "folio": "4",
+        "anio": "2024",
+        "estatus": "usado"
+    },
+    {
+        "idFolio": "3",
+        "folio": "3",
         "anio": "2024",
         "estatus": "usado"
     }
