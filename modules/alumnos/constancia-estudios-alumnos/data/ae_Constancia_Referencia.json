@@ -2,19 +2,19 @@
     {
         "idConstancia": "8",
         "idSolicitud": "8",
-        "idKardex": "466618",
+        "idKardex": "000004",
         "anio": "2026",
         "estatus": "Elaborada",
-        "fechaEmision": "null",
-        "fechaEntrega": "",
-        "fechaCaducidad": "",
+        "fechaEmision": "2026/12/11",
+        "fechaEntrega": "2026/12/15",
+        "fechaCaducidad": "2027/01/17",
         "fechaLimiteDescarga": "",
         "idFolio": "8"
     },
     {
         "idConstancia": "2",
         "idSolicitud": "2",
-        "idKardex": "466618",
+        "idKardex": "000004",
         "anio": "2024",
         "estatus": "Entregada",
         "fechaEmision": "11/09/2024",
@@ -26,7 +26,7 @@
     {
         "idConstancia": "1",
         "idSolicitud": "1",
-        "idKardex": "466618",
+        "idKardex": "000004",
         "anio": "2024",
         "estatus": "Entregada",
         "fechaEmision": "20/02/2024",

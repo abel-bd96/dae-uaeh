@@ -21,9 +21,19 @@ class clsAlumnoSolicitudes
 
     public function listar()
     {
-        /*if (vista= vtaSolicitudNueva)
-            $solicitudes = $this->leer($this->rutaSiaeAlumno);
-        */
+        //Se necesita verificar que haya una sesión activa, en caso de venir de vtaSolicitudNueva
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        $idKardexUsuario = $_SESSION['IdKardex'] ?? null;
+
+        //Se previene el acceso "externo" a las vistas
+        if ($idKardexUsuario === null || $idKardexUsuario === '') {
+            throw new RuntimeException(
+                'Debes ingresar desde Servicios Escolares para visualizar tu Historial de Solicitudes.'
+            );
+        }
+
         // Leer historial de solicitudes
         $solicitudes = $this->leer($this->rutaHistorial);
 
@@ -49,6 +59,24 @@ class clsAlumnoSolicitudes
             $ciclos = [$ciclos];
         }
 
+        // Se muestra solamente las solicitudes que corresponden con base en el IdKardex
+        $solicitudes = array_filter(
+            $solicitudes,
+            function ($solicitud) use ($idKardexUsuario) {
+
+                return is_array($solicitud)
+                    && isset($solicitud['idKardex'])
+                    && (string) $solicitud['idKardex'] === (string) $idKardexUsuario;
+            }
+        );
+
+        // Son reorganizados los índices del arreglo, para asegurar su manejo y despliegue adecuado
+        $solicitudes = array_values($solicitudes);
+
+        if (empty($solicitudes)) {
+            return [];
+        }
+
         // Crear índice de ciclos escolares
         $indiceCiclos = [];
 
@@ -71,10 +99,8 @@ class clsAlumnoSolicitudes
 
             $idCicloEscolar = $solicitud['idCicloEscolar'] ?? null;
 
-            $solicitudes[$key]['nombreCiclo'] =
-                $idCicloEscolar !== null
-                ? ($indiceCiclos[(string) $idCicloEscolar] ?? 'Ciclo no encontrado')
-                : 'Sin ciclo asignado';
+            //Con base en el índice, verifica que haya un identificador para asignarle su nombre al ciclo
+            $solicitudes[$key]['nombreCiclo'] = $idCicloEscolar !== null ? ($indiceCiclos[(string) $idCicloEscolar] ?? 'Ciclo no encontrado') : 'Sin ciclo asignado';
         }
 
         return $solicitudes;
@@ -214,45 +240,7 @@ class clsAlumnoSolicitudes
     //AlumnoSolicitudes ↑ SolicitudNueva ↓
     public function mostrarDatosPersonales()
     {
-        $datos = $this->leer($this->rutaDatosConstancia);
-
-        if (!is_array($datos)) {
-            throw new RuntimeException(
-                'Los datos de la constancia no tienen un formato válido.'
-            );
-        }
-
-        if (isset($datos['idConstancia'])) {
-            $datos = [$datos];
-        }
-
-        foreach ($datos as $registro) {
-            if (!is_array($registro)) {
-                continue;
-            }
-
-            if (
-                isset($registro['Cuenta']) &&
-                trim((string) $registro['Cuenta']) !== ''
-            ) {
-                return [
-                    'nombre' => $registro['nombre'] ?? '',
-                    'apellidoPaterno' => $registro['apellidoPaterno'] ?? '',
-                    'apellidoMaterno' => $registro['apellidoMaterno'] ?? '',
-                    'CURP' => $registro['CURP'] ?? '',
-                    'unidadAcademica' => $registro['unidadAcademica'] ?? '',
-                    'programaEducativo' => $registro['programaEducativo'] ?? '',
-                    'numeroCuenta' => $registro['numeroCuenta'] ?? '',
-                    'semestre' => $registro['semestre'] ?? '',
-                    'calidadAlumno' => $registro['calidadAlumno'] ?? '',
-                    'promedioGeneral' => $registro['promedioGeneral'] ?? ''
-                ];
-            }
-        }
-
-        throw new RuntimeException(
-            'No fue posible obtener los datos personales del alumno.'
-        );
+        echo("Esto no debería utilizarse");
     }
     
     public function guardar($tipoFirma, $calificaciones) //pendiente
@@ -316,7 +304,6 @@ class clsAlumnoSolicitudes
             //$nuevaConstancia['Folio'] = $folio;
             $nuevaConstancia['FechaEmision'] = 'En proceso...';
             $nuevaConstancia['Estado'] = 'Solicitada';
-            $nuevaConstancia['Calificaciones'] = $calificacionesJson;
 
             // Se necesitan copias para restaurar los datos si falla alguna edición.
             $historialAnterior = $historial;

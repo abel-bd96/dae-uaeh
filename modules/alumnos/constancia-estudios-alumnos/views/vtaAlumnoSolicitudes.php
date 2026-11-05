@@ -1,4 +1,10 @@
+
 <?php
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+//MODIFICAR PARA VISUALIZAR DISTINTAS SOLICITUDES
+$_SESSION['IdKardex'] = '488967';
 include './header_constancias.php';
 include './sidebar_constancias.php';
 ?>
@@ -25,7 +31,6 @@ include './sidebar_constancias.php';
 
             <div class="col-12 col-md-auto">
                 <a id="btnSolicitarConstancia" name="solicitarConstancia" class="btn btn-primary w-100" role="button">
-                    <!--href="./vtaSolicitudNueva.php"-->
                     <i class="bi bi-plus-lg"></i> Trámite Nuevo
                 </a>
             </div>

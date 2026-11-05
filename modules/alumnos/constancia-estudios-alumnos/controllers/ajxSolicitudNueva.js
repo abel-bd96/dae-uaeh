@@ -31,7 +31,7 @@
         }
     }
 
-    function cargarDatosCorroborar() {
+    function cargarDatosCorroborar() { // *corregir*
         solicitar({ accion: "mostrarDatosPersonales" })
             .then(function (datos) {
                 if (!datos) {
@@ -60,7 +60,7 @@
                 document.getElementById("promedio").textContent = datos.Promedio || "";
             })
             .catch(function (e) {
-                mostrarMensaje(e.message || "No fue posible cargar tus datos.", "error");
+                mostrarMensaje(e.message || "En este momento no fue posible cargar tus datos.", "error");
             });
     }
 
@@ -163,7 +163,7 @@
         });
 
         mostrarContenedorTablaDatos();
-        cargarDatosCorroborar();
+        //cargarDatosCorroborar();
 
         //Interacción con botones
         document.addEventListener("click", function (evento) {
