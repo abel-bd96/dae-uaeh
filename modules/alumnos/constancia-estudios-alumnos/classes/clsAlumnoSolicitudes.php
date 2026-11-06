@@ -6,17 +6,19 @@ class clsAlumnoSolicitudes
     private $rutaDatosConstancia;
     private $rutaCiclo;
     private $rutaSiaeAlumno;
+    private $rutaListaNegra;
 
     public function __construct()
     {
         $directorioDatos = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR;
-
         $directorioDatosExternos = dirname(__DIR__, 3) . DIRECTORY_SEPARATOR . 'dae' . DIRECTORY_SEPARATOR . 'constancia-estudios' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR;
+        $directorioDatosGenerales = dirname(__DIR__, 3) . DIRECTORY_SEPARATOR . 'dae' . DIRECTORY_SEPARATOR . 'generales' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR;
 
         $this->rutaHistorial = $directorioDatos . 'ae_Solicitud_Referencia.json';
         $this->rutaDatosConstancia = $directorioDatos . 'ae_Constancia_Contenido.json';
         $this->rutaCiclo = $directorioDatosExternos . 'ae_ciclo.json';
         $this->rutaSiaeAlumno = $directorioDatosExternos . 'vta_siae_nombre_alumno.json';
+        $this->rutaListaNegra = $directorioDatosExternos . 'vta_siae_nombre_alumno.json';
     }
 
     public function listar()

@@ -1,39 +1,39 @@
 [
     {
-        "idConstancia": "9",
-        "idSolicitud": "9",
-        "idKardex": "000004",
-        "anio": "2026",
-        "estatus": "Elaborada",
-        "fechaEmision": "2026/12/11",
-        "fechaEntrega": "2026/12/15",
-        "fechaCaducidad": "2027/01/17",
-        "fechaLimiteDescarga": "",
-        "idFolio": "8"
+        "IdConstancia": "9",
+        "IdSolicitud": "9",
+        "IdKardex": "000004",
+        "Anio": "2026",
+        "Estatus": "Elaborada",
+        "FechaEmision": "2026/12/11",
+        "FechaEntrega": "2026/12/15",
+        "FechaCaducidad": "2027/01/17",
+        "FechaLimiteDescarga": "",
+        "IdFolio": "8"
     },
     {
-        "idConstancia": "2",
-        "idSolicitud": "2",
-        "idKardex": "000004",
-        "anio": "2024",
-        "estatus": "Entregada",
-        "fechaEmision": "11/09/2024",
-        "fechaEntrega": "13/09/2024",
-        "fechaCaducidad": "22/05/2024",
-        "fechaLimiteDescarga": "N/A",
-        "idFolio": "2"
+        "IdConstancia": "2",
+        "IdSolicitud": "2",
+        "IdKardex": "000004",
+        "Anio": "2024",
+        "Estatus": "Entregada",
+        "FechaEmision": "11/09/2024",
+        "FechaEntrega": "13/09/2024",
+        "FechaCaducidad": "22/05/2024",
+        "FechaLimiteDescarga": null,
+        "IdFolio": "2"
     },
     {
-        "idConstancia": "1",
-        "idSolicitud": "1",
-        "idKardex": "000004",
-        "anio": "2024",
-        "estatus": "Entregada",
-        "fechaEmision": "20/02/2024",
-        "fechaEntrega": "23/02/2024",
-        "fechaCaducidad": "04/08/2024",
-        "fechaLimiteDescarga": "N/A",
-        "idFolio": "1"
+        "IdConstancia": "1",
+        "IdSolicitud": "1",
+        "IdKardex": "000004",
+        "Anio": "2024",
+        "Estatus": "Entregada",
+        "FechaEmision": "20/02/2024",
+        "FechaEntrega": "23/02/2024",
+        "FechaCaducidad": "04/08/2024",
+        "FechaLimiteDescarga": null,
+        "IdFolio": "1"
     }
 ]
 

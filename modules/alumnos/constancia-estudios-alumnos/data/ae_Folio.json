@@ -1,56 +1,56 @@
 [
     {
-        "idFolio": "19",
-        "folio": "19",
-        "anio": "2026",
-        "estatus": "usado"
+        "IdFolio": "19",
+        "Folio": "19",
+        "Anio": "2026",
+        "Estatus": "usado"
     },
     {
-        "idFolio": "12",
-        "folio": "2",
-        "anio": "2024",
-        "estatus": "usado"
+        "IdFolio": "12",
+        "Folio": "2",
+        "Anio": "2024",
+        "Estatus": "usado"
     },
     {
-        "idFolio": "11",
-        "folio": "1",
-        "anio": "2024",
-        "estatus": "usado"
+        "IdFolio": "11",
+        "Folio": "1",
+        "Anio": "2024",
+        "Estatus": "usado"
     },
     {
-        "idFolio": "9",
-        "folio": "9",
-        "anio": "2026",
-        "estatus": "usado"
+        "IdFolio": "9",
+        "Folio": "9",
+        "Anio": "2026",
+        "Estatus": "usado"
     },
     {
-        "idFolio": "2",
-        "folio": "2",
-        "anio": "2024",
-        "estatus": "usado"
+        "IdFolio": "2",
+        "Folio": "2",
+        "Anio": "2024",
+        "Estatus": "usado"
     },
     {
-        "idFolio": "1",
-        "folio": "1",
-        "anio": "2024",
-        "estatus": "usado"
+        "IdFolio": "1",
+        "Folio": "1",
+        "Anio": "2024",
+        "Estatus": "usado"
     },
     {
-        "idFolio": "7",
-        "folio": "7",
-        "anio": "2026",
-        "estatus": "usado"
+        "IdFolio": "7",
+        "Folio": "7",
+        "Anio": "2026",
+        "Estatus": "usado"
     },
     {
-        "idFolio": "4",
-        "folio": "4",
-        "anio": "2024",
-        "estatus": "usado"
+        "IdFolio": "4",
+        "Folio": "4",
+        "Anio": "2024",
+        "Estatus": "usado"
     },
     {
-        "idFolio": "3",
-        "folio": "3",
-        "anio": "2024",
-        "estatus": "usado"
+        "IdFolio": "3",
+        "Folio": "3",
+        "Anio": "2024",
+        "Estatus": "usado"
     }
 ]
