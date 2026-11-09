@@ -39,6 +39,10 @@ try {
             if (isset($resultado['ok']) && $resultado['ok'] === false) throw new Exception($resultado['mensaje']);
             $respuesta = $resultado;
             break;
+        case 'procesarPagoConfirmado':
+            $idSolicitud = isset($_REQUEST['idSolicitud']) ? trim($_REQUEST['idSolicitud']) : '';
+            $respuesta = $consulta->procesarPagoConfirmado($idSolicitud);
+            break;
         case 'elaborar':
             $resultado = $consulta->elaborar($_REQUEST['id']);
             if (isset($resultado['ok']) && $resultado['ok'] === false) throw new Exception($resultado['mensaje']);
@@ -98,6 +102,13 @@ try {
             $resultado = $consulta->actualizarObservaciones($id, $obs);
             if (isset($resultado['ok']) && $resultado['ok'] === false) throw new Exception($resultado['mensaje']);
             $respuesta = $resultado;
+            break;
+        case 'consultarPago':
+            $idSolicitud = isset($_REQUEST['idSolicitud'])
+            ? trim($_REQUEST['idSolicitud'])
+            : '';
+
+            $respuesta = $consulta->consultarEstadoPago($idSolicitud);
             break;
         case 'validarSolicitudActiva':
             $IdKardex = isset($_REQUEST['IdKardex']) ? trim($_REQUEST['IdKardex']) : '';

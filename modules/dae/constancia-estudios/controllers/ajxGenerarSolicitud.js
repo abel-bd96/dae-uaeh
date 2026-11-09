@@ -367,7 +367,7 @@
         var tbody = document.querySelector("#tablaSolicitudes tbody");
         if (!tbody) return;
 
-        if (!registros.length) {
+        if (!registros || !registros.length) {
             tbody.innerHTML =
                 '<tr><td colspan="10" class="text-center text-muted py-4">' +
                 "No se encontraron solicitudes con los filtros aplicados." +
@@ -380,14 +380,13 @@
         tbody.innerHTML = registros
             .map(function (s) {
                 var id = String(s.idSolicitud || s.id || "");
-                var nombre = s.NombreCompleto || "(Sin nombre)";
-                var ciclo = s.CicloEscolar || "(Sin ciclo)";
                 var estatus = s.EstatusInterno || s.Estatus || s.estatus || "";
                 var folio = s.Folio || "";
                 var firma = s.tipoFirma === "S" ? "Digital (PDF)" : s.tipoFirma === "N" ? "Autógrafa" : "";
                 var datoAdicional = s.informacionAdicional || "";
                 var fecha = s.fechaSolicitud || s.fechaRegistro || "";
-
+                var ciclo = s.CicloEscolar || "";
+                var nombre = s.NombreCompleto || "";
                 var checkDisabled = estatus === "Cancelado" ? "disabled" : "";
                 var checkChecked = idsSeleccionados.indexOf(id) !== -1 ? "checked" : "";
 

@@ -12,6 +12,8 @@ class clsConstanciaGenerarSolicitud
     private $rutaContenido;
     private $rutaFolio;
     private $rutaCiclo;
+    private $rutaFinanzasPago;
+    private $rutaFinanzasSolicitudPago;
 
     private $listaEstatusSolicitud  = array('Solicitado', 'Pagado', 'Cancelado');
     private $listaEstatusConstancia = array('En elaboración', 'En firma', 'Emitida', 'Entregado', 'Finalizado', 'Cancelado');
@@ -23,13 +25,15 @@ class clsConstanciaGenerarSolicitud
         $this->rutaNumeroCuenta    = $directorioDatos . 'vta_siae_numero_cuenta.json';
         $this->rutaNombreAlumno    = $directorioDatos . 'vta_siae_nombre_alumno.json';
         $this->rutaDatoAdicional   = $directorioDatos . 'ae_dato_adicional.json';
-        // $this->rutaEstatusSolicitud = $directorioDatos . 'ae_estatus_solicitud.json';
         $this->rutaObservacion     = $directorioDatos . 'ae_observacion.json';
         $this->rutaSolicitud       = $directorioDatosExternos . 'ae_Solicitud_Referencia.json';
         $this->rutaConstancia      = $directorioDatosExternos . 'ae_Constancia_Referencia.json';
         $this->rutaContenido       = $directorioDatosExternos . 'ae_Constancia_Contenido.json';
         $this->rutaFolio           = $directorioDatosExternos . 'ae_Folio.json';
         $this->rutaCiclo = $directorioDatos . 'ae_ciclo.json';
+        // ARCHIVOS DEL MÓDULO DE FINANZAS (MÓDULO DEL ALUMNO)
+        $this->rutaFinanzasPago = $directorioDatosExternos . 'finanzas_Pago.json';
+        $this->rutaFinanzasSolicitudPago = $directorioDatosExternos . 'finanzas_Solicitud_Pago.json';
     }
 
     // CATÁLOGOS
@@ -215,6 +219,149 @@ public function consultarSolicitudExistente($IdKardex, $IdCicloEscolar)
         'mensaje' => ''
     );
 }
+    //Consultar estado de Pago en finanzas 
+    public function consultarEstadoPago($idSolicitud){
+        $idSolicitud = trim((string)$idSolicitud);
+        if($idSolicitud === ''){
+            throw new Exception('No se recibio el identificador de la solicitud');
+        }
+        //Leer la solicitud y pago
+        $relaciones = $this->leer($this->rutaFinanzasSolicitudPago);
+        //La relacion correspondiente 
+        $idPago = '';
+        
+        foreach ($relaciones as $relacion){
+            $idSolicitudRelacion = isset($relacion['idSolicitud']) ? trim((string)$relacion['idSolicitud']) : '';
+
+        if($idSolicitudRelacion === $idSolicitud){
+            $idPago = isset($relacion['idPago']) ? trim((string)$relacion['idPago']) : '';
+            break;
+        }
+    }
+    if ($idPago === ''){
+        return array(
+            'encontrado' => false,
+            'idSolicitud' => $idSolicitud,
+            'idPago' => '',
+            'estatusPago' => 'No registrado',
+            'mensaje' => 'No existe un registro de pago relacionado con esta solicitud.'
+        );
+    }
+    //Leer los pagos registrados 
+    $pagos = $this->leer($this->rutaFinanzasPago);
+    // 4. Buscar el pago relacionado.
+    foreach ($pagos as $pago) {
+
+        $idPagoRegistro = isset($pago['idPago'])
+            ? trim((string)$pago['idPago'])
+            : '';
+
+        if ($idPagoRegistro === $idPago) {
+
+            $estatusPago = isset($pago['estatusPago'])
+                ? trim((string)$pago['estatusPago'])
+                : '';
+
+            if ($estatusPago === '') {
+                $estatusPago = 'Pendiente';
+            }
+
+            return array(
+                'encontrado' => true,
+                'idSolicitud' => $idSolicitud,
+                'idPago' => $idPago,
+                'estatusPago' => $estatusPago,
+                'mensaje' => 'Se encontró el registro de pago.'
+            );
+        }
+    }
+
+    // Existe la relación, pero no se encontró el pago.
+    return array(
+        'encontrado' => false,
+        'idSolicitud' => $idSolicitud,
+        'idPago' => $idPago,
+        'estatusPago' => 'No registrado',
+        'mensaje' => 'Existe la relación financiera, pero no se encontró el pago.'
+    );
+}
+
+// PROCESAR SOLICITUD CUANDO FINANZAS CONFIRME EL PAGO
+public function procesarPagoConfirmado($idSolicitud)
+{
+    $idSolicitud = trim((string)$idSolicitud);
+
+    if ($idSolicitud === '') {
+        throw new Exception('No se recibió el identificador de la solicitud.');
+    }
+
+    // 1. Consultar el estado del pago en Finanzas.
+    $pago = $this->consultarEstadoPago($idSolicitud);
+
+    if (!$pago['encontrado']) {
+        throw new Exception($pago['mensaje']);
+    }
+
+    // 2. Validar que Finanzas haya confirmado el pago.
+    if (strtolower(trim($pago['estatusPago'])) !== 'pagada') {
+        return array(
+            'procesado' => false,
+            'idSolicitud' => $idSolicitud,
+            'estatusPago' => $pago['estatusPago'],
+            'mensaje' => 'El pago todavía no está confirmado por Finanzas.'
+        );
+    }
+
+    // 3. Leer las solicitudes registradas.
+    $solicitudes = $this->leer($this->rutaSolicitud);
+
+    $indiceSolicitud = null;
+
+    foreach ($solicitudes as $indice => $solicitud) {
+        $idRegistro = isset($solicitud['idSolicitud'])
+            ? trim((string)$solicitud['idSolicitud'])
+            : '';
+
+        if ($idRegistro === $idSolicitud) {
+            $indiceSolicitud = $indice;
+            break;
+        }
+    }
+
+    if ($indiceSolicitud === null) {
+        throw new Exception('No se encontró la solicitud en el sistema.');
+    }
+
+    // 4. Verificar si ya fue procesada.
+    $estatusActual = isset($solicitudes[$indiceSolicitud]['estatus'])
+        ? trim((string)$solicitudes[$indiceSolicitud]['estatus'])
+        : '';
+
+    if (strtolower($estatusActual) === 'pagado') {
+        return array(
+            'procesado' => true,
+            'repetido' => true,
+            'idSolicitud' => $idSolicitud,
+            'estatusPago' => 'Pagada',
+            'mensaje' => 'La solicitud ya estaba marcada como Pagado.'
+        );
+    }
+
+    // 5. Cambiar el estatus de la solicitud.
+    $solicitudes[$indiceSolicitud]['estatus'] = 'Pagado';
+
+    $this->guardarJson($this->rutaSolicitud, $solicitudes);
+
+    return array(
+        'procesado' => true,
+        'repetido' => false,
+        'idSolicitud' => $idSolicitud,
+        'estatusPago' => 'Pagada',
+        'estatusSolicitud' => 'Pagado',
+        'mensaje' => 'El pago fue confirmado y la solicitud se actualizó correctamente.'
+    );
+}
+
 
     // CONSULTAS DE SOLICITUDES Y CONSTANCIAS
     public function consultar($idSolicitud) {
@@ -270,7 +417,7 @@ public function consultarSolicitudExistente($IdKardex, $IdCicloEscolar)
         }
 
         $resultado = $this->consultarSolicitudExistente(
-            $KdKardex,
+            $IdKardex,
             $cicloActivo['IdCiclo']
         );
 
@@ -600,16 +747,37 @@ public function consultarSolicitudExistente($IdKardex, $IdCicloEscolar)
         if ($indice === -1) return array('ok' => false, 'mensaje' => 'No se encontró la solicitud.');
 
         $solicitud = $solicitudes[$indice];
-        if ($solicitud['estatus'] !== 'Pagado') {
+        if (!isset($solicitud['estatus'] || strtolower(trim($solicitud['estatus'])) !== 'pagado') {
             return array('ok' => false, 'mensaje' => 'La solicitud debe estar en estatus Pagado.');
         }
 
-        // 1) Generar folio
-        $folioInfo = $this->generarFolio();
-
-        // 2) Crear Constancia
         $constancias = $this->leer($this->rutaConstancia);
+        //evitar generar una constancia duplicada 
+        foreach ($constancias as $constanciaExistente) {
+
+        $mismaSolicitud =
+            isset($constanciaExistente['idSolicitud']) &&
+            (string)$constanciaExistente['idSolicitud'] === (string)$id;
+            $estatusConstancia = isset($constanciaExistente['estatus'])
+        ? strtolower(trim($constanciaExistente['estatus']))
+        : '';
+
+        if ($mismaSolicitud && $estatusConstancia !== 'cancelado') {
+        
+
+            return array(
+                'ok' => true,
+                'repetido' => true,
+                'idConstancia' => $idConstanciaExistente,
+                'mensaje' => 'La solicitud ya tiene una constancia generada.'
+            );
+        }
+    }
+
+        //  Generar folio
+        $folioInfo = $this->generarFolio();
         $ultimoIdConst = 0;
+
         foreach ($constancias as $c) {
             if (isset($c['idConstancia']) && (int)$c['idConstancia'] > $ultimoIdConst) {
                 $ultimoIdConst = (int)$c['idConstancia'];
@@ -631,7 +799,7 @@ public function consultarSolicitudExistente($IdKardex, $IdCicloEscolar)
         );
         $constancias[] = $constancia;
 
-        // 3) Crear Contenido (Aquí estaba el error, le pasamos la solicitud correcta)
+        // crear Contenido 
         $contenidos = $this->leer($this->rutaContenido);
         $ultimoIdCont = 0;
         foreach ($contenidos as $c) {
@@ -770,18 +938,39 @@ public function consultarSolicitudExistente($IdKardex, $IdCicloEscolar)
         );
     }
         private function construirContenido($idContenido, $idConstancia, $solicitud, $folioInfo) {
-        $campoAdicional = '';
-        $infoAdicional  = '';
-        
+        $camposAdicionales = array();
+        $informacionesAdicionales = array();
+
         if (!empty($solicitud['Observaciones']) && is_array($solicitud['Observaciones'])) {
-            $par = $solicitud['Observaciones'][0];
-            if (isset($par['nombre'])) $campoAdicional = $par['nombre'];
-            if (isset($par['valor']))  $infoAdicional  = $par['valor'];
+
+            foreach ($solicitud['Observaciones'] as $observacion) {
+
+                $nombre = isset($observacion['nombre'])
+                    ? trim((string)$observacion['nombre'])
+                    : '';
+
+                $valor = isset($observacion['valor'])
+                    ? trim((string)$observacion['valor'])
+                    : '';
+
+                if ($nombre !== '') {
+                    $camposAdicionales[] = $nombre;
+                }
+
+                if ($valor !== '') {
+                    $informacionesAdicionales[] = $valor;
+                }
+            }
         }
 
-        // Validamos que exista el número de cuenta antes de buscar al alumno
-        $numCuenta = isset($solicitud['NumeroCuenta']) ? $solicitud['NumeroCuenta'] : '';
-        $alumno = $this->consultarAlumno($numCuenta);
+    $campoAdicional = implode("\n", $camposAdicionales);
+    $infoAdicional = implode("\n", $informacionesAdicionales);
+
+    $numCuenta = isset($solicitud['NumeroCuenta'])
+        ? $solicitud['NumeroCuenta']
+        : '';
+
+    $alumno = $this->consultarAlumno($numCuenta);
 
         return array(
             'idConstanciaContenido'    => $idContenido,
