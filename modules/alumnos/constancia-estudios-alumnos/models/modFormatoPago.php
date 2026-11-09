@@ -9,7 +9,7 @@ if (!is_file($rutaTCPDF)) {
 
 require_once $rutaTCPDF;
 
-$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+$pdf = new TCPDF('P', PDF_UNIT, 'LETTER', true, 'UTF-8', false);
 
 $pdfNombre = "Formato-de-Pago";
 
@@ -22,7 +22,8 @@ $pdf->SetPrintHeader(false);
 $pdf->SetPrintFooter(false);
 
 $pdf->setDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-$pdf->SetAutoPageBreak(TRUE, 1);
+$pdf->SetMargins(0, 0, 0);
+$pdf->SetAutoPageBreak(false, 0);
 
 $pdf->Output('Formato-de-Pago.pdf', 'D')
 ?>

@@ -1,11 +1,10 @@
-
 <?php
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
-    }
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 /* MODIFICAR PARA VISUALIZAR DISTINTAS SOLICITUDES
-00004 = Anastacio || 488967 = Krista || 366276 = María */
-$_SESSION['IdKardex'] = '488967'; // = $alumno['IdKardex'];
+000004 = Anastacio || 488967 = Krista || 366276 = María */
+$_SESSION['IdKardex'] = '000004'; // = $alumno['IdKardex'];
 include './header_constancias.php';
 include './sidebar_constancias.php';
 ?>

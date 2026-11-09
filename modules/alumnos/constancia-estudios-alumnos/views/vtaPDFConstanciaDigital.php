@@ -12,32 +12,32 @@ if (!empty($constancia)) {
 
         $pdf->AddPage('P', array(215.9, 279.4));
 
-        $logoUAEH = dirname(__DIR__, 3) . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'logo_uaeh.png';
+        $membrete = dirname(__DIR__, 3) . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'membrete.jpg';
 
-        if (file_exists($logoUAEH)) {
-            $pdf->Image($logoUAEH, 10, 10, 80, 0, 'PNG'); //0 produce un alto automático
+        if (file_exists($membrete)) {
+            $pdf->Image($membrete, 0, 0, 215.9, 279.4, 'JPG');
         }
 
-        $txtTituloConstancia = '<div style="text-align: center"> Constancia de Estudios</div>';
-        $pdf->writeHTMLCell(100, '', 60, 20, $txtTituloConstancia, 0, 0, false, true, 'C', false);
+        $txtTituloConstancia = '<div style="text-align: center; color: #b91116"> CONSTANCIA DE ESTUDIOS</div>';
+        $pdf->writeHTMLCell(60, '', 60, 60, $txtTituloConstancia, 0, 0, false, true, 'C', false);
 
         //Tipografía contenido
         $pdf->SetFont('helvetica', '', 10);
 
-        $txtfolio = '<div style="text-align: left"> Folio: CE/' . $constancias['folio'] . '/' . date("Y") . '</div>';
-        $pdf->writeHTMLCell(100, '', 10, 62, $txtfolio, 0, 1, false, true, 'L', false);
-
+        $txtfolio = '<div style="text-align: right"> Folio: CE/' . $constancias['folio'] . '/' . date("Y") . '</div>';
+        $pdf->writeHTMLCell(100, '', 10, 62, $txtfolio, 0, 1, false, true, 'R', false);
+        
         //Mensaje predeterminado mostrado al principio de cada constancia
-        $txtMensajePredeterminado = '<div style="text-align: left"> <b> A quien corresponda: Con fundamento en lo estipulado por la UAEH, se hace constar la siguiente información: </b> </div>';
+        $txtMensajePredeterminado = '<div style="text-align: left"> A QUIEN CORRESPONDA <br> PRESENTE <br> Mtra. Hannia Ingrid Salinas González, Directora de Administración Escolar de esta Universidad, hace constar: </div>';
         $pdf->writeHTMLCell(860, '', 10, 68, $txtMensajePredeterminado, 0, 0, false, true, 'J', false);
 
-        $txtApellidoPaterno = '<div style="text-align: justify"> Primer Apellido: ' . $constancias['apellidoPaterno'] . '</div>';
-        $pdf->writeHTMLCell(130, '', 10, 78, $txtApellidoPaterno, 0, 1, false, true, 'J', false);
+        $txtPrimerApellido = '<div style="text-align: justify"> Primer Apellido: ' . $constancias['apellidoPaterno'] . '</div>';
+        $pdf->writeHTMLCell(130, '', 10, 78, $txtPrimerApellido, 0, 1, false, true, 'J', false);
 
-        $txtApellidoMaterno = '<div style="text-align: justify"> Segundo Apellido: ' . $constancias['apellidoMaterno'] . '</div>';
-        $pdf->writeHTMLCell(130, '', 10, 84, $txtApellidoMaterno, 0, 1, false, true, 'J', false);
+        $txtSegundoApellido = '<div style="text-align: justify"> Segundo Apellido: ' . $constancias['apellidoMaterno'] . '</div>';
+        $pdf->writeHTMLCell(130, '', 10, 84, $txtSegundoApellido, 0, 1, false, true, 'J', false);
 
-        $txtAlumnoNombre = '<div style="text-align: justify"> Nombre: ' . $constancias['nombre'] . '</div>';
+        $txtAlumnoNombre = '<div style="text-align: justify"> Nombre(s): ' . $constancias['nombre'] . '</div>';
         $pdf->writeHTMLCell(130, '', 10, 90, $txtAlumnoNombre, 0, 1, false, true, 'J', false);
 
         $txtCURP = '<div style="text-align: justify"> CURP: ' . $constancias['CURP'] . '</div>';
@@ -52,14 +52,14 @@ if (!empty($constancia)) {
         $txtUnidadAcademica = '<div style="text-align: justify"> Unidad Académica: ' . $constancias['unidadAcademica'] . '</div>';
         $pdf->writeHTMLCell(130, '', 10, 114, $txtUnidadAcademica, 0, 1, false, true, 'J', false);
 
-        $txtCCTUnidadAcademica = '<div style="text-align: left"> CCT Unidad Académica: ' . $constancias['cctUnidadAcademica'] . '</div>';
+        $txtCCTUnidadAcademica = '<div style="text-align: left"> CCT U. A.: ' . $constancias['cctUnidadAcademica'] . '</div>';
         $pdf->writeHTMLCell(130, '', 10, 120, $txtCCTUnidadAcademica, 0, 1, false, true, 'L', false);
 
         $txtCCTUniversidad = '<div style="text-align: left"> CCT UAEH: ' . $constancias['cctUniversidad'] . '</div>';
         $pdf->writeHTMLCell(130, '', 10, 126, $txtCCTUniversidad, 0, 1, false, true, 'L', false);
 
         //Puede ser Cursando || Inscrito
-        $txtEstatusAlumno = '<div style="text-align: justify"> Estatus del Alumno: ' . $constancias['estatusAlumno'] . '</div>';
+        $txtEstatusAlumno = '<div style="text-align: justify"> Condición Escolar: ' . $constancias['estatusAlumno'] . '</div>';
         $pdf->writeHTMLCell(130, '', 10, 132, $txtEstatusAlumno, 0, 1, false, true, 'J', false);
 
         $txtCalidadAlumno = '<div style="text-align: justify"> Calidad del Alumno: ' . $constancias['calidadAlumno'] . '</div>';

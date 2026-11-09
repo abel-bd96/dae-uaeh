@@ -102,7 +102,7 @@ class clsAlumnoSolicitudes
             $idCicloEscolar = $solicitud['idCicloEscolar'] ?? null;
 
             //Con base en el índice, verifica que haya un identificador para asignarle su nombre al ciclo
-            $solicitudes[$key]['nombreCiclo'] = $idCicloEscolar !== null ? ($indiceCiclos[(string) $idCicloEscolar] ?? 'Ciclo no encontrado') : 'Sin ciclo asignado';
+            $solicitudes[$key]['NombreCiclo'] = $idCicloEscolar !== null ? ($indiceCiclos[(string) $idCicloEscolar] ?? 'Ciclo no encontrado') : 'Sin ciclo asignado';
         }
 
         return $solicitudes;
