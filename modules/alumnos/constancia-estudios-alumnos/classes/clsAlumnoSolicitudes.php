@@ -28,6 +28,7 @@ class clsAlumnoSolicitudes
             session_start();
         }
         $idKardexUsuario = $_SESSION['IdKardex'] ?? null;
+        echo($idKardexUsuario); // Revisar por qué mezcla el Id con el arreglo de datos
 
         //Se previene el acceso "externo" a las vistas
         if ($idKardexUsuario === null || $idKardexUsuario === '') {
@@ -240,10 +241,6 @@ class clsAlumnoSolicitudes
     }
 
     //AlumnoSolicitudes ↑ SolicitudNueva ↓
-    public function mostrarDatosPersonales()
-    {
-        echo("Esto no debería utilizarse");
-    }
     
     public function guardar($tipoFirma, $calificaciones) //pendiente
     {

@@ -4,9 +4,10 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 /* MODIFICAR PARA VISUALIZAR DISTINTAS SOLICITUDES
 000004 = Anastacio || 488967 = Krista || 366276 = María */
-$_SESSION['IdKardex'] = '000004'; // = $alumno['IdKardex'];
+$_SESSION['IdKardex'] = "000004"; // = $alumno['IdKardex'];
 include './header_constancias.php';
 include './sidebar_constancias.php';
+// Cuidar que Inteliphense no borre el cierre del script
 ?>
 <main class="container-fluid container-md py-3 py-md-4" id="solicitudesConstancia">
     <div class="container">
@@ -219,4 +220,5 @@ include './sidebar_constancias.php';
     window.endpointSolicitudes = "../models/modAlumnoSolicitudes.php";
 </script>
 <script src="../controllers/ajxAlumnoSolicitudes.js"></script>
+
 <?php include './footer_constancias.php'; ?>

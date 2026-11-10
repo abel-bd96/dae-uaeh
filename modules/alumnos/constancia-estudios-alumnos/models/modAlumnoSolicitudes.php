@@ -15,11 +15,6 @@ try {
             $respuesta = $consulta->listar();
             break;
 
-        case 'mostrarDatosPersonales':
-
-            $respuesta = $consulta->mostrarDatosPersonales();
-            break;
-
         //Acción que realiza búsquedas con base en el idConstancia (temporalmente compara id_Solicitud con id_Constancia)
         case 'consultar':
             $idSolicitud = isset($_REQUEST['idSolicitud']) ? $_REQUEST['idSolicitud'] : '';
