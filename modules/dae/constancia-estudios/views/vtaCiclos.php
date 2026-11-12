@@ -56,7 +56,7 @@ include './sidebar_constancias.php';
     </form>
     <div class="table-responsive ciclos-table-wrap">
         <table class="table table-hover align-middle mb-0 ciclos-table fs-5" id="tablaCiclos">
-            <thead>
+            <thead class="table-light">
                 <tr>
                     <th scope="col" class="fs-5"><button type="button" class="btn btn-link p-0 text-reset text-decoration-none btn-ordenar" data-ordenar="nombre" aria-label="Ordenar por ciclo">Ciclo <span class="indicador-orden" aria-hidden="true"></span></button></th>
                     <th scope="col" class="fs-5"><button type="button" class="btn btn-link p-0 text-reset text-decoration-none btn-ordenar" data-ordenar="tipo" aria-label="Ordenar por tipo">Tipo <span class="indicador-orden" aria-hidden="true"></span></button></th>

@@ -28,7 +28,6 @@ class clsAlumnoSolicitudes
             session_start();
         }
         $idKardexUsuario = $_SESSION['IdKardex'] ?? null;
-        echo($idKardexUsuario); // Revisar por qué mezcla el Id con el arreglo de datos
 
         //Se previene el acceso "externo" a las vistas
         if ($idKardexUsuario === null || $idKardexUsuario === '') {
@@ -103,7 +102,7 @@ class clsAlumnoSolicitudes
             $idCicloEscolar = $solicitud['idCicloEscolar'] ?? null;
 
             //Con base en el índice, verifica que haya un identificador para asignarle su nombre al ciclo
-            $solicitudes[$key]['NombreCiclo'] = $idCicloEscolar !== null ? ($indiceCiclos[(string) $idCicloEscolar] ?? 'Ciclo no encontrado') : 'Sin ciclo asignado';
+            $solicitudes[$key]['nombreCiclo'] = $idCicloEscolar !== null ? ($indiceCiclos[(string) $idCicloEscolar] ?? 'Ciclo no encontrado') : 'Sin ciclo asignado';
         }
 
         return $solicitudes;

@@ -34,7 +34,7 @@
 .container-80 {
     max-width: 80%;
 }
-:is(.login-card, .welcome-panel, .ciclos-page) {
+:is(.login-card, .welcome-panel, .ciclos-page, .constancias-page) {
     background-color: var(--white-color);
     border-top: 5px solid var(--primary-color);
     border-radius: var(--surface-radius);
@@ -343,7 +343,7 @@
     grid-column: 1 / -1;
 }
 
-.ciclos-table-wrap {
+.ciclos-table-wrap, .constancias-table-wrap {
     border: 1px solid var(--surface-border);
     border-radius: 0.35rem;
 }

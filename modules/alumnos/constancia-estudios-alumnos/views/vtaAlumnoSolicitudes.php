@@ -9,45 +9,44 @@ include './header_constancias.php';
 include './sidebar_constancias.php';
 // Cuidar que Inteliphense no borre el cierre del script
 ?>
-<main class="container-fluid container-md py-3 py-md-4" id="solicitudesConstancia">
-    <div class="container">
-        <div class="row align-items-start g-3">
-            <div class="col-12 col-md-auto text-center text-md-start">
-                <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="var(--primary-color)" class="bi bi-file-text" viewBox="0 0 16 16" aria-hidden="true">
-                    <path
-                        d="M5 4a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1zm-.5 2.5A.5.5 0 0 1 5 6h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5M5 8a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1z" />
-                    <path
-                        d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2zm10-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1" />
-                </svg>
-            </div>
+<main class="container-fluid container-80 constancias-page my-4 my-md-5" id="solicitudesConstancia">
 
-            <div class="col-12 col-md">
-                <h1 class="h3 mb-1">
-                    Solicitud de Constancia de Estudios
-                </h1>
-                <h2 class="text-uppercase text-muted small mb-0 text-break">
-                    Programa Educativo: Licenciatura en Ciencias Computacionales
-                </h2>
-            </div>
+    <div class="row align-items-center g-3">
+        <div class="col-12 col-md-auto text-center text-md-start">
+            <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="var(--primary-color)" class="bi bi-file-text" viewBox="0 0 16 16" aria-hidden="true">
+                <path
+                    d="M5 4a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1zm-.5 2.5A.5.5 0 0 1 5 6h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5M5 8a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1z" />
+                <path
+                    d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2zm10-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1" />
+            </svg>
+        </div>
 
-            <div class="col-12 col-md-auto">
-                <a id="btnSolicitarConstancia" name="solicitarConstancia" class="btn btn-primary w-100" role="button">
-                    <i class="bi bi-plus-lg"></i> Trámite Nuevo
-                </a>
-            </div>
+        <div class="col-12 col-md">
+            <h1 class="h3 mb-1">
+                Solicitud de Constancia de Estudios
+            </h1>
+            <h2 class="text-uppercase text-muted small mb-0 text-break">
+                Programa Educativo: Licenciatura en Ciencias Computacionales
+            </h2>
+        </div>
+
+        <div class="col-12 col-md-auto">
+            <a id="btnSolicitarConstancia" name="solicitarConstancia" class="btn btn-primary-uaeh w-100" role="button">
+                <i class="bi bi-plus-lg"></i> Trámite Nuevo
+            </a>
         </div>
     </div>
 
     <hr>
 
-    <div class="card border-0 mt-4">
+    <div class="card border-0 mt-4 mb-4">
         <div class="card-body p-0">
-            <div class="table-responsive">
+            <div class="table-responsive constancias-table-wrap">
                 <h2 class="h3 mb-3 px-2 px-md-0">
                     Historial de Solicitudes
                 </h2>
 
-                <table class="table table-hover align-middle mb-0" id="tablaHistorialSolicitudes">
+                <table class="table table-hover align-middle mb-0 constancias-table fs-5" id="tablaHistorialSolicitudes">
                     <thead class="table-light">
                         <tr>
                             <th class="text-nowrap">Fecha de Registro (Año-Mes-Día)</th>
@@ -203,7 +202,7 @@ include './sidebar_constancias.php';
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" id="btnCancelar" data-bs-dismiss="modal">Cerrar</button>
                     <!--Se abre en una pestaña nueva para asegurar que genere el PDF y produzca la descarga -->
-                    <a class="btn btn-primary d-none" id="btnFormatoPago" name="DescargarFPago" href="../models/modFormatoPago.php" target="_blank" rel="noopener noreferrer" role="button">
+                    <a class="btn btn-primary-uaeh d-none" id="btnFormatoPago" name="DescargarFPago" href="../models/modFormatoPago.php" target="_blank" rel="noopener noreferrer" role="button">
                         <i class="bi bi-cash-coin"></i> Descargar Formato de Pago
                     </a>
                     <a class="btn btn-success d-none" id="btnConstanciaDigital" href="../models/modConstanciaDigital.php" target="_blank" rel="noopener noreferrer" role="button">

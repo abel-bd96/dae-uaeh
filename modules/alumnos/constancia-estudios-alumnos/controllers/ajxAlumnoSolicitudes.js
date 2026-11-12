@@ -53,25 +53,25 @@
                         return (
                             "<tr>" +
                             "<td>" +
-                            escapeHtml(r.FechaSolicitud) +
+                            escapeHtml(r.fechaSolicitud) +
                             "</td>" +
                             "<td>" +
-                            escapeHtml(r.NombreCiclo) +
+                            escapeHtml(r.nombreCiclo) +
                             ". " +
-                            escapeHtml(r.TipoFirma) +
+                            escapeHtml(r.tipoFirma) +
                             "</td>" +
                             "<td>" +
-                            escapeHtml(r.Estatus) +
+                            escapeHtml(r.estatus) +
                             "</td>" +
                             '<td class="text-end text-nowrap">' +
                             '<button name="seguimientoCorroborar" title="Detalles de la Solicitud" type="button" class="btn btn-sm btn-outline-primary" data-id="' +
-                            escapeHtml(r.IdSolicitud) +
+                            escapeHtml(r.idSolicitud) +
                             '"><i class="bi bi-eye"></i> Detalles de la Solicitud</button> ' +
                             '<button name="cancelarSolicitud" title="Cancelar Solicitud" type="button" class="btn btn-sm btn-outline-danger" data-id="' +
-                            escapeHtml(r.IdSolicitud) +
+                            escapeHtml(r.idSolicitud) +
                             '" ' +
                             'data-estado="' +
-                            escapeHtml(r.Estatus) +
+                            escapeHtml(r.estatus) +
                             '">' +
                             '<i class="bi bi-x-circle-fill"></i> Cancelar Solicitud</button>' +
                             "</td>" +
