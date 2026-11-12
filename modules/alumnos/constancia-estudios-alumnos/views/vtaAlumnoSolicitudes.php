@@ -26,7 +26,7 @@ include './sidebar_constancias.php';
                 Solicitud de Constancia de Estudios
             </h1>
             <h2 class="text-uppercase text-muted small mb-0 text-break">
-                Programa Educativo: Licenciatura en Ciencias Computacionales
+                Programa Educativo: Licenciatura
             </h2>
         </div>
 
@@ -46,7 +46,7 @@ include './sidebar_constancias.php';
                     Historial de Solicitudes
                 </h2>
 
-                <table class="table table-hover align-middle mb-0 constancias-table fs-5" id="tablaHistorialSolicitudes">
+                <table id="tablaHistorialSolicitudes" class="table table-hover align-middle mb-0 constancias-table fs-5">
                     <thead class="table-light">
                         <tr>
                             <th class="text-nowrap">Fecha de Registro (Año-Mes-Día)</th>
@@ -69,8 +69,7 @@ include './sidebar_constancias.php';
     </div>
 </main>
 
-<div class="modal fade" id="modalSeguimientoConstancia" tabindex="-1" aria-labelledby="tituloModalSeguimientoConstancia"
-    aria-hidden="true">
+<div class="modal fade" id="modalSeguimientoConstancia" tabindex="-1" aria-labelledby="tituloModalSeguimientoConstancia" aria-hidden="true">
 
     <div class="modal-dialog modal-fullscreen-sm-down modal-lg modal-dialog-scrollable">
         <div class="modal-content">
