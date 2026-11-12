@@ -2,7 +2,7 @@
 include './header_constancias.php';
 include './sidebar_constancias.php';
 ?>
-<main class="container py-4" id="constanciaCrearSolicitud">
+<main class="container py-4 ciclos-page" id="constanciaCrearSolicitud">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
@@ -132,7 +132,7 @@ include './sidebar_constancias.php';
                         <i class="bi bi-arrow-left"></i> Anterior
                     </button>
                     <div>
-                        <button type="button" class="btn btn-primary" id="btnSiguiente" onclick="return false;">
+                        <button type="button" class="btn btn-primary-uaeh" id="btnSiguiente" onclick="return false;">
                             Siguiente <i class="bi bi-arrow-right"></i>
                         </button>
                         <button type="button" class="btn btn-success d-none" id="btnGuardar">

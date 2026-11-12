@@ -2,7 +2,7 @@
 include './header_constancias.php';
 include './sidebar_constancias.php';
 ?>
-<main class="container py-4" id="constanciaGenerarSolicitud">
+<main class="container py-4 ciclos-page " id="constanciaGenerarSolicitud">
     <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
         <div>
             <p class="text-uppercase text-muted small mb-1">Emisión de constancias</p>

@@ -2,7 +2,6 @@
 // Tipografía de Título
 $pdf->SetFont('helvetica', 'B', 12);
 $pdf->SetMargins(2, 2, 2);
-
 $pdf->AddPage('P', array(215.9, 279.4));
 
 // Ruta del logo

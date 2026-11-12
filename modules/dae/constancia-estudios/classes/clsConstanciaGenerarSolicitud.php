@@ -890,11 +890,17 @@ class clsConstanciaGenerarSolicitud
     }
 
         private function construirContenido($idContenido, $idConstancia, $solicitud, $folioInfo) {
-        // Como no usaremos observaciones por ahora, las dejamos vacías
+        // Recuperamos los datos adicionales de las Observaciones
         $campoAdicional = '';
         $infoAdicional  = '';
 
-        // Buscamos los datos del alumno para llenar el PDF
+        if (!empty($solicitud['Observaciones']) && is_array($solicitud['Observaciones'])) {
+            $par = $solicitud['Observaciones'][0]; // Tomamos el primer dato adicional
+            if (isset($par['nombre'])) $campoAdicional = $par['nombre'];
+            if (isset($par['valor']))  $infoAdicional  = $par['valor'];
+        }
+
+        // Buscamos los datos del alumno
         $numCuenta = isset($solicitud['NumeroCuenta']) ? $solicitud['NumeroCuenta'] : '';
         $alumno = $this->consultarAlumno($numCuenta);
 
@@ -905,9 +911,11 @@ class clsConstanciaGenerarSolicitud
             'folio'                     => isset($folioInfo['folio']) ? $folioInfo['folio'] : '',
             'apellidoPaterno'           => isset($alumno['ApellidoPaterno']) ? $alumno['ApellidoPaterno'] : '',
             'apellidoMaterno'           => isset($alumno['ApellidoMaterno']) ? $alumno['ApellidoMaterno'] : '',
-            'nombre'                    => isset($alumno['Nombre']) ? $alumno['Nombre'] : '',
+            'nombre'                    => isset($alumno['Nombres']) ? $alumno['Nombres'] : '',
             'CURP'                      => isset($alumno['CURP']) ? $alumno['CURP'] : '',
             'numeroCuenta'              => $numCuenta,
+            
+            // Datos de la solicitud
             'programaEducativo'         => isset($solicitud['ProgramaEducativo']) ? $solicitud['ProgramaEducativo'] : '',
             'unidadAcademica'           => isset($solicitud['Instituto']) ? $solicitud['Instituto'] : '',
             'cctUnidadAcademica'        => '',
@@ -924,8 +932,9 @@ class clsConstanciaGenerarSolicitud
             'periodoVacacional'         => '',
             'promedioGeneral'           => '',
             'avanceProgramaEducativo'   => '',
-            'campoAdicional'            => $campoAdicional,
+            'campoAdicional'            => $campoAdicional, 
             'informacionAdicional'      => $infoAdicional,
+            
             'calificaciones'            => array()
         );
     }
