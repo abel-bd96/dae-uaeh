@@ -53,7 +53,7 @@ foreach ($idsSolicitudes as $idSolicitud) {
     // Si encontramos la constancia, incluimos la vista que dibuja el PDF
     if ($constancias) {
         $constanciasEncontradas++;
-        include dirname(__DIR__, 1) . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'vtaConstanciaDigitalPDF.php';
+        include dirname(__DIR__, 1) . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'vtaConstanciaGenerarPDF.php';
     }
 }
 

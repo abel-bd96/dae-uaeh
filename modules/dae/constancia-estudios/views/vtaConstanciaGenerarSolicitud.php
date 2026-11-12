@@ -9,7 +9,7 @@ include './sidebar_constancias.php';
             <h1 class="h3 mb-0">Seguimiento de constancias</h1>
         </div>
         <div class="d-flex gap-2">
-            <a href="./vtaCrearSolicitud.php" class="btn btn-primary" id="btnNuevaSolicitud">
+            <a href="./vtaConstanciaCrearSolicitud.php" class="btn btn-primary">
                 <i class="bi bi-plus-lg"></i> Crear Solicitud
             </a>
         </div>
@@ -17,6 +17,7 @@ include './sidebar_constancias.php';
 
     <div id="mensajeSolicitud" class="alert d-none" role="alert"></div>
 
+    <!-- Acciones maxivas -->
     <div class="card shadow-sm border-0 mb-4 d-none" id="barraAccionesMasivas">
     <div class="card-body d-flex flex-wrap align-items-center gap-2">
         <span class="fw-bold me-2">
@@ -34,16 +35,16 @@ include './sidebar_constancias.php';
         <!-- Filtros -->
     <div class="card shadow-sm border-0 mb-4">
         <div class="card-body">
-            <h2 class="h6 text-uppercase text-muted mb-3">Filtros de búsqueda</h2>
+            <h2 class="h6 text-uppercase text-muted mb-4">Filtros de búsqueda</h2>
             <div class="row g-3">
                 <div class="col-md-3">
                     <label for="filtroNumeroCuenta" class="form-label">Número de cuenta</label>
-                    <input type="text" class="form-control" id="filtroNumeroCuenta" placeholder="Ej. 250122">
+                    <input type="text" class="form-control" id="filtroNumeroCuenta" placeholder="Ej. 250122" inputmode="numeric" pattern="[0-9]*" maxlength="10" autocomplete="off">
                 </div>
 
                 <div class="col-md-3">
                     <label for="filtroNombre" class="form-label">Nombre del alumno</label>
-                    <input type="text" class="form-control" id="filtroNombre" placeholder="Nombre completo">
+                    <input type="text" class="form-control" id="filtroNombre" placeholder="Nombre completo" maxlength="100" autocomplete="off">
                 </div>
 
                 <div class="col-md-2">
@@ -63,7 +64,9 @@ include './sidebar_constancias.php';
 
                 <div class="col-md-2">
                     <label for="filtroCiclo" class="form-label">Ciclo escolar</label>
-                    <input type="text" class="form-control" id="filtroCiclo" placeholder="Ej. 2024-2025">
+                    <select class="form-select" id="filtroCiclo">
+                        <option value="">Seleccionar</option>
+                    </select>
                 </div>
 
                 <div class="col-md-2">
@@ -74,6 +77,7 @@ include './sidebar_constancias.php';
                         <option value="N">No especiales</option>
                     </select>
                 </div>
+                <div class="row g-3 mt-2">
                 <div class="col-md-2">
                     <label for="filtroTipoFirma" class="form-label">Tipo de firma</label>
                     <select class="form-select" id="filtroTipoFirma">
@@ -104,7 +108,7 @@ include './sidebar_constancias.php';
                     <input type="date" class="form-control" id="filtroFechaHasta">
                 </div>
 
-                <div class="col-md-3 d-flex align-items-end">
+                <div class="col-md-4 d-flex align-items-end gap-2">
                     <button type="button" class="btn btn-primary w-100" id="btnFiltrar">
                         <i class="bi bi-search"></i> Buscar
                     </button>
@@ -118,26 +122,27 @@ include './sidebar_constancias.php';
             </div>
         </div>
     </div>
+</div>
 
     <!-- Tabla -->
-    <div class="card shadow-sm border-0">
-        <div class="card-body p-0">
+    <div class="card shadow-sm border-0 mb-4 ">
+        <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0" id="tablaSolicitudes">
                     <thead class="table-light">
                     <tr>
                         <th style="width: 40px;">
-                        <input type="checkbox" class="form-check-input" id="checkTodos" title="Seleccionar todos">
+                        <input type="checkbox" class="form-check-input" id="checkTodos" aria-label="Seleccionar todos los registros" title="Seleccionar todos">
                         </th>
-                        <th>Folio</th>
-                        <th>Fecha Solicitud</th>
-                        <th>Ciclo Escolar</th>
-                        <th>Número de Cuenta</th>
-                        <th>Nombre Completo</th>
-                        <th>Estatus Solicitud</th>
-                        <th>Dato Adicional</th>
-                        <th>Tipo de Firma</th>
-                        <th class="text-end">Acciones</th>
+                        <th scope="col">Folio</th>
+                        <th scope="col">Fecha Solicitud</th>
+                        <th scope="col">Ciclo Escolar</th>
+                        <th scope="col">Número de Cuenta</th>
+                        <th scope="col">Nombre Completo</th>
+                        <th scope="col">Estatus Solicitud</th>
+                        <th scope="col">Dato Adicional</th>
+                        <th scope="col">Tipo de Firma</th>
+                        <th scope="col" class="text-end">Acciones</th>
                     </tr>
                 </thead>
                     <tbody>
@@ -180,7 +185,7 @@ include './sidebar_constancias.php';
         </div>
     </div>
         <!-- Modal para capturar Datos Adicionales al Elaborar -->
-    <div class="modal fade" id="modalDatosAdicionales" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal fade" id="modalDatosAdicionales" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header bg-info text-white">
@@ -223,7 +228,6 @@ include './sidebar_constancias.php';
     </div>
 </main>
 
-<script src="../controllers/ajxGenerarSolicitud.js"></script>
+<script src="../controllers/ajxConstanciaGenerarSolicitud.js"></script>
 
-<?php
-include './footer_constancias.php'; ?>
+<?php include './footer_constancias.php'; ?>

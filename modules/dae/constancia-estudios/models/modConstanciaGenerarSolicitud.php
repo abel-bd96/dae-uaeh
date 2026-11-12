@@ -6,6 +6,24 @@ require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPA
 $consulta = new clsConstanciaGenerarSolicitud();
 $accion = isset($_REQUEST['accion']) ? $_REQUEST['accion'] : 'listar';
 
+/**
+ * Valida la respuesta de la clase: si trae ok=false lanza excepción;
+ * si trae 'datos' devuelve solo eso, si no, el resultado completo.
+ */
+function validarResultado(array $resultado) {
+    if (isset($resultado['ok']) && $resultado['ok'] === false) {
+        throw new Exception(
+            isset($resultado['mensaje']) ? $resultado['mensaje'] : 'No fue posible completar la operación.'
+        );
+    }
+    return isset($resultado['datos']) ? $resultado['datos'] : $resultado;
+}
+
+/** Lee un parámetro de $_REQUEST con trim y default ''. */
+function requestId($clave = 'id') {
+    return isset($_REQUEST[$clave]) ? trim((string)$_REQUEST[$clave]) : '';
+}
+
 try {
     switch ($accion) {
         case 'listar':
@@ -13,122 +31,97 @@ try {
             break;
 
         case 'consultar':
-            $id = isset($_REQUEST['id']) ? $_REQUEST['id']: '';
-            $respuesta = $consulta->consultar($id);
+            $respuesta = $consulta->consultar(requestId());
             if ($respuesta === null) {
-                throw new Exception('No se encontró la solicitud seleccionada.' );
-                }
-            break;    
+                throw new Exception('No se encontró la solicitud seleccionada.');
+            }
+            break;
 
         case 'numeroCuenta':
-            $respuesta = $consulta->consultarNumeroCuenta(isset($_REQUEST['texto']) ? $_REQUEST['texto'] : '');
+            // Guarda: si el texto viene vacío, no recorremos los JSON completos.
+            $texto = isset($_REQUEST['texto']) ? trim((string)$_REQUEST['texto']) : '';
+            if ($texto === '') {
+                $respuesta = array();
+                break;
+            }
+            $respuesta = $consulta->consultarNumeroCuenta($texto);
             break;
+
         case 'guardar':
         case 'actualizar':
-            $metodo = $accion === 'guardar' ? 'guardar' : 'actualizar';
-            $resultado = $consulta->$metodo($_POST);
+            $respuesta = validarResultado($consulta->$accion($_POST));
+            break;
 
-            if (isset($resultado['ok']) && $resultado['ok'] === false) {
-                throw new Exception(
-                    isset($resultado['mensaje']) ? $resultado['mensaje'] : 'No fue posible completar la solicitud');
-            }
-            $respuesta = isset($resultado['datos']) ? $resultado['datos']: $resultado;
-            break;
         case 'pagar':
-            $resultado = $consulta->pagar($_REQUEST['id']);
-            if (isset($resultado['ok']) && $resultado['ok'] === false) throw new Exception($resultado['mensaje']);
-            $respuesta = $resultado;
+            $respuesta = validarResultado($consulta->pagar(requestId()));
             break;
+
         case 'procesarPagoConfirmado':
-            $idSolicitud = isset($_REQUEST['idSolicitud']) ? trim($_REQUEST['idSolicitud']) : '';
-            $respuesta = $consulta->procesarPagoConfirmado($idSolicitud);
+            $respuesta = $consulta->procesarPagoConfirmado(
+                isset($_REQUEST['idSolicitud']) ? trim($_REQUEST['idSolicitud']) : ''
+            );
             break;
+
         case 'elaborar':
-            $resultado = $consulta->elaborar($_REQUEST['id']);
-            if (isset($resultado['ok']) && $resultado['ok'] === false) throw new Exception($resultado['mensaje']);
-            $respuesta = $resultado;
+            $respuesta = validarResultado($consulta->elaborar(requestId()));
             break;
+
         case 'mandarFirma':
-            $resultado = $consulta->mandarFirma($_REQUEST['id']);
-            if (isset($resultado['ok']) && $resultado['ok'] === false) throw new Exception($resultado['mensaje']);
-            $respuesta = $resultado;
+            $respuesta = validarResultado($consulta->mandarFirma(requestId()));
             break;
+
         case 'emitir':
-            $resultado = $consulta->emitir($_REQUEST['id']);
-            if (isset($resultado['ok']) && $resultado['ok'] === false) throw new Exception($resultado['mensaje']);
-            $respuesta = $resultado;
+            $respuesta = validarResultado($consulta->emitir(requestId()));
             break;
+
         case 'entregar':
-            $resultado = $consulta->entregar($_REQUEST['id']);
-            if (isset($resultado['ok']) && $resultado['ok'] === false) throw new Exception($resultado['mensaje']);
-            $respuesta = $resultado;
+            $respuesta = validarResultado($consulta->entregar(requestId()));
             break;
+
         case 'cancelar':
-            $resultado = $consulta->cancelar($_REQUEST['id']);
-            if (isset($resultado['ok']) && $resultado['ok'] === false) throw new Exception($resultado['mensaje']);
-            $respuesta = $resultado;
+            $respuesta = validarResultado($consulta->cancelar(requestId()));
             break;
-        case 'estatusValidos':
-            $respuesta = $consulta->estatusValidos();
-            break;
+
         case 'observacion':
             $respuesta = $consulta->consultarObservacion();
             break;
-        case 'estatus':
-            $respuesta =  $consulta->consultarEstatusSolicitud();
-            break;
+
         case 'datoAdicional':
             $respuesta = $consulta->consultarDatoAdicional();
             break;
+
         case 'cambiarEstatusMasivo':
-            $resultado = $consulta->cambiarEstatusMasivo($_POST);
-            if (isset($resultado['ok']) && $resultado['ok'] === false) {
-                throw new Exception(
-                    isset($resultado['mensaje']) ? $resultado['mensaje'] : 'No fue posible actualizar los estatus.'
-                );
-            }
-            $respuesta = $resultado;
+            // La clase devuelve {procesados, omitidos, mensaje} sin 'ok'.
+            $respuesta = $consulta->cambiarEstatusMasivo($_POST);
             break;
+
         case 'contenido':
-            $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
-            $respuesta = $consulta->consultarContenido($id);
+            $respuesta = $consulta->consultarContenido(requestId());
             if ($respuesta === null) {
                 throw new Exception('No se encontró el contenido de la constancia.');
             }
             break;
-        case 'actualizarObservaciones':
-            $id = isset($_POST['id']) ? $_POST['id'] : '';
-            $obs = isset($_POST['Observaciones']) ? $_POST['Observaciones'] : '[]';
-            $resultado = $consulta->actualizarObservaciones($id, $obs);
-            if (isset($resultado['ok']) && $resultado['ok'] === false) throw new Exception($resultado['mensaje']);
-            $respuesta = $resultado;
-            break;
-        case 'consultarPago':
-            $idSolicitud = isset($_REQUEST['idSolicitud'])
-            ? trim($_REQUEST['idSolicitud'])
-            : '';
 
-            $respuesta = $consulta->consultarEstadoPago($idSolicitud);
+        case 'actualizarObservaciones':
+            $id  = isset($_POST['id']) ? $_POST['id'] : '';
+            $obs = isset($_POST['Observaciones']) ? $_POST['Observaciones'] : '[]';
+            $respuesta = validarResultado($consulta->actualizarObservaciones($id, $obs));
+            break;
+
+        case 'consultarPago':
+            $respuesta = $consulta->consultarEstadoPago(
+                isset($_REQUEST['idSolicitud']) ? trim($_REQUEST['idSolicitud']) : ''
+            );
+            break;
+        case 'listarCiclosDisponibles':
+            $respuesta = $consulta->listarCiclosDisponibles();
             break;
         case 'validarSolicitudActiva':
+            // Delegamos a la clase: valida ciclo activo + consultarSolicitudExistente.
             $IdKardex = isset($_REQUEST['IdKardex']) ? trim($_REQUEST['IdKardex']) : '';
-            $solicitudes = $consulta->listar(); 
-            $tieneActiva = false;
-            
-            $estatusActivos = array('Solicitado', 'En elaboración', 'En firma');
-            
-            foreach ($solicitudes as $s) {
-                $kardexExistente = isset($s['IdKardex']) ? trim((string)$s['IdKardex']) : '';
-                $estatusExistente = isset($s['estatus']) ? $s['estatus'] : '';
-                
-                // Si el kardex coincide y el estatus es activo, frena
-                if ($kardexExistente !== '' && $kardexExistente === $IdKardex && in_array($estatusExistente, $estatusActivos, true)) {
-                    $tieneActiva = true;
-                    break;
-                }
-            }
-            $respuesta = array('tieneActiva' => $tieneActiva);
+            $respuesta = $consulta->validarSolicitudActivaPorKardex($IdKardex);
             break;
+
         default:
             throw new Exception('La acción solicitada no es válida.');
     }

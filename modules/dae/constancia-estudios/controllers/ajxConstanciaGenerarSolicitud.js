@@ -1,5 +1,5 @@
 (function () {
-    "use strict";
+    ("use strict");
 
     var endpoint = "../models/modConstanciaGenerarSolicitud.php";
     var paso = 1;
@@ -13,8 +13,6 @@
         elaborar: { estatus: "En elaboración", titulo: "Elaborar" },
         mandarFirma: { estatus: "En firma", titulo: "Mandar a firma" },
         emitir: { estatus: "Emitida", titulo: "Emitir" },
-        entregar: { estatus: "Entregado", titulo: "Entregar" },
-        finalizar: { estatus: "Finalizado", titulo: "Finalizar" },
         cancelar: { estatus: "Cancelado", titulo: "Cancelar" },
     };
 
@@ -24,6 +22,8 @@
         var accion = datos.accion || "guardar";
 
         Object.keys(datos).forEach(function (clave) {
+            if (clave === "accion") return;
+
             var valor = datos[clave];
             if (valor && typeof valor === "object" && typeof valor.length === "number" && !Array.isArray(valor)) {
                 valor = Array.prototype.slice.call(valor);
@@ -36,6 +36,7 @@
                 parametros.append(clave, valor);
             }
         });
+
         parametros.append("accion", accion);
 
         return fetch(endpoint, { method: "POST", body: parametros }).then(function (respuesta) {
@@ -79,7 +80,7 @@
     function escapeHtml(texto) {
         var div = document.createElement("div");
         div.textContent = texto || "";
-        return div.innerHTML;
+        return div.innerHTML.replace(/"/g, "&quot;").replace(/'/g, "&#39;");
     }
 
     function mostrarMensaje(texto, tipo, idContenedor) {
@@ -126,18 +127,6 @@
 
     // SELECCIÓN MÚLTIPLE
     function actualizarContadorSeleccionadas() {
-        var badge = document.getElementById("contadorSeleccionadas");
-        var btn = document.getElementById("btnImprimirSeleccionadas");
-        if (badge) badge.textContent = idsSeleccionados.length;
-        if (btn) {
-            if (idsSeleccionados.length > 0) {
-                btn.classList.remove("d-none");
-                btn.style.display = "inline-block";
-            } else {
-                btn.classList.add("d-none");
-                btn.style.display = "none";
-            }
-        }
         var barra = document.getElementById("barraAccionesMasivas");
         var cont = document.getElementById("contadorAcciones");
         if (barra) barra.classList.toggle("d-none", idsSeleccionados.length === 0);
@@ -189,6 +178,44 @@
             fechaDesde: (document.getElementById("filtroFechaDesde").value || "").trim(),
             fechaHasta: (document.getElementById("filtroFechaHasta").value || "").trim(),
         };
+    }
+    function soloDigitos(input) {
+        if (!input) return;
+        input.addEventListener("input", function () {
+            var limpio = this.value.replace(/\D/g, "").slice(0, 10);
+            if (this.value !== limpio) this.value = limpio;
+        });
+    }
+
+    function soloLetras(input) {
+        if (!input) return;
+        // Permite letras (incluye acentos), espacios, apóstrofes y guiones
+        var permitidos = /[^A-Za-zÁÉÍÓÚÜÑáéíóúüñ'\- ]/g;
+        input.addEventListener("input", function () {
+            var limpio = this.value.replace(permitidos, "").replace(/\s{2,}/g, " ");
+            if (this.value !== limpio) this.value = limpio;
+        });
+    }
+
+    function cargarCiclosFiltro() {
+        var select = document.getElementById("filtroCiclo");
+        if (!select) return;
+
+        consultar("listarCiclosDisponibles")
+            .then(function (ciclos) {
+                select.innerHTML = '<option value="">Todos</option>';
+                (ciclos || []).forEach(function (ciclo) {
+                    if (!ciclo || !ciclo.trim()) return;
+                    var opt = document.createElement("option");
+                    opt.value = ciclo;
+                    opt.textContent = ciclo;
+                    select.appendChild(opt);
+                });
+            })
+            .catch(function (error) {
+                console.error("Error al cargar ciclos:", error);
+                // El select se queda con "Todos" - no bloquea el resto del listado
+            });
     }
 
     function aplicarFiltros() {
@@ -333,7 +360,7 @@
             );
         }
 
-        // Aparece desde que se elabora (cuando ya tiene folio y contenido) hasta que se entrega
+        // Aparece el PDF desde elavborda / firma
         if (["En elaboración", "En firma"].includes(estatus)) {
             botones.push(
                 '<button type="button" class="btn btn-sm btn-outline-primary btn-generar-pdf" data-id="' +
@@ -342,7 +369,7 @@
             );
         }
 
-        // Si ya está Entregado, mostramos el botón bloqueado y cortamos la ejecución
+        // Entregado: mostramos el botón bloqueado y cortamos la ejecución
         if (estatus === "Entregado") {
             botones.push(
                 '<button type="button" class="btn btn-sm btn-success" disabled><i class="bi bi-box-arrow-right"></i> Entregado</button>',
@@ -351,14 +378,11 @@
         }
 
         // El botón de Cancelar solo aparece si no está Finalizado, Cancelado o Entregado
-        if (!["Finalizado", "Cancelado", "Entregado"].includes(estatus)) {
-            botones.push(
-                '<button type="button" class="btn btn-sm btn-outline-danger btn-cancelar" data-id="' +
-                    id +
-                    '"><i class="bi bi-x-circle"></i> Cancelar</button>',
-            );
-        }
-
+        botones.push(
+            '<button type="button" class="btn btn-sm btn-outline-danger btn-cancelar" data-id="' +
+                id +
+                '"><i class="bi bi-x-circle"></i> Cancelar</button>',
+        );
         return botones.join(" ");
     }
 
@@ -449,7 +473,7 @@
         if (!hayFiltrosActivos()) {
             mostrarMensaje("Seleccione al menos un filtro para poder buscar.", "warning", "mensajeSolicitud");
             document.querySelector("#tablaSolicitudes tbody").innerHTML =
-                '<tr><td colspan="9" class="text-center text-muted py-4">' +
+                '<tr><td colspan="10" class="text-center text-muted py-4">' +
                 "Seleccione al menos un filtro y presione <strong>Buscar</strong>." +
                 "</td></tr>";
 
@@ -458,6 +482,9 @@
             return;
         }
 
+        var btn = document.getElementById("btnFiltrar");
+        if (btn) btn.disabled = true;
+
         consultar("listar")
             .then(function (solicitudes) {
                 todosLosRegistros = solicitudes || [];
@@ -465,6 +492,9 @@
             })
             .catch(function (error) {
                 mostrarMensaje(error.message, "danger", "mensajeSolicitud");
+            })
+            .finally(function () {
+                if (btn) btn.disabled = false;
             });
     }
 
@@ -492,7 +522,7 @@
         limpiarSeleccion();
 
         document.querySelector("#tablaSolicitudes tbody").innerHTML =
-            '<tr><td colspan="9" class="text-center text-muted py-4">' +
+            '<tr><td colspan="10" class="text-center text-muted py-4">' +
             "Seleccione los filtros y presione <strong>Buscar</strong> para ver resultados" +
             "</td></tr>";
 
@@ -500,7 +530,7 @@
         actualizarCheckTodos();
     }
 
-    // MODAL GENÉRICO
+    // MODAL de confirmacion
     function abrirModal(opciones) {
         if (typeof bootstrap === "undefined" || typeof bootstrap.Modal === "undefined") {
             console.error("Bootstrap 5 no está cargado. Revisa el orden de tus <script>.");
@@ -510,35 +540,17 @@
         var modalEl = document.getElementById("modalConfirmar");
         if (!modalEl) {
             console.error("No existe el modal con id='modalConfirmar' en el DOM.");
-            if (confirm(opciones.mensaje || "¿Continuar?")) opciones.onAceptar(null);
+            if (confirm(opciones.mensaje || "¿Continuar?")) opciones.onAceptar();
             return;
         }
 
         var titulo = document.getElementById("modalConfirmarTitulo");
         var mensaje = document.getElementById("modalConfirmarMensaje");
-        var selectWrap = document.getElementById("modalConfirmarSelectWrap");
-        var select = document.getElementById("modalConfirmarSelect");
         var btnOk = document.getElementById("modalConfirmarAceptar");
-
-        if (!titulo || !mensaje || !selectWrap || !select || !btnOk) return;
+        if (!titulo || !mensaje || !btnOk) return;
 
         titulo.textContent = opciones.titulo || "Confirmar acción";
         mensaje.textContent = opciones.mensaje || "¿Está seguro?";
-
-        if (opciones.tipo === "select") {
-            selectWrap.classList.remove("d-none");
-            select.innerHTML = "";
-            (opciones.opciones || []).forEach(function (op) {
-                var opt = document.createElement("option");
-                opt.value = op;
-                opt.textContent = op;
-                select.appendChild(opt);
-            });
-            if (opciones.valorInicial) select.value = opciones.valorInicial;
-        } else {
-            selectWrap.classList.add("d-none");
-        }
-
         btnOk.className = "btn " + (opciones.btnClass || "btn-primary");
         btnOk.textContent = opciones.btnTexto || "Aceptar";
 
@@ -546,13 +558,12 @@
         btnOk.parentNode.replaceChild(btnOkNuevo, btnOk);
 
         btnOkNuevo.addEventListener("click", function () {
-            var valor = opciones.tipo === "select" ? select.value : null;
             if (document.activeElement && typeof document.activeElement.blur === "function") {
                 document.activeElement.blur();
             }
             var modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
             modalInstance.hide();
-            if (typeof opciones.onAceptar === "function") opciones.onAceptar(valor);
+            if (typeof opciones.onAceptar === "function") opciones.onAceptar();
         });
 
         var modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
@@ -648,25 +659,6 @@
         });
     }
 
-    function entregarSolicitud(id) {
-        abrirModal({
-            titulo: "Entregar constancia",
-            mensaje: "¿Marcar esta constancia como entregada al alumno?",
-            btnTexto: "Sí, entregar",
-            btnClass: "btn-success",
-            onAceptar: function () {
-                solicitar({ accion: "entregar", id: id })
-                    .then(function () {
-                        mostrarMensaje("La constancia se marcó como entregada.", "success", "mensajeSolicitud");
-                        cargarSolicitudes();
-                    })
-                    .catch(function (error) {
-                        mostrarMensaje(error.message, "danger", "mensajeSolicitud");
-                    });
-            },
-        });
-    }
-
     function cancelarSolicitud(id) {
         abrirModal({
             titulo: "Cancelar solicitud",
@@ -686,6 +678,7 @@
         });
     }
 
+    //Acciones masivas
     function ejecutarAccionMasiva(accion) {
         if (!idsSeleccionados.length) {
             mostrarMensaje("No hay solicitudes seleccionadas.", "warning", "mensajeSolicitud");
@@ -743,7 +736,7 @@
         });
     }
 
-    // NAVEGACIÓN POR PASOS (FORMULARIO)
+    // FORMULARIO NAVEGACIÓN POR PASOS
     function mostrarPaso(numero) {
         if (modoEdicion && numero < 2) numero = 2;
 
@@ -868,7 +861,7 @@
     function seleccionarAlumno(elemento) {
         var campos = {
             IdKardex: elemento.dataset.kardex || "",
-            IdProgramaEducativo: elemento.dataset.IdProgramaEducativo || "",
+            IdProgramaEducativo: elemento.dataset.idProgramaEducativo || "",
             CicloEscolar: elemento.dataset.cicloEscolar || "",
             NumeroCuenta: elemento.dataset.numero || "",
             NombreCompleto: elemento.dataset.nombreCompleto || "",
@@ -884,24 +877,18 @@
 
         Object.keys(campos).forEach(function (clave) {
             var input = document.getElementById(clave);
-            if (input) {
-                input.value = campos[clave];
-            }
+            if (input) input.value = campos[clave];
 
             var span = document.getElementById("mostrar" + clave);
-            if (span) {
-                span.textContent = campos[clave];
-            }
+            if (span) span.textContent = campos[clave];
         });
 
         var datosAlumno = document.getElementById("datosAlumno");
         var datosInstitucional = document.getElementById("datosInstitucional");
-
         if (datosAlumno) datosAlumno.classList.remove("d-none");
         if (datosInstitucional) datosInstitucional.classList.remove("d-none");
 
         var resultados = document.getElementById("resultadosNumeroCuenta");
-
         if (resultados) resultados.innerHTML = "";
 
         mostrarError("errorNumeroCuenta", "");
@@ -931,6 +918,7 @@
         });
     }
 
+    //Formulario datos adicionales
     function renderObservaciones() {
         var lista = document.getElementById("listaObservaciones");
         if (!lista) return;
@@ -1072,10 +1060,12 @@
         });
     }
 
+    //INICIAR formulario
     function iniciarFormulario() {
         limpiarMensaje("mensajeFormulario");
         var params = new URLSearchParams(window.location.search);
         var id = params.get("id");
+        soloDigitos(document.getElementById("buscarNumeroCuenta"));
 
         btnSiguiente = document.getElementById("btnSiguiente");
         var resultados = document.getElementById("resultadosNumeroCuenta");
@@ -1113,10 +1103,6 @@
                         .then(function (res) {
                             // Si el servidor dice que tiene una activa, lo frenamos
                             if (res && res.tieneActiva === true) {
-                                mostrarError(
-                                    "errorNumeroCuenta",
-                                    res.mensaje || "El alumno ya tiene una solicitud activa.",
-                                );
                                 mostrarMensaje(
                                     res.mensaje || "El alumno cuenta con una solicitud activa.",
                                     "danger",
@@ -1288,18 +1274,21 @@
     }
 
     function guardarSolicitud() {
-        if (paso !== 3) {
-            return;
-        }
+        if (paso !== 3) return;
+    
         limpiarMensaje("mensajeFormulario");
         var datos = datosFormulario();
 
-        if (!datos.NumeroCuenta) {
+        if (!datos.NumeroCuenta || !datos.IdKardex) {
             mostrarMensaje("Debe seleccionar un alumno.", "warning", "mensajeFormulario");
             mostrarPaso(1);
             return;
         }
-
+        if (!datos.DatoAdicional || !datos.TipoFirma || !datos.Calificaciones) {
+            mostrarMensaje("Debe completar todas las opciones de la constancia.", "warning", "mensajeFormulario");
+            mostrarPaso(2);
+            return;
+        }
         solicitar(datos)
             .then(function () {
                 mostrarMensaje(
@@ -1308,7 +1297,7 @@
                     "mensajeFormulario",
                 );
                 setTimeout(function () {
-                    window.location.href = "?vta=index";
+                    window.location.href = "./vtaConstanciaGenerarSolicitud.php";
                 }, 1000);
             })
             .catch(function (error) {
@@ -1319,6 +1308,9 @@
     // LISTADO (PANTALLA PRINCIPAL)
     function iniciarListado() {
         limpiarMensaje("mensajeSolicitud");
+        soloDigitos(document.getElementById("filtroNumeroCuenta"));
+        soloLetras(document.getElementById("filtroNombre"));
+        cargarCiclosFiltro();
 
         var btnFiltrar = document.getElementById("btnFiltrar");
         if (btnFiltrar) btnFiltrar.addEventListener("click", cargarSolicitudes);
@@ -1348,11 +1340,13 @@
             });
         }
 
+        // ── HANDLER DE ACCIONES MASIVAS (restaurado) ──
         var barraMasiva = document.getElementById("barraAccionesMasivas");
         if (barraMasiva) {
             barraMasiva.addEventListener("click", function (evento) {
                 var btn = evento.target.closest("[data-accion-masiva]");
                 if (!btn) return;
+
                 var accion = btn.getAttribute("data-accion-masiva");
 
                 if (accion === "imprimir") {
@@ -1361,7 +1355,7 @@
                         return;
                     }
                     var idsString = idsSeleccionados.join(",");
-                    var urlPDF = "../models/modConstanciaImprimirDigital.php?idSolicitud=" + idsString;
+                    var urlPDF = "../models/modConstanciaGenerarPDF.php?idSolicitud=" + idsString;
                     window.open(urlPDF, "_blank");
                     return;
                 }
@@ -1381,7 +1375,6 @@
                     [".btn-elaborar", elaborarSolicitud],
                     [".btn-mandar-firma", mandarFirmaSolicitud],
                     [".btn-emitir", emitirSolicitud],
-                    [".btn-entregar", entregarSolicitud],
                     [".btn-cancelar", cancelarSolicitud],
                 ];
                 for (var i = 0; i < acciones.length; i++) {
@@ -1395,7 +1388,7 @@
                 var btnGenerarPDF = evento.target.closest(".btn-generar-pdf");
                 if (btnGenerarPDF) {
                     var idSolicitud = btnGenerarPDF.dataset.id;
-                    var urlPDF = "../models/modConstanciaImprimirDigital.php?idSolicitud=" + idSolicitud;
+                    var urlPDF = "../models/modConstanciaGenerarPDF.php?idSolicitud=" + idSolicitud;
                     window.open(urlPDF, "_blank");
                     return;
                 }
@@ -1467,7 +1460,7 @@
             msjModal.className = "alert alert-warning d-none";
         }
 
-        var observaciones = [];
+        var observacionesNuevas = [];
         document.querySelectorAll(".campo-adicional").forEach(function (campo) {
             var inputNombre = campo.querySelector(".da-nombre");
             var inputValor = campo.querySelector(".da-valor");
@@ -1476,12 +1469,12 @@
                 var nombre = inputNombre.value.trim();
                 var valor = inputValor.value.trim();
                 if (nombre !== "" && valor !== "") {
-                    observaciones.push({ nombre: nombre, valor: valor });
+                    observacionesNuevas.push({ nombre: nombre, valor: valor });
                 }
             }
         });
 
-        if (observaciones.length === 0) {
+        if (observacionesNuevas.length === 0) {
             if (msjModal) {
                 msjModal.textContent = "Debe ingresar al menos un nombre y un valor.";
                 msjModal.className = "alert alert-warning py-2";
@@ -1497,7 +1490,7 @@
         solicitar({
             accion: "actualizarObservaciones",
             id: id,
-            Observaciones: JSON.stringify(observaciones),
+            Observaciones: JSON.stringify(observacionesNuevas),
         })
             .then(function () {
                 bootstrap.Modal.getInstance(document.getElementById("modalDatosAdicionales")).hide();
@@ -1506,7 +1499,7 @@
                     return String(s.idSolicitud) === String(id);
                 });
                 if (solIndex !== -1) {
-                    todosLosRegistros[solIndex].Observaciones = observaciones;
+                    todosLosRegistros[solIndex].Observaciones = observacionesNuevas;
                 }
 
                 if (esMasivo) {

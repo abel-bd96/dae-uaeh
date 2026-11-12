@@ -92,12 +92,18 @@ $pdf->writeHTMLCell(130, '', 10, 192, $txtPromedioGeneral, 0, 1, false, true, 'L
 $txtAvanceProgramaEducativo = '<div style="text-align: justify"> Avance en el Programa Educativo: ' . (isset($constancias['avanceProgramaEducativo']) ? $constancias['avanceProgramaEducativo'] : '') . '</div>';
 $pdf->writeHTMLCell(130, '', 10, 198, $txtAvanceProgramaEducativo, 0, 1, false, true, 'J', false);
 
-$txtCampoAdicional = '<div style="text-align: justify">' . (isset($constancias['campoAdicional']) ? $constancias['campoAdicional'] : '') . '</div>';
-$pdf->writeHTMLCell(150, '', 10, 204, $txtCampoAdicional, 0, 1, false, true, 'J', false);
+$campoAdicional = isset($constancias['campoAdicional']) ? trim($constancias['campoAdicional']) : '';
 
-$txtInformacionAdicional = '<div style="text-align: justify">: ' . (isset($constancias['informacionAdicional']) ? $constancias['informacionAdicional'] : '') . '</div>';
-$pdf->writeHTMLCell(150, '', 50, 204, $txtInformacionAdicional, 0, 1, false, true, 'J', false);
-
+$infoAdicional = isset($constancias['informacionAdicional']) ? trim($constancias['informacionAdicional']) : '';
+if($campoAdicional !== '' || $infoAdicional !== ''){
+    $txtObservaciones = '
+        <div style="text-align: justify; line-height: 1.5;">
+            <strong>' . nl2br(htmlspecialchars($campoAdicional, ENT_QUOTES, 'UTF-8')) . '</strong>
+            ' . nl2br(htmlspecialchars($infoAdicional, ENT_QUOTES, 'UTF-8')) . '
+        </div>
+    ';
+    $pdf->writeHTMLCell(170, '',20,204, $txtObservaciones, 0, 1, false, true, 'J', false);
+}
 $txtFirmaDigital = '<div style="text-align: center"> Firma: </div>';
 $pdf->writeHTMLCell(180, 40, 20, 214, $txtFirmaDigital, 1, 0, false, true, 'C', false);
 

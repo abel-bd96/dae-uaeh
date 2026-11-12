@@ -9,7 +9,7 @@ include './sidebar_constancias.php';
             <p class="text-uppercase text-muted small mb-1">Emisión de constancias</p>
             <h1 class="h3 mb-0" id="tituloFormularioSolicitud">Nueva Solicitud</h1>
         </div>
-        <a href="./vtaGenerarSolicitud.php" class="btn btn-outline-secondary" id="btnRegresarListado">
+        <a href="./vtaConstanciaGenerarSolicitud.php" class="btn btn-outline-secondary" id="btnRegresarListado">
             <i class="bi bi-arrow-left"></i> Regresar
         </a>
     </div>
@@ -43,7 +43,7 @@ include './sidebar_constancias.php';
 
                     <div class="mb-3">
                         <label for="buscarNumeroCuenta" class="form-label">Buscar por número de cuenta</label>
-                        <input type="text" class="form-control" id="buscarNumeroCuenta" placeholder="Escriba al menos 6 caracteres...">
+                        <input type="text" class="form-control" id="buscarNumeroCuenta" placeholder="Escriba al menos 6 caracteres..." inputmode="numeric" pattern="[0-9]*" maxlength="10" autocomplete="off">
                         <div class="form-text">Los resultados aparecerán debajo.</div>
                     </div>
 
@@ -146,5 +146,5 @@ include './sidebar_constancias.php';
     </div>
 
 </main>
-<script src="../controllers/ajxGenerarSolicitud.js"></script>
+<script src="../controllers/ajxConstanciaGenerarSolicitud.js"></script>
 <?php include './footer_constancias.php'; ?>
