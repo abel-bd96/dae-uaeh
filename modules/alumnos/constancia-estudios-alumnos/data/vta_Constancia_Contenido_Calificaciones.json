@@ -1,216 +1,216 @@
 [
     {
-        "IdConstanciaCalificaciones": "2",
-        "IdConstanciaContenido": "9",
-        "CicloEscolarCalificaciones": "Julio-Diciembre 2026",
-        "Asignatura": "LOGROS Y EXPERIENCIAS. LENGUA EXTRANJERA",
-        "Calificacion": "10",
-        "Creditos": "5"
+        "idConstanciaCalificaciones": "2",
+        "idConstanciaContenido": "9",
+        "cicloEscolarCalificaciones": "Julio-Diciembre 2026",
+        "asignatura": "LOGROS Y EXPERIENCIAS. LENGUA EXTRANJERA",
+        "calificacion": "10",
+        "creditos": "5"
     },
     {
-        "IdConstanciaCalificaciones": "2",
-        "IdConstanciaContenido": "2",
-        "CicloEscolarCalificaciones": "Julio-Diciembre 2026",
-        "Asignatura": "ÁLGEBRA LINEAL",
-        "Calificacion": "8",
-        "Creditos": "5"
+        "idConstanciaCalificaciones": "2",
+        "idConstanciaContenido": "2",
+        "cicloEscolarCalificaciones": "Julio-Diciembre 2026",
+        "asignatura": "ÁLGEBRA LINEAL",
+        "calificacion": "8",
+        "creditos": "5"
     },
     {
-        "IdConstanciaCalificaciones": "2",
-        "IdConstanciaContenido": "1",
-        "CicloEscolarCalificaciones": "Julio-Diciembre 2026",
-        "Asignatura": "SEXUALIDAD RESPONSABLE",
-        "Calificacion": "10",
-        "Creditos": "5"
+        "idConstanciaCalificaciones": "2",
+        "idConstanciaContenido": "1",
+        "cicloEscolarCalificaciones": "Julio-Diciembre 2026",
+        "asignatura": "SEXUALIDAD RESPONSABLE",
+        "calificacion": "10",
+        "creditos": "5"
     },
     {
-        "IdConstanciaCalificaciones": "2",
-        "IdConstanciaContenido": "Corrige las demás abajo",
-        "CicloEscolarCalificaciones": "Julio-Diciembre 2026",
-        "Asignatura": "DISEÑO DE BASES DE DATOS",
-        "Calificacion": "8",
-        "Creditos": "5"
+        "idConstanciaCalificaciones": "2",
+        "idConstanciaContenido": "corrige las demás abajo",
+        "cicloEscolarCalificaciones": "Julio-Diciembre 2026",
+        "asignatura": "DISEÑO DE BASES DE DATOS",
+        "calificacion": "8",
+        "creditos": "5"
     },
     {
-        "IdConstanciaCalificaciones": "2",
-        "CicloEscolarCalificaciones": "Julio-Diciembre 2026",
-        "Asignatura": "PROGRAMACIÓN ORIENTADA A OBJETOS",
-        "Calificacion": "9",
-        "Creditos": "5"
+        "idConstanciaCalificaciones": "2",
+        "cicloEscolarCalificaciones": "Julio-Diciembre 2026",
+        "asignatura": "PROGRAMACIÓN ORIENTADA A OBJETOS",
+        "calificacion": "9",
+        "creditos": "5"
     },
     {
-        "IdConstanciaCalificaciones": "2",
-        "CicloEscolarCalificaciones": "Julio-Diciembre 2026",
-        "Asignatura": "FUNDAMENTOS ELECTRÓNICOS PARA LA COMPUTACIÓN",
-        "Calificacion": "9",
-        "Creditos": "5"
+        "idConstanciaCalificaciones": "2",
+        "cicloEscolarCalificaciones": "Julio-Diciembre 2026",
+        "asignatura": "FUNDAMENTOS ELECTRÓNICOS PARA LA COMPUTACIÓN",
+        "calificacion": "9",
+        "creditos": "5"
     },
     {
-        "IdConstanciaCalificaciones": "2",
-        "CicloEscolarCalificaciones": "Julio-Diciembre 2026",
-        "Asignatura": "INGENIERÍA DE SOFTWARE",
-        "Calificacion": "9",
-        "Creditos": "5"
+        "idConstanciaCalificaciones": "2",
+        "cicloEscolarCalificaciones": "Julio-Diciembre 2026",
+        "asignatura": "INGENIERÍA DE SOFTWARE",
+        "calificacion": "9",
+        "creditos": "5"
     },
     {
-        "IdConstanciaCalificaciones": "2",
-        "CicloEscolarCalificaciones": "Enero-Junio 2025",
-        "Asignatura": "GRAFICACIÓN",
-        "Calificacion": "9",
-        "Creditos": "5"
+        "idConstanciaCalificaciones": "2",
+        "cicloEscolarCalificaciones": "Enero-Junio 2025",
+        "asignatura": "GRAFICACIÓN",
+        "calificacion": "9",
+        "creditos": "5"
     },
     {
-        "IdConstanciaCalificaciones": "2",
-        "CicloEscolarCalificaciones": "Enero-Junio 2025",
-        "Asignatura": "PROGRAMACIÓN DE MICROPROCESADORES",
-        "Calificacion": "9",
-        "Creditos": "5"
+        "idConstanciaCalificaciones": "2",
+        "cicloEscolarCalificaciones": "Enero-Junio 2025",
+        "asignatura": "PROGRAMACIÓN DE MICROPROCESADORES",
+        "calificacion": "9",
+        "creditos": "5"
     },
     {
-        "IdConstanciaCalificaciones": "2",
-        "CicloEscolarCalificaciones": "Enero-Junio 2025",
-        "Asignatura": "ADMINISTRACIÓN DE BASES DE DATOS",
-        "Calificacion": "9",
-        "Creditos": "5"
+        "idConstanciaCalificaciones": "2",
+        "cicloEscolarCalificaciones": "Enero-Junio 2025",
+        "asignatura": "aDMINISTRACIÓN DE BASES DE DATOS",
+        "calificacion": "9",
+        "creditos": "5"
     },
     {
-        "IdConstanciaCalificaciones": "2",
-        "CicloEscolarCalificaciones": "Enero-Junio 2025",
-        "Asignatura": "GESTIÓN DE PROYECTOS INFORMÁTICOS",
-        "Calificacion": "10",
-        "Creditos": "5"
+        "idConstanciaCalificaciones": "2",
+        "cicloEscolarCalificaciones": "Enero-Junio 2025",
+        "asignatura": "GESTIÓN DE PROYECTOS INFORMÁTICOS",
+        "calificacion": "10",
+        "creditos": "5"
     },
     {
-        "IdConstanciaCalificaciones": "2",
-        "CicloEscolarCalificaciones": "Enero-Junio 2025",
-        "Asignatura": "ESTADÍSTICA Y PROBABILIDAD",
-        "Calificacion": "9",
-        "Creditos": "5"
+        "idConstanciaCalificaciones": "2",
+        "cicloEscolarCalificaciones": "Enero-Junio 2025",
+        "asignatura": "ESTADÍSTICA Y PROBABILIDAD",
+        "calificacion": "9",
+        "creditos": "5"
     },
     {
-        "IdConstanciaCalificaciones": "2",
-        "CicloEscolarCalificaciones": "Enero-Junio 2025",
-        "Asignatura": "SALUD FÍSICA Y EMOCIONAL",
-        "Calificacion": "10",
-        "Creditos": "5"
+        "idConstanciaCalificaciones": "2",
+        "cicloEscolarCalificaciones": "Enero-Junio 2025",
+        "asignatura": "SALUD FÍSICA Y EMOCIONAL",
+        "calificacion": "10",
+        "creditos": "5"
     },
     {
-        "IdConstanciaCalificaciones": "2",
-        "CicloEscolarCalificaciones": "Enero-Junio 2025",
-        "Asignatura": "DECISIONES PERSONALES. LENGUA EXTRANJERA",
-        "Calificacion": "10",
-        "Creditos": "5"
+        "idConstanciaCalificaciones": "2",
+        "cicloEscolarCalificaciones": "Enero-Junio 2025",
+        "asignatura": "DECISIONES PERSONALES. LENGUA EXTRANJERA",
+        "calificacion": "10",
+        "creditos": "5"
     },
     {
-        "IdConstanciaCalificaciones": "2",
-        "CicloEscolarCalificaciones": "Julio-Diciembre 2025",
-        "Asignatura": "CAUSA Y EFECTO. LENGUA EXTRANJERA",
-        "Calificacion": "9",
-        "Creditos": "5"
+        "idConstanciaCalificaciones": "2",
+        "cicloEscolarCalificaciones": "Julio-Diciembre 2025",
+        "asignatura": "cAUSA Y EFECTO. LENGUA EXTRANJERA",
+        "calificacion": "9",
+        "creditos": "5"
     },
     {
-        "IdConstanciaCalificaciones": "2",
-        "CicloEscolarCalificaciones": "Julio-Diciembre 2025",
-        "Asignatura": "ARTES VISUALES",
-        "Calificacion": "9",
-        "Creditos": "5"
+        "idConstanciaCalificaciones": "2",
+        "cicloEscolarCalificaciones": "Julio-Diciembre 2025",
+        "asignatura": "aRTES VISUALES",
+        "calificacion": "9",
+        "creditos": "5"
     },
     {
-        "IdConstanciaCalificaciones": "2",
-        "CicloEscolarCalificaciones": "Julio-Diciembre 2025",
-        "Asignatura": "SISTEMAS MULTIMEDIA",
-        "Calificacion": "9",
-        "Creditos": "5"
+        "idConstanciaCalificaciones": "2",
+        "cicloEscolarCalificaciones": "Julio-Diciembre 2025",
+        "asignatura": "SISTEMAS MULTIMEDIA",
+        "calificacion": "9",
+        "creditos": "5"
     },
     {
-        "IdConstanciaCalificaciones": "2",
-        "CicloEscolarCalificaciones": "Julio-Diciembre 2025",
-        "Asignatura": "INTELIGENCIA ARTIFICIAL",
-        "Calificacion": "9",
-        "Creditos": "5"
+        "idConstanciaCalificaciones": "2",
+        "cicloEscolarCalificaciones": "Julio-Diciembre 2025",
+        "asignatura": "INTELIGENCIA ARTIFICIAL",
+        "calificacion": "9",
+        "creditos": "5"
     },
     {
-        "IdConstanciaCalificaciones": "2",
-        "CicloEscolarCalificaciones": "Julio-Diciembre 2025",
-        "Asignatura": "COMUNICACIÓN ORAL",
-        "Calificacion": "10",
-        "Creditos": "5"
+        "idConstanciaCalificaciones": "2",
+        "cicloEscolarCalificaciones": "Julio-Diciembre 2025",
+        "asignatura": "cOMUNICACIÓN ORAL",
+        "calificacion": "10",
+        "creditos": "5"
     },
     {
-        "IdConstanciaCalificaciones": "2",
-        "CicloEscolarCalificaciones": "Julio-Diciembre 2025",
-        "Asignatura": "ORGANIZACIÓN DE COMPUTADORAS",
-        "Calificacion": "9",
-        "Creditos": "5"
+        "idConstanciaCalificaciones": "2",
+        "cicloEscolarCalificaciones": "Julio-Diciembre 2025",
+        "asignatura": "ORGANIZACIÓN DE COMPUTADORAS",
+        "calificacion": "9",
+        "creditos": "5"
     },
     {
-        "IdConstanciaCalificaciones": "2",
-        "CicloEscolarCalificaciones": "Enero-Junio 2024",
-        "Asignatura": "BASES DE DATOS DISTRIBUIDAS",
-        "Calificacion": "9",
-        "Creditos": "5"
+        "idConstanciaCalificaciones": "2",
+        "cicloEscolarCalificaciones": "Enero-Junio 2024",
+        "asignatura": "BASES DE DATOS DISTRIBUIDAS",
+        "calificacion": "9",
+        "creditos": "5"
     },
     {
-        "IdConstanciaCalificaciones": "2",
-        "CicloEscolarCalificaciones": "Enero-Junio 2024",
-        "Asignatura": "AUTÓMATAS Y COMPILADORES",
-        "Calificacion": "9",
-        "Creditos": "5"
+        "idConstanciaCalificaciones": "2",
+        "cicloEscolarCalificaciones": "Enero-Junio 2024",
+        "asignatura": "aUTÓMATAS Y COMPILADORES",
+        "calificacion": "9",
+        "creditos": "5"
     },
     {
-        "IdConstanciaCalificaciones": "2",
-        "CicloEscolarCalificaciones": "Enero-Junio 2024",
-        "Asignatura": "SISTEMAS BASADOS EN CONOCIMIENTO",
-        "Calificacion": "9",
-        "Creditos": "5"
+        "idConstanciaCalificaciones": "2",
+        "cicloEscolarCalificaciones": "Enero-Junio 2024",
+        "asignatura": "SISTEMAS BASADOS EN CONOCIMIENTO",
+        "calificacion": "9",
+        "creditos": "5"
     },
     {
-        "IdConstanciaCalificaciones": "2",
-        "CicloEscolarCalificaciones": "Enero-Junio 2024",
-        "Asignatura": "FUNDAMENTOS DE METODOLOGÍA DE LA INVESTIGACIÓN",
-        "Calificacion": "10",
-        "Creditos": "5"
+        "idConstanciaCalificaciones": "2",
+        "cicloEscolarCalificaciones": "Enero-Junio 2024",
+        "asignatura": "FUNDAMENTOS DE METODOLOGÍA DE LA INVESTIGACIÓN",
+        "calificacion": "10",
+        "creditos": "5"
     },
     {
-        "IdConstanciaCalificaciones": "2",
-        "CicloEscolarCalificaciones": "Enero-Junio 2024",
-        "Asignatura": "MÚSICA",
-        "Calificacion": "9",
-        "Creditos": "5"
+        "idConstanciaCalificaciones": "2",
+        "cicloEscolarCalificaciones": "Enero-Junio 2024",
+        "asignatura": "MÚSICA",
+        "calificacion": "9",
+        "creditos": "5"
     },
     {
-        "IdConstanciaCalificaciones": "2",
-        "CicloEscolarCalificaciones": "Enero-Junio 2024",
-        "Asignatura": "EN OTRAS PALABRAS... LENGUA EXTRANJERA",
-        "Calificacion": "9",
-        "Creditos": "5"
+        "idConstanciaCalificaciones": "2",
+        "cicloEscolarCalificaciones": "Enero-Junio 2024",
+        "asignatura": "EN OTRAS PALABRAS... LENGUA EXTRANJERA",
+        "calificacion": "9",
+        "creditos": "5"
     },
     {
-        "IdConstanciaCalificaciones": "2",
-        "CicloEscolarCalificaciones": "Julio-Diciembre 2026",
-        "Asignatura": "OPTATIVA I (APRENDIZAJE COLABORATIVO ASISTIDO POR COMPUTADORA)",
-        "Calificacion": "9",
-        "Creditos": "5"
+        "idConstanciaCalificaciones": "2",
+        "cicloEscolarCalificaciones": "Julio-Diciembre 2026",
+        "asignatura": "OPTATIVA I (APRENDIZAJE COLABORATIVO ASISTIDO POR COMPUTADORA)",
+        "calificacion": "9",
+        "creditos": "5"
     },
     {
-        "IdConstanciaCalificaciones": "2",
-        "CicloEscolarCalificaciones": "Julio-Diciembre 2026",
-        "Asignatura": "ADMINISTRACIÓN DE LA FUNCIÓN INFORMÁTICA",
-        "Calificacion": "10",
-        "Creditos": "5"
+        "idConstanciaCalificaciones": "2",
+        "cicloEscolarCalificaciones": "Julio-Diciembre 2026",
+        "asignatura": "aDMINISTRACIÓN DE LA FUNCIÓN INFORMÁTICA",
+        "calificacion": "10",
+        "creditos": "5"
     },
     {
-        "IdConstanciaCalificaciones": "2",
-        "CicloEscolarCalificaciones": "Julio-Diciembre 2026",
-        "Asignatura": "SISTEMAS DE REALIDAD VIRTUAL",
-        "Calificacion": "10",
-        "Creditos": "5"
+        "idConstanciaCalificaciones": "2",
+        "cicloEscolarCalificaciones": "Julio-Diciembre 2026",
+        "asignatura": "SISTEMAS DE REALIDAD VIRTUAL",
+        "calificacion": "10",
+        "creditos": "5"
     },
     {
-        "IdConstanciaCalificaciones": "2",
-        "CicloEscolarCalificaciones": "Julio-Diciembre 2026",
-        "Asignatura": "PROGRAMACIÓN WEB",
-        "Calificacion": "10",
-        "Creditos": "5"
+        "idConstanciaCalificaciones": "2",
+        "cicloEscolarCalificaciones": "Julio-Diciembre 2026",
+        "asignatura": "PROGRAMACIÓN WEB",
+        "calificacion": "10",
+        "creditos": "5"
     }
 ]

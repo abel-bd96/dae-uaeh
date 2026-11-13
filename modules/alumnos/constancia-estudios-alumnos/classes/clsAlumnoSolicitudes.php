@@ -18,7 +18,7 @@ class clsAlumnoSolicitudes
         $this->rutaDatosConstancia = $directorioDatos . 'ae_Constancia_Contenido.json';
         $this->rutaCiclo = $directorioDatosExternos . 'ae_ciclo.json';
         $this->rutaSiaeAlumno = $directorioDatosExternos . 'vta_siae_nombre_alumno.json';
-        $this->rutaListaNegra = $directorioDatosExternos . 'vta_siae_nombre_alumno.json';
+        $this->rutaListaNegra = $directorioDatosGenerales . 'constancia_lista_negra.json';
     }
 
     public function listar()
@@ -29,11 +29,41 @@ class clsAlumnoSolicitudes
         }
         $idKardexUsuario = $_SESSION['IdKardex'] ?? null;
 
-        //Se previene el acceso "externo" a las vistas
-        if ($idKardexUsuario === null || $idKardexUsuario === '') {
+        //Se previene el acceso externo a las vistas
+        if (!is_string($idKardexUsuario) || trim($idKardexUsuario) === '') {
             throw new RuntimeException(
-                'Debes ingresar desde Servicios Escolares para visualizar tu Historial de Solicitudes.'
+                'Debes ingresar desde Servicios Escolares para visualizar tu Historial de Solicitudes o crear una Solicitud Nueva.'
             );
+        }
+
+        // Identificar cuando no se necesiten las solicitudes
+        $tipoListado = $_POST['tipoListado'] ?? 'solicitudes';
+
+        //Es revisada la vista mostrada para definir si se muestra los datos personales del alumno o el historial de solicitudes
+        if ($tipoListado === 'datosAlumno') {
+            $datosAlumno = $this->leer($this->rutaSiaeAlumno);
+
+            if (empty($datosAlumno)) {
+                return [];
+            }
+
+            if (isset($datosAlumno['IdKardex'])) {
+                $datosAlumno = [$datosAlumno];
+            }
+
+            //Filtrar sólo el alumno de la sesión
+            $datosAlumno = array_filter(
+                $datosAlumno,
+                function ($datoAlumno) use ($idKardexUsuario) {
+
+                    return is_array($datoAlumno) && isset($datoAlumno['IdKardex'])&& (string) $datoAlumno['IdKardex'] === (string) $idKardexUsuario;
+                }
+            );
+
+            // Son reorganizados los índices del arreglo, para asegurar su manejo y despliegue adecuado
+            $datosAlumno = array_values($datosAlumno);
+
+            return $datosAlumno[0] ?? [];
         }
 
         // Leer historial de solicitudes
@@ -66,9 +96,7 @@ class clsAlumnoSolicitudes
             $solicitudes,
             function ($solicitud) use ($idKardexUsuario) {
 
-                return is_array($solicitud)
-                    && isset($solicitud['idKardex'])
-                    && (string) $solicitud['idKardex'] === (string) $idKardexUsuario;
+                return is_array($solicitud) && isset($solicitud['idKardex']) && (string) $solicitud['idKardex'] === (string) $idKardexUsuario;
             }
         );
 
@@ -239,8 +267,7 @@ class clsAlumnoSolicitudes
         }
     }
 
-    //AlumnoSolicitudes ↑ SolicitudNueva ↓
-    
+    //AlumnoSolicitudes ↑ SolicitudNueva ↓    
     public function guardar($tipoFirma, $calificaciones) //pendiente
     {
         $tipoFirma = trim((string) $tipoFirma);

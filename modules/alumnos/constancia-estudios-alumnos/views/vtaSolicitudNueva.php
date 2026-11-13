@@ -111,10 +111,6 @@ include './sidebar_constancias.php';
                                 <th class="text-nowrap">Calidad del Alumno</th>
                                 <td id="calidadAlumno"> </td>
                             </tr>
-                            <tr>
-                                <th class="text-nowrap">Promedio</th>
-                                <td id="promedio"> </td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>

@@ -31,15 +31,17 @@
         }
     }
 
-    function cargarDatosCorroborar() { // *corregir*
-        solicitar({ accion: "mostrarDatosPersonales" })
+    function cargarDatosCorroborar() {
+        solicitar({ accion: "listar", tipoListado: "datosAlumno"})
             .then(function (datos) {
                 if (!datos) {
-                    mostrarMensaje("No se recibió información de la solicitud.", "error");
+                    mostrarMensaje("No se encontraron los datos del alumno.", "error");
                     return;
                 }
+                console.log("Datos recibidos:", datos);
+                console.log("¿Es un arreglo?", Array.isArray(datos));
 
-                document.getElementById("nombreAlumno").textContent = datos.Nombre || "";
+                document.getElementById("nombreAlumno").textContent = datos.Nombres || "";
 
                 document.getElementById("apellidoPaterno").textContent = datos.ApellidoPaterno || "";
 
@@ -47,17 +49,15 @@
 
                 document.getElementById("curp").textContent = datos.CURP || "";
 
-                document.getElementById("unidadAcademica").textContent = datos.UnidadAcademica || "";
+                document.getElementById("unidadAcademica").textContent = datos.Instituto || "";
 
                 document.getElementById("programaEducativo").textContent = datos.ProgramaEducativo || "";
 
-                document.getElementById("numeroCuenta").textContent = datos.Cuenta || "";
+                document.getElementById("numeroCuenta").textContent = datos.NumeroCuenta || "";
 
                 document.getElementById("semestre").textContent = datos.Semestre || "";
 
-                document.getElementById("calidadAlumno").textContent = datos.CalidadAlumno || "";
-
-                document.getElementById("promedio").textContent = datos.Promedio || "";
+                document.getElementById("calidadAlumno").textContent = datos.Calidad || "";
             })
             .catch(function (e) {
                 mostrarMensaje(e.message || "En este momento no fue posible cargar tus datos.", "error");
@@ -163,7 +163,7 @@
         });
 
         mostrarContenedorTablaDatos();
-        //cargarDatosCorroborar();
+        cargarDatosCorroborar();
 
         //Interacción con botones
         document.addEventListener("click", function (evento) {
