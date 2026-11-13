@@ -17,7 +17,7 @@ class clsAlumnoSolicitudes
         $this->rutaHistorial = $directorioDatos . 'ae_Solicitud_Referencia.json';
         $this->rutaDatosConstancia = $directorioDatos . 'ae_Constancia_Contenido.json';
         $this->rutaCiclo = $directorioDatosExternos . 'ae_ciclo.json';
-        $this->rutaSiaeAlumno = $directorioDatosExternos . 'vta_siae_nombre_alumno.json';
+        $this->rutaSiaeAlumno = $directorioDatosExternos . 'vta_siae_datos_alumno.json';
         $this->rutaListaNegra = $directorioDatosGenerales . 'constancia_lista_negra.json';
     }
 
@@ -42,7 +42,7 @@ class clsAlumnoSolicitudes
         //Es revisada la vista mostrada para definir si se muestra los datos personales del alumno o el historial de solicitudes
         if ($tipoListado === 'datosAlumno') {
             $datosAlumno = $this->leer($this->rutaSiaeAlumno);
-
+            
             if (empty($datosAlumno)) {
                 return [];
             }
