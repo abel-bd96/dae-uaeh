@@ -70,7 +70,7 @@
                                     <div class="collapse sidebar-menu__nested" id="constanciasMenu">
                                         <ul class="list-unstyled mb-0">
                                             <li>
-                                                <a class="sidebar-menu__submenu-link sidebar-menu__submenu-link--nested" href="#administracion-constancias">
+                                                <a class="sidebar-menu__submenu-link sidebar-menu__submenu-link--nested" href="/dae-uaeh/modules/dae/constancia-estudios/views/vtaConstanciaGenerarSolicitud.php">
                                                     <i class="bi bi-file-earmark-check sidebar-menu__submenu-icon" aria-hidden="true"></i>
                                                     Administración de constancias
                                                 </a>
