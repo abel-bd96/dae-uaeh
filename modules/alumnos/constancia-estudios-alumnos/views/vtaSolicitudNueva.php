@@ -3,7 +3,7 @@ include './header_constancias.php';
 include './sidebar_constancias.php';
 ?>
 <main class="container-fluid container-80 constancias-page my-4 my-md-5" id="solicitudNueva">
-    <div class="row align-items-center g-3 mb-4">
+    <div class="row align-items-center g-3 pt-2 mb-4">
         <div class="col-12 col-md-auto text-center text-md-start">
             <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="var(--primary-color)" class="bi bi-plus-square-fill" viewBox="0 0 16 16" aria-hidden="true">
                 <path

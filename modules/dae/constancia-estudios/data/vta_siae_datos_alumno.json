@@ -9,9 +9,11 @@
         "CURP": "LOHD990921HMCZRG07",
         "Instituto": "Instituto de Ciencias Económico Administrativas",
         "Semestre": "Segundo",
+        "IdProgramaEducativo": "1500",
         "ProgramaEducativo": "Licenciatura en Comercio Exterior 2014",
         "Calidad": "Regular",
-        "CicloEscolar": "Julio-Diciembre 2026"
+        "idCicloEscolar": 5,
+        "CicloEscolar": "JULIO-DICIEMBRE 2026"
     },
     {
         "NumeroCuenta": "562157",
@@ -23,9 +25,11 @@
         "CURP": "LOHD990921HMCZRG07",
         "Instituto": "Instituto de Ciencias Económico Administrativas",
         "Semestre": "Segundo",
+        "IdProgramaEducativo": "1505",
         "ProgramaEducativo": "Licenciatura en Administración 2017",
         "Calidad": "Regular",
-        "CicloEscolar": "Julio-Diciembre 2026"
+        "idCicloEscolar": 5,
+        "CicloEscolar": "JULIO-DICIEMBRE 2026"
     },
     {
         "NumeroCuenta": "314630",
@@ -37,9 +41,11 @@
         "CURP": "LOHD990921HMCZRG07",
         "Instituto": "Instituto de Ciencias Económico Administrativas",
         "Semestre": "Segundo",
+        "IdProgramaEducativo": "1505",
         "ProgramaEducativo": "Licenciatura en Administración 2017",
         "Calidad": "Regular",
-        "CicloEscolar": "Julio-Diciembre 2026"
+        "idCicloEscolar": 5,
+        "CicloEscolar": "JULIO-DICIEMBRE 2026"
     },
     {
         "NumeroCuenta": "405995",
@@ -51,9 +57,11 @@
         "CURP": "LOHD990921HMCZRG07",
         "Instituto": "Instituto de Ciencias Básicas e Ingeniería",
         "Semestre": "9",
+        "IdProgramaEducativo": "1404",
         "ProgramaEducativo": "Licenciatura en Ciencias Computacionales",
         "Calidad": "Regular",
-        "CicloEscolar": "Julio-Diciembre 2026"
+        "idCicloEscolar": 5,
+        "CicloEscolar": "JULIO-DICIEMBRE 2026"
     },
     {
         "NumeroCuenta": "405999",
@@ -65,9 +73,11 @@
         "CURP": "LOHD990921HMCZRG07",
         "Instituto": "Instituto de Ciencias Económico Administrativas",
         "Semestre": "4",
+        "IdProgramaEducativo": "1303",
         "ProgramaEducativo": "Licenciatura en Contaduría 2012",
         "Calidad": "Regular",
-        "CicloEscolar": "Julio-Diciembre 2026"
+        "idCicloEscolar": 5,
+        "CicloEscolar": "JULIO-DICIEMBRE 2026"
     },
     {
         "NumeroCuenta": "488967",
@@ -79,9 +89,11 @@
         "CURP": "OOMK950307MHGSNR12",
         "Instituto": "Instituto de Ciencias Básicas e Ingeniería",
         "Semestre": "8",
+        "IdProgramaEducativo": "1529",
         "ProgramaEducativo": "Licenciatura en Ingeniería en Telecomunicaciones",
         "Calidad": "Regular",
-        "CicloEscolar": "Julio-Diciembre 2026"
+        "idCicloEscolar": 5,
+        "CicloEscolar": "JULIO-DICIEMBRE 2026"
     },
     {
         "NumeroCuenta": "295035",
@@ -93,9 +105,11 @@
         "CURP": "SASS981029MHGPNH02",
         "Instituto": "Instituto de Ciencias de la Salud",
         "Semestre": "8",
+        "IdProgramaEducativo": "1515",
         "ProgramaEducativo": "Licenciatura en Enfermería 2015",
         "Calidad": "Regular",
-        "CicloEscolar": "Julio-Diciembre 2026"
+        "idCicloEscolar": 3,
+        "CicloEscolar": "JUNIO 2026-JULIO 2027"
     },
     {
         "NumeroCuenta": "327111",
@@ -107,8 +121,10 @@
         "CURP": "LEZI960706HHGNXS04",
         "Instituto": "Instituto de Ciencias Agropecuarias",
         "Semestre": "5",
+        "IdProgramaEducativo": "1720",
         "ProgramaEducativo": "Licenciatura en Ingeniería Agroindustrial 2015",
         "Calidad": "Regular",
-        "CicloEscolar": "Julio-Diciembre 2026"
+        "idCicloEscolar": 5,
+        "CicloEscolar": "JULIO-DICIEMBRE 2026"
     }
 ]

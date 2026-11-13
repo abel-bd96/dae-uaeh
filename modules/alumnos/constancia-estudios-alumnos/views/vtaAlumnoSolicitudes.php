@@ -4,7 +4,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 /* MODIFICAR PARA VISUALIZAR DISTINTAS SOLICITUDES
 000004 = Anastacio || 488967 = Krista || 366276 = María */
-$_SESSION['IdKardex'] = "488967"; // = $alumno['IdKardex'];
+$_SESSION['IdKardex'] = "366276"; // = $alumno['IdKardex'];
 include './header_constancias.php';
 include './sidebar_constancias.php';
 // Cuidar que Inteliphense no borre el cierre del script

@@ -11,7 +11,6 @@ try {
     switch ($accion) {
         //Acciones que despliegan datos dentro de tablas
         case 'listar':
-
             $respuesta = $consulta->listar();
             break;
 
@@ -24,7 +23,6 @@ try {
 
         //Acción que realiza cambios al cancelar solicitudes        
         case 'cancelar':
-
             $identificador = isset($_POST['idSolicitud']) ? $_POST['idSolicitud'] : '';
             $respuesta = $consulta->cancelar($identificador);
             break;
@@ -33,13 +31,17 @@ try {
         case 'guardar':
 
             $tipoFirma = isset($_POST['tipoFirma']) ? trim($_POST['tipoFirma']) : '';
+
             $calificaciones = isset($_POST['calificaciones']) ? trim($_POST['calificaciones']) : '';
+
             if ($tipoFirma === '') {
                 throw new InvalidArgumentException('El tipo de firma es obligatorio.');
             }
+
             if ($calificaciones === '') {
                 throw new InvalidArgumentException('La selección de calificaciones es obligatoria.');
             }
+
             $respuesta = $consulta->guardar($tipoFirma, $calificaciones);
             break;
 
