@@ -267,10 +267,41 @@ class clsAlumnoSolicitudes
         }
     }
 
-    //AlumnoSolicitudes ↑ SolicitudNueva ↓    
     public function guardar($tipoFirma, $calificaciones) //pendiente
     {
-        //pendiente
+        //De aquí vienen los datos que conformarán la nueva solicitud
+        $datosAlumno = $this->leer($this->rutaSiaeAlumno);
+
+        //Aquí será guardada la nueva solicitud
+        $registros = $this->leer($this->rutaHistorial);
+
+        if (!is_array($registros)) {
+            throw new RuntimeException('El historial de solicitudes no tiene un formato válido.');
+        }
+
+        $nuevaSolicitud = [];
+
+        $nuevaSolicitud['idKardex'] = $datosAlumno['IdKardex'];
+
+        $nuevaSolicitud['idProgramaEducativo'] = $datosAlumno['idProgramaEducativo'];
+
+        $nuevaSolicitud['fechaSolicitud'] = date("Y-m-d");
+
+        $nuevaSolicitud['idKardex'] = $datosAlumno['IdKardex'];
+
+        $nuevaSolicitud['estatus'] = 'Solicitada';
+
+        $nuevaSolicitud['tipoFirma'] = $tipoFirma;
+
+        $nuevaSolicitud['cantidadConstancias'] = '1'; //Debe estar atado a un Select
+
+        $nuevaSolicitud['contieneCalificaciones'] = $calificaciones;
+
+        $nuevaSolicitud['informacionAdicional'] = 'N'; // 'S' Debe ser desde módulo DAE
+
+        $nuevaSolicitud['idCicloEscolar'] = $datosAlumno['idCicloEscolar'];
+
+        //Insertar $nuevaSolicitud dentro de $solicitudes
     }
 
     //Funciones privadas, utilizadas por amabs vistas
