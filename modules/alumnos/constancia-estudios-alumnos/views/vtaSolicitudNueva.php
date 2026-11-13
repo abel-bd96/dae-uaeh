@@ -66,53 +66,56 @@ include './sidebar_constancias.php';
 
                 <div id="contenedorTablaDatos" class="table-responsive constancias-table-wrap mb-4 d-none">
                     <h2 class="h3 px-2 mb-3">La constancia contendrá los siguientes datos:</h2>
-                    
-                    <table id="tablaCorroborarDatos" class="table table-hover align-middle mb-0 constancias-table fs-5">
-                        <thead class="table-light">
-                            <tr>
-                                <th class="text-nowrap">Campo</th>
-                                <th class="text-nowrap">Valor</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <th class="text-nowrap">Nombre</th>
-                                <td id="nombreAlumno"> </td>
-                            </tr>
-                            <tr>
-                                <th class="text-nowrap">Primer Apellido</th>
-                                <td id="apellidoPaterno"> </td>
-                            </tr>
-                            <tr>
-                                <th class="text-nowrap">Segundo Apellido</th>
-                                <td id="apellidoMaterno"> </td>
-                            </tr>
-                            <tr>
-                                <th class="text-nowrap">CURP</th>
-                                <td id="curp"> </td>
-                            </tr>
-                            <tr>
-                                <th class="text-nowrap">Unidad Académica</th>
-                                <td id="unidadAcademica"> </td>
-                            </tr>
-                            <tr>
-                                <th class="text-nowrap">Programa Educativo</th>
-                                <td id="programaEducativo"> </td>
-                            </tr>
-                            <tr>
-                                <th class="text-nowrap">Número de cuenta</th>
-                                <td id="numeroCuenta"> </td>
-                            </tr>
-                            <tr>
-                                <th class="text-nowrap">Semestre</th>
-                                <td id="semestre"> </td>
-                            </tr>
-                            <tr>
-                                <th class="text-nowrap">Calidad del Alumno</th>
-                                <td id="calidadAlumno"> </td>
-                            </tr>
-                        </tbody>
-                    </table>
+
+                    <div class="container">
+                        <table id="tablaCorroborarDatos" class="table table-hover align-middle mb-0 constancias-table fs-5 mb-4">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="text-nowrap">Campo</th>
+                                    <th class="text-nowrap">Valor</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="text-nowrap">Nombre</th>
+                                    <td id="nombreAlumno" class="text-nowrap"> </td>
+                                </tr>
+                                <tr>
+                                    <th class="text-nowrap">Primer Apellido</th>
+                                    <td id="apellidoPaterno" class="text-nowrap"> </td>
+                                </tr>
+                                <tr>
+                                    <th class="text-nowrap">Segundo Apellido</th>
+                                    <td id="apellidoMaterno" class="text-nowrap"> </td>
+                                </tr>
+                                <tr>
+                                    <th class="text-nowrap">CURP</th>
+                                    <td id="curp" class="text-nowrap"> </td>
+                                </tr>
+                                <tr>
+                                    <th class="text-nowrap">Unidad Académica</th>
+                                    <td id="unidadAcademica" class="text-nowrap"> </td>
+                                </tr>
+                                <tr>
+                                    <th class="text-nowrap">Programa Educativo</th>
+                                    <td id="programaEducativo" class="text-nowrap"> </td>
+                                </tr>
+                                <tr>
+                                    <th class="text-nowrap">Número de cuenta</th>
+                                    <td id="numeroCuenta" class="text-nowrap"> </td>
+                                </tr>
+                                <tr>
+                                    <th class="text-nowrap">Semestre</th>
+                                    <td id="semestre" class="text-nowrap"> </td>
+                                </tr>
+                                <tr>
+                                    <th class="text-nowrap">Calidad del Alumno</th>
+                                    <td id="calidadAlumno" class="text-nowrap"> </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
                 </div>
 
                 <div class="d-flex justify-content-between">

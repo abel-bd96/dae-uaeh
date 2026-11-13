@@ -38,7 +38,6 @@
                     mostrarMensaje("No se encontraron los datos del alumno.", "error");
                     return;
                 }
-                //console.log("Datos recibidos:", datos);
 
                 document.getElementById("nombreAlumno").textContent = datos.Nombres || "";
 
